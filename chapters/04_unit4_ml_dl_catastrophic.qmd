@@ -1,0 +1,378 @@
+# Unit 4: Machine Learning, Deep Learning, and Precursors for Catastrophic Transitions {#sec-unit4}
+
+::: {.callout-note appearance="simple"}
+### Unit 4 Curriculum Checklist
+- **Machine Learning Models**: Delay-coordinate embedding (Takens' theorem), cyclical & rolling feature engineering, rolling-origin cross-validation (`TimeSeriesSplit`), Random Forests, and Gradient Boosted Decision Trees (GBDT/XGBoost) with second-order split-gain derivation.
+- **Deep Learning Models**: RNNs & BPTT vanishing gradients, Long Short-Term Memory (LSTM), Gated Recurrent Units (GRU), Temporal Convolutional Networks (1D-CNN / TCN) with dilated causal convolutions, and Temporal Self-Attention / Transformers with causal masking.
+- **Precursors for Catastrophic Transitions**: Fold bifurcations, first-principles derivation of Critical Slowing Down (CSD), early warning indicators (variance explosion, $\rho(1) \to 1$, skewness, spectral reddening).
+- **Prescribed Text References**: Nielsen (2019, Ch. 8–11) [@nielsen2019practical]; Shumway & Stoffer (2011, Ch. 7) [@shumway2011time]; Box et al. (2016, Ch. 13) [@box2016time]; Cryer & Chan (2008, Ch. 15) [@cryer2008time]; Scheffer et al. (2009) [@scheffer2009early]; Hochreiter & Schmidhuber (1997) [@hochreiter1997long].
+:::
+
+---
+
+## From Neural Gates to Planetary Tipping Points
+
+Modern telemetry—multi-channel clinical EEGs, algorithmic limit-order books, and smart-grid sensors—generates millions of correlated sequences where manual ARIMA identification cannot scale [@nielsen2019practical]. Reframing forecasting as supervised learning via **delay-coordinate embeddings**, **tree ensembles (Random Forests, GBDT)**, **recurrent gates (LSTM/GRU)** [@hochreiter1997long], **dilated TCNs**, and **causal Transformers** unlocked non-linear, multi-horizon predictive analytics across both biomedical signals and quantitative finance.
+
+Yet standard forecasting faces a deeper challenge: **catastrophic regime shifts** (epileptic seizures, financial flash crashes, ecosystem collapses) where history offers few or no prior examples of the crash [@scheffer2009early]. In 2009, Marten Scheffer et al. proved that as any nonlinear system approaches a tipping point, its recovery rate from small perturbations slows down—a universal phenomenon called **Critical Slowing Down (CSD)** that leaves clear statistical fingerprints ($\rho(1) \to 1$ and surging variance) long before collapse.
+
+
+
+## Machine Learning Models for Time Series
+
+### Key Definitions & Important Terms
+
+* **Delay-Coordinate Embedding (Takens' Theorem)**: Converts a 1D sequence $\{x_t\}$ into supervised rows $\mathbf{x}_t = [x_{t-1}, \dots, x_{t-p}]^T \mapsto y_t = x_t$.
+* **Rolling & Volatility Features**: Lagged moving averages $\mu_{k,t} = \frac{1}{k}\sum_{i=1}^k x_{t-i}$ and rolling standard deviations $\sigma_{k,t}$ capturing local regime shifts.
+* **Cyclical Trigonometric Encoding**: Maps periodic indices (e.g., hour $h \in [0, 23]$) onto the unit circle via $\sin(2\pi h/24)$ and $\cos(2\pi h/24)$ so hour $23$ and hour $0$ remain adjacent [@nielsen2019practical].
+* **Lookahead Leakage**: Future information accidentally entering training features, scalers, or cross-validation folds (why random $K$-fold CV is invalid for time series).
+* **Rolling-Origin (Forward-Chaining) CV**: Training window strictly precedes validation window chronologically (`TimeSeriesSplit`).
+
+### First-Principles Derivation: Gradient Boosted Decision Trees (GBDT / XGBoost)
+
+Tree ensembles (Random Forests and GBDT) dominate tabular time-series competitions when lag, rolling, and calendar features are engineered [@nielsen2019practical]. In *Gradient Boosting*, we build an additive ensemble of $M$ regression trees:
+$$\hat{y}_i^{(M)} = \sum_{m=1}^M f_m(\mathbf{x}_i), \qquad f_m \in \mathcal{F} \tag{4.1}$$
+
+At boosting step $t$, we add a new tree $f_t(\mathbf{x}_i)$ to minimize the regularized objective:
+$$\mathcal{L}^{(t)} = \sum_{i=1}^n \ell\big(y_i, \hat{y}_i^{(t-1)} + f_t(\mathbf{x}_i)\big) + \Omega(f_t), \qquad \Omega(f_t) = \gamma T + \frac{1}{2}\lambda \sum_{j=1}^T w_j^2 \tag{4.2}$$
+where $T$ is the number of leaves, $w_j$ is the prediction score on leaf $j$, and $\gamma, \lambda \ge 0$ penalize tree complexity.
+
+Applying a *second-order Taylor expansion* around $\hat{y}_i^{(t-1)}$, let $g_i = \frac{\partial \ell(y_i, \hat{y}_i^{(t-1)})}{\partial \hat{y}_i^{(t-1)}}$ (gradient) and $h_i = \frac{\partial^2 \ell(y_i, \hat{y}_i^{(t-1)})}{\partial (\hat{y}_i^{(t-1)})^2}$ (Hessian). For squared error loss $\ell(y, \hat{y}) = \frac{1}{2}(y - \hat{y})^2$, simply $g_i = \hat{y}_i^{(t-1)} - y_i$ and $h_i = 1$. Dropping constants, grouping instances $I_j$ in leaf $j$:
+$$\tilde{\mathcal{L}}^{(t)} = \sum_{j=1}^T \left[ \left(\sum_{i \in I_j} g_i\right) w_j + \frac{1}{2}\left(\sum_{i \in I_j} h_i + \lambda\right) w_j^2 \right] + \gamma T \tag{4.3}$$
+
+Differentiating with respect to $w_j$ and setting to zero gives the *optimal leaf weight* $w_j^*$ and *minimum leaf loss*:
+$$w_j^* = -\frac{G_j}{H_j + \lambda}, \qquad \tilde{\mathcal{L}}_{\min}^{(t)} = -\frac{1}{2}\sum_{j=1}^T \frac{G_j^2}{H_j + \lambda} + \gamma T \tag{4.4}$$
+where $G_j = \sum_{i \in I_j} g_i$ and $H_j = \sum_{i \in I_j} h_i$. Therefore, splitting a parent node $I = I_L \cup I_R$ into left and right children yields the exact **Split Gain**:
+$$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R + \lambda} - \frac{(G_L + G_R)^2}{H_L + H_R + \lambda}\right] - \gamma \tag{4.5}$$
+
+::: {.callout-warning}
+#### Why Tree Models Cannot Extrapolate Unbounded Trends
+A decision tree partitions feature space into axis-aligned boxes and outputs the **weighted average of training targets** inside each leaf. Consequently, $\min(y_{\text{train}}) \le \hat{y}_{\text{test}} \le \max(y_{\text{train}})$. If you train Random Forest or GBDT on raw upward-trending stock prices $P_t$, it will flatline below historical highs! Always train tree models on **stationary log returns $r_t$ or differenced targets $\nabla X_t$** [@nielsen2019practical].
+:::
+
+### Sample Problem 4.1 (GBDT Optimal Leaf Weight & Split Gain)
+**Statement**: At boosting step $t$, a node contains $4$ training samples with squared-error residuals ($g_i = \hat{y}_i - y_i$, $h_i = 1$): $g = [-2.0, -1.0, +1.5, +2.5]$. A candidate lag-1 feature splits the node into $I_L = \{1, 2\}$ ($G_L = -3.0, H_L = 2$) and $I_R = \{3, 4\}$ ($G_R = +4.0, H_R = 2$). Using $\lambda = 1.0$ and $\gamma = 0.5$, compute the optimal leaf weights $w_L^*, w_R^*$ and the Split Gain.
+
+**Solution**:
+
+1. *Optimal Leaf Weights (Eq. 4.4)*:
+   $$w_L^* = -\frac{-3.0}{2 + 1} = +1.00, \qquad w_R^* = -\frac{4.0}{2 + 1} = -1.333$$
+2. *Split Gain (Eq. 4.5)*: Here $G = G_L + G_R = +1.0$ and $H = H_L + H_R = 4$.
+   $$\text{Gain} = \frac{1}{2}\left[\frac{(-3.0)^2}{2 + 1} + \frac{(4.0)^2}{2 + 1} - \frac{(1.0)^2}{4 + 1}\right] - 0.5 = \frac{1}{2}\left[3.0 + 5.333 - 0.20\right] - 0.5 = 4.067 - 0.5 = 3.567 > 0$$
+   Since $\text{Gain} > 0$, the split is accepted.
+
+::: {.callout-tip}
+#### Key Takeaway:
+Tree ensembles (Random Forests, GBDT) excel at non-linear interactions across lag, rolling, and cyclical features, but must target **stationary returns/differences** and use **forward-chaining CV** (`TimeSeriesSplit`).
+:::
+
+
+## Deep Learning Models for Sequence Analytics
+
+### Key Definitions & Important Terms
+
+* **Backpropagation Through Time (BPTT)**: Unrolls an RNN across $T$ steps; gradients multiply Jacobians $\prod_{j=t+1}^T \frac{\partial \mathbf{h}_j}{\partial \mathbf{h}_{j-1}}$, causing vanishing ($|\lambda| < 1$) or exploding ($|\lambda| > 1$) gradients.
+* **LSTM (Long Short-Term Memory)**: Uses an additive **Constant Error Carousel** ($\mathbf{C}_t$) regulated by Forget ($\mathbf{f}_t$), Input ($\mathbf{i}_t$), and Output ($\mathbf{o}_t$) gates [@hochreiter1997long].
+* **GRU (Gated Recurrent Unit)**: Streamlines LSTM by merging cell and hidden states using only two gates: **Update ($\mathbf{z}_t$)** and **Reset ($\mathbf{r}_t$)**.
+* **TCN (Temporal Convolutional Network)**: Stacks **dilated causal 1D convolutions** with residual skip connections for parallel sequence training [@nielsen2019practical].
+* **Temporal Self-Attention (Transformer)**: Computes pairwise dependencies across all past time steps simultaneously, enforcing causality via an upper-triangular **look-ahead mask**.
+
+### First-Principles Formulations: LSTM, GRU, TCN, and Causal Attention
+
+#### 1. LSTM Cell Equations
+
+$$\begin{aligned}
+\mathbf{f}_t &= \sigma(\mathbf{W}_f\mathbf{x}_t + \mathbf{U}_f\mathbf{h}_{t-1} + \mathbf{b}_f), & \mathbf{i}_t &= \sigma(\mathbf{W}_i\mathbf{x}_t + \mathbf{U}_i\mathbf{h}_{t-1} + \mathbf{b}_i) \\
+\tilde{\mathbf{C}}_t &= \tanh(\mathbf{W}_c\mathbf{x}_t + \mathbf{U}_c\mathbf{h}_{t-1} + \mathbf{b}_c), & \mathbf{C}_t &= \mathbf{f}_t \odot \mathbf{C}_{t-1} + \mathbf{i}_t \odot \tilde{\mathbf{C}}_t \\
+\mathbf{o}_t &= \sigma(\mathbf{W}_o\mathbf{x}_t + \mathbf{U}_o\mathbf{h}_{t-1} + \mathbf{b}_o), & \mathbf{h}_t &= \mathbf{o}_t \odot \tanh(\mathbf{C}_t)
+\end{aligned} \tag{4.6}$$
+Because $\mathbf{C}_t$ is additive, $\frac{\partial \mathbf{C}_t}{\partial \mathbf{C}_{t-1}} = \mathbf{f}_t$, allowing gradients to flow across hundreds of steps when $\mathbf{f}_t \approx \mathbf{1}$ [@hochreiter1997long].
+
+#### 2. GRU (Gated Recurrent Unit) Equations
+
+$$\begin{aligned}
+\mathbf{z}_t &= \sigma(\mathbf{W}_z\mathbf{x}_t + \mathbf{U}_z\mathbf{h}_{t-1} + \mathbf{b}_z) \quad \text{(Update Gate)} \\
+\mathbf{r}_t &= \sigma(\mathbf{W}_r\mathbf{x}_t + \mathbf{U}_r\mathbf{h}_{t-1} + \mathbf{b}_r) \quad \text{(Reset Gate)} \\
+\tilde{\mathbf{h}}_t &= \tanh\big(\mathbf{W}_h\mathbf{x}_t + \mathbf{U}_h(\mathbf{r}_t \odot \mathbf{h}_{t-1}) + \mathbf{b}_h\big) \\
+\mathbf{h}_t &= (1 - \mathbf{z}_t) \odot \mathbf{h}_{t-1} + \mathbf{z}_t \odot \tilde{\mathbf{h}}_t
+\end{aligned} \tag{4.7}$$
+Notice the convex interpolation: when $\mathbf{z}_t \approx \mathbf{0}$, $\mathbf{h}_t \approx \mathbf{h}_{t-1}$ (retaining memory with $25\%$ fewer parameters than LSTM).
+
+#### 3. Dilated Causal 1D Convolution (TCN)
+
+For layer $l$ with dilation $d = 2^l$ and kernel size $K$, the causal output at time $t$ uses only $t, t-d, \dots, t-(K-1)d$:
+$$y_t = \sum_{k=0}^{K-1} w_k x_{t - d \cdot k}, \qquad \text{Receptive Field} = 1 + (K - 1)(2^L - 1) \tag{4.8}$$
+
+#### 4. Causal Scaled Dot-Product Self-Attention (Transformer)
+
+Given sequence matrix $\mathbf{X} \in \mathbb{R}^{T \times d}$, we project $\mathbf{Q} = \mathbf{X}\mathbf{W}_Q$, $\mathbf{K} = \mathbf{X}\mathbf{W}_K$, $\mathbf{V} = \mathbf{X}\mathbf{W}_V \in \mathbb{R}^{T \times d_k}$:
+$$\mathrm{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \mathrm{softmax}\left(\frac{\mathbf{Q}\mathbf{K}^T + \mathbf{M}}{\sqrt{d_k}}\right)\mathbf{V}, \qquad M_{ij} = \begin{cases} 0, & j \le i \\ -\infty, & j > i \end{cases} \tag{4.9}$$
+Setting $M_{ij} = -\infty$ for $j > i$ forces $\exp(-\infty) = 0$ in softmax, strictly blocking future time steps $j > i$ from leaking into the representation at time $i$.
+
+### Sample Problem 4.2 (GRU Gate Forward Pass)
+
+**Statement**: A scalar GRU cell has $x_t = 1.0$, $h_{t-1} = 0.5$, and weights $W_z=0.4, U_z=0.6, b_z=0.0$; $W_r=0.5, U_r=-0.4, b_r=0.0$; $W_h=0.8, U_h=0.5, b_h=0.0$. Compute $z_t, r_t, \tilde{h}_t$, and $h_t$.
+
+**Solution**:
+
+1. $z_t = \sigma(0.4(1.0) + 0.6(0.5)) = \sigma(0.7) \approx 0.6682$.
+2. $r_t = \sigma(0.5(1.0) - 0.4(0.5)) = \sigma(0.3) \approx 0.5744$.
+3. $\tilde{h}_t = \tanh\big(0.8(1.0) + 0.5(0.5744 \times 0.5)\big) = \tanh(0.8 + 0.1436) = \tanh(0.9436) \approx 0.7369$.
+4. $h_t = (1 - 0.6682)(0.5) + 0.6682(0.7369) = 0.1659 + 0.4924 = 0.6583$.
+
+### Sample Problem 4.3 (Causal Attention Weights)
+**Statement**: At time $t = 2$ of a $T = 3$ sequence ($d_k = 4$), the raw query-key dot products $\mathbf{q}_2 \mathbf{K}^T$ are $[2.0, 4.0, 6.0]$. Apply causal masking (Eq. 4.9) and compute the attention weights over $j \in \{1, 2, 3\}$.
+
+**Solution**:
+
+1. Scale by $\sqrt{d_k} = \sqrt{4} = 2$: $[1.0, 2.0, 3.0]$.
+2. Apply causal mask ($j > 2$ becomes $-\infty$): $[1.0, 2.0, -\infty]$.
+3. Softmax: $\frac{e^1}{e^1 + e^2 + 0} = \frac{2.718}{2.718 + 7.389} \approx 0.2689$ (weight on $t=1$), $0.7311$ (weight on $t=2$), and $0.0000$ (weight on future $t=3$).
+
+::: {.callout-tip}
+#### Key Takeaway:
+LSTM/GRU use recurrent gates to preserve long-term memory, TCNs use dilated causal convolutions for parallel speed, and Transformers use causally masked self-attention to attend directly across arbitrary lags.
+:::
+
+---
+
+## Precursors for Catastrophic Transitions (Critical Slowing Down)
+
+### Key Definitions & Important Terms
+
+* **Saddle-Node (Fold) Bifurcation**: A stable equilibrium $x_s^*$ and unstable equilibrium $x_u^*$ collide and vanish as driver $\mu \to \mu_c$, triggering a sudden jump to a distant state [@scheffer2009early].
+* **Critical Slowing Down (CSD)**: The progressive drop in recovery rate $\lambda \to 0$ as a system approaches $\mu_c$.
+
+### First-Principles Derivation: Early Warning Signals from Langevin Dynamics
+
+Consider $\frac{dx}{dt} = f(x, \mu)$ near equilibrium $x^*$. Taylor expansion gives $\frac{d(\Delta x)}{dt} = -\lambda \Delta x$, where $\lambda = -f_x(x^*, \mu) > 0$, with recovery half-life $t_{1/2} = \frac{\ln 2}{\lambda}$. Adding white Brownian shocks gives the Ornstein-Uhlenbeck SDE:
+$$dx(t) = -\lambda x(t)\,dt + \sigma\,dW(t) \tag{4.10}$$
+Sampling at interval $\Delta t$ yields an exact **AR(1)** process $X_{t+1} = \phi X_t + \eta_t$ with $\phi = e^{-\lambda \Delta t}$ and $\mathrm{Var}(\eta_t) = \frac{\sigma^2}{2\lambda}(1 - e^{-2\lambda\Delta t})$ [@scheffer2009early]. As $\mu \to \mu_c$ ($\lambda \to 0$):
+
+1. **Lag-1 Autocorrelation Inflation**: $\rho(1) = \phi = e^{-\lambda \Delta t} \approx 1 - \lambda\Delta t \xrightarrow{\lambda \to 0} 1.0$.
+2. **Variance Explosion**: $\mathrm{Var}(X) = \frac{\mathrm{Var}(\eta_t)}{1 - \phi^2} = \frac{\sigma^2}{2\lambda} \xrightarrow{\lambda \to 0} \infty$.
+3. **Spectral Reddening**: Power spectral density $S(f) = \frac{\sigma^2}{\lambda^2 + (2\pi f)^2}$ shifts toward low frequencies.
+
+### Sample Problem 4.4 (Quantifying CSD Precursors)
+**Statement**: In $dX = -\lambda X\,dt + 0.2\,dW_t$ ($\Delta t = 1$), $\lambda$ drops from $1.5$ (healthy) to $0.05$ (pre-crash). Compute $t_{1/2}$, $\rho(1)$, and $\mathrm{Var}(X)$ in both regimes.
+
+**Solution**:
+
+- *Healthy ($\lambda = 1.5$)*: $t_{1/2} = \frac{\ln 2}{1.5} = 0.462$; $\rho(1) = e^{-1.5} = 0.223$; $\mathrm{Var}(X) = \frac{0.04}{3.0} = 0.0133$.
+- *Pre-Crash ($\lambda = 0.05$)*: $t_{1/2} = \frac{\ln 2}{0.05} = 13.86$ ($30\times$ slower); $\rho(1) = e^{-0.05} = 0.951$; $\mathrm{Var}(X) = \frac{0.04}{0.10} = 0.4000$ ($30\times$ higher!).
+
+::: {.callout-tip}
+#### Key Takeaway:
+As a complex system nears a tipping point ($\lambda \to 0$), **rolling variance** and **rolling lag-1 autocorrelation ($\rho(1) \to 1$)** rise monotonically—providing actionable early warning before collapse.
+:::
+
+
+## 3-Tier Graduated Problem Ladder
+
+### Tier 1: By-Hand Intuition
+
+* **Problem 4.5 (Practice)**: Compute the 2D cyclical encoding $(\sin(2\pi h/24), \cos(2\pi h/24))$ for $h = 6$ and $h = 18$. *(Answer: $(1, 0)$ and $(-1, 0)$.)*
+* **Problem 4.6 (Practice)**: A TCN uses kernel size $K = 3$ and $L = 7$ dilated layers ($d_l = 2^l$). Compute its receptive field. *(Answer: $1 + 2(2^7 - 1) = 255$ samples.)*
+
+### Tier 2: Analytical & Exam-Style
+
+* **Problem 4.7 (Worked — LSTM Forward Pass)**: With $x_t = 1.0, h_{t-1} = 0.5, C_{t-1} = 2.0$, and weights $W_f=0.5, U_f=1.0, b_f=-0.5$; $W_i=0.8, U_i=0.4, b_i=-0.2$; $W_c=1.0, U_c=-0.5, b_c=0$; $W_o=0.6, U_o=0.8, b_o=0.1$, compute $C_t$ and $h_t$.
+  *Solution*: $f_t = \sigma(0.5) \approx 0.6225$, $i_t = \sigma(0.8) \approx 0.6900$, $\tilde{C}_t = \tanh(0.75) \approx 0.6351$, $C_t = 0.6225(2.0) + 0.6900(0.6351) \approx 1.6832$, $o_t = \sigma(1.1) \approx 0.7503$, and $h_t = 0.7503 \tanh(1.6832) \approx 0.7003$.
+* **Problem 4.8 (Worked — Fold Bifurcation Curvature)**: For $V(x) = \frac{x^3}{3} - \mu x$ ($\frac{dx}{dt} = \mu - x^2$), find the stable fixed point for $\mu > 0$ and show $\lambda \to 0$ as $\mu \to 0^+$.
+  *Solution*: $x^* = \pm\sqrt{\mu}$; $V''(\sqrt{\mu}) = 2\sqrt{\mu} > 0$ is stable with $\lambda = 2\sqrt{\mu} \to 0$ as $\mu \to 0^+$.
+
+### Tier 3: Domain Case Studies (EEG & Finance/Portfolio)
+
+* **Problem 4.9 (EEG Pre-Ictal Critical Slowing — Worked)**: Across 3 consecutive 10-second EEG windows before a seizure, detrended variance rises $[12, 28, 64]$ $\mu\text{V}^2$ and $\hat{\rho}(1)$ rises $[0.45, 0.72, 0.91]$. Explain why this signals an impending seizure transition.
+  *Solution*: Both indicators exhibit monotonic upward trends consistent with $\lambda \to 0$ in Eq. (4.10), indicating loss of cortical resilience prior to synchronized ictal bifurcation [@scheffer2009early].
+* **Problem 4.10 (Financial Tree Extrapolation & Portfolio De-Risking — Practice)**: Explain why a Random Forest trained on raw NIFTY 50 prices fails above all-time highs, and how training on log returns $r_t$ solves this. *(Answer: Leaf predictions are bounded by training min/max; stationary log returns stay inside historical support [@nielsen2019practical].)*
+
+---
+
+## Dual-Track Laboratory Experimental Section (scikit-learn + PyTorch)
+
+::: {.callout-note}
+### Dual-Track Lab Objectives (CO4 Focus)
+- **Track A (EEG Predictive Analytics & Tipping Point)**: Build a **PyTorch `nn.LSTM` and Causal `nn.Conv1d` (TCN)** for multi-step EEG waveform forecasting, and run a **Critical Slowing Down (CSD)** early-warning pipeline.
+- **Track B (Financial & Portfolio Predictive Analytics)**: Build a **`scikit-learn` Random Forest + Gradient Boosting (`TimeSeriesSplit`)** and **PyTorch `nn.LSTM`** pipeline predicting next-day equity returns, benchmarked on RMSE, MAE, Directional Accuracy, and volatility-scaled portfolio allocation.
+:::
+
+### Lab Track A: PyTorch LSTM & Causal 1D-CNN for EEG Forecasting + CSD Early Warning
+
+```python
+import numpy as np
+import torch
+import torch.nn as nn
+from torch.utils.data import TensorDataset, DataLoader
+from scipy import stats
+from scipy.ndimage import gaussian_filter1d
+
+# =============================================================
+# PART 1: PyTorch LSTM & Causal 1D-CNN for EEG Signal Forecasting
+# =============================================================
+torch.manual_seed(42)
+np.random.seed(42)
+
+fs = 100  # 100 Hz EEG sampling
+t = np.arange(0, 12.0, 1/fs)
+eeg = (15.0 * np.sin(2*np.pi*10*t) + 5.0 * np.sin(2*np.pi*22*t)
+       + np.random.normal(0, 2.0, len(t)))
+
+# Sliding window embedding (lookback=30, horizon=1)
+lookback = 30
+X = np.array([eeg[i:i+lookback] for i in range(len(eeg) - lookback)])
+y = eeg[lookback:]
+
+split = int(len(X) * 0.8)
+mu, sd = X[:split].mean(), X[:split].std()
+X_tr = torch.tensor(((X[:split] - mu) / sd)[:, :, None], dtype=torch.float32)
+y_tr = torch.tensor(((y[:split] - mu) / sd)[:, None], dtype=torch.float32)
+X_te = torch.tensor(((X[split:] - mu) / sd)[:, :, None], dtype=torch.float32)
+y_te_raw = y[split:]
+
+train_loader = DataLoader(TensorDataset(X_tr, y_tr), batch_size=32, shuffle=False)
+
+class EEGLSTM(nn.Module):
+    def __init__(self, hidden_dim=32):
+        super().__init__()
+        self.lstm = nn.LSTM(input_size=1, hidden_size=hidden_dim, batch_first=True)
+        self.fc = nn.Linear(hidden_dim, 1)
+
+    def forward(self, x):
+        out, _ = self.lstm(x)
+        return self.fc(out[:, -1, :])
+
+class EEGCausalTCN(nn.Module):
+    def __init__(self, channels=16, kernel_size=3):
+        super().__init__()
+        self.pad = (kernel_size - 1) * 2  # dilation=2 causal left-padding
+        self.conv1 = nn.Conv1d(1, channels, kernel_size, dilation=2)
+        self.relu = nn.ReLU()
+        self.fc = nn.Linear(channels, 1)
+
+    def forward(self, x):
+        # x: (B, T, 1) -> (B, 1, T)
+        x = x.transpose(1, 2)
+        x = nn.functional.pad(x, (self.pad, 0))
+        h = self.relu(self.conv1(x))
+        return self.fc(h[:, :, -1])
+
+def train_and_eval(model, epochs=15):
+    opt = torch.optim.Adam(model.parameters(), lr=1e-3)
+    loss_fn = nn.MSELoss()
+    for _ in range(epochs):
+        for xb, yb in train_loader:
+            opt.zero_grad()
+            loss = loss_fn(model(xb), yb)
+            loss.backward()
+            opt.step()
+    model.eval()
+    with torch.no_grad():
+        pred = model(X_te).numpy().ravel() * sd + mu
+    return np.sqrt(np.mean((y_te_raw - pred)**2))
+
+print(f"EEG Forecast RMSE -> PyTorch LSTM: {train_and_eval(EEGLSTM()):.3f} uV")
+print(f"EEG Forecast RMSE -> PyTorch TCN:  {train_and_eval(EEGCausalTCN()):.3f} uV")
+
+# =============================================================
+# PART 2: Critical Slowing Down Early-Warning Pipeline
+# =============================================================
+dt, N = 0.05, 2000
+x_sys = np.zeros(N)
+x_sys[0] = 5.0
+c_drv = np.linspace(1.5, 2.75, N)
+collapse_t = N - 1
+for i in range(1, N):
+    dx = x_sys[i-1]*(1 - x_sys[i-1]/10.0) - c_drv[i]*(x_sys[i-1]**2/(x_sys[i-1]**2 + 1.0))
+    x_sys[i] = x_sys[i-1] + dx*dt + 0.08*np.sqrt(dt)*np.random.normal()
+    if x_sys[i] < 0.2:
+        collapse_t = i
+        break
+
+resid = x_sys[:collapse_t-40] - gaussian_filter1d(x_sys[:collapse_t-40], sigma=35)
+win = 200
+r_var = [np.var(resid[i-win:i]) for i in range(win, len(resid))]
+r_ar1 = [np.corrcoef(resid[i-win:i-1], resid[i-win+1:i])[0, 1] for i in range(win, len(resid))]
+tau_v, p_v = stats.kendalltau(np.arange(len(r_var)), r_var)
+tau_a, p_a = stats.kendalltau(np.arange(len(r_ar1)), r_ar1)
+print(f"CSD Precursors -> Variance Tau={tau_v:.3f} (p={p_v:.2e}) | AR(1) Tau={tau_a:.3f} (p={p_a:.2e})")
+```
+
+### Lab Track B: scikit-learn Ensembles vs. PyTorch LSTM for Stock Return & Portfolio Prediction
+
+```python
+import numpy as np
+import pandas as pd
+import torch
+import torch.nn as nn
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
+from sklearn.model_selection import TimeSeriesSplit
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+
+# 1. Construct Realistic Equity Return & Feature Pipeline
+np.random.seed(7)
+n_days = 1200
+dates = pd.date_range("2021-01-01", periods=n_days, freq="B")
+# Weakly autocorrelated + volatility-clustered log returns
+ret = np.zeros(n_days)
+sig = np.zeros(n_days)
+sig[0] = 0.012
+for t in range(1, n_days):
+    sig[t] = np.sqrt(1e-5 + 0.08 * ret[t-1]**2 + 0.85 * sig[t-1]**2)
+    ret[t] = 0.0003 + 0.12 * ret[t-1] - 0.06 * ret[max(0, t-2)] + sig[t] * np.random.normal()
+
+df = pd.DataFrame({"ret": ret}, index=dates)
+for lag in [1, 2, 3, 5]:
+    df[f"lag_{lag}"] = df["ret"].shift(lag)
+df["roll_mean_5"] = df["ret"].shift(1).rolling(5).mean()
+df["roll_vol_10"] = df["ret"].shift(1).rolling(10).std()
+df["dow_sin"] = np.sin(2 * np.pi * df.index.dayofweek / 5.0)
+df["dow_cos"] = np.cos(2 * np.pi * df.index.dayofweek / 5.0)
+df.dropna(inplace=True)
+
+features = [c for c in df.columns if c != "ret"]
+X_tab, y_tab = df[features].values, df["ret"].values
+
+# 2. Rolling-Origin Cross-Validation (TimeSeriesSplit) with scikit-learn
+tscv = TimeSeriesSplit(n_splits=3)
+models = {
+    "RandomForest": RandomForestRegressor(n_estimators=100, max_depth=4, random_state=42),
+    "GradientBoosting": GradientBoostingRegressor(n_estimators=100, max_depth=3, learning_rate=0.05, random_state=42)
+}
+
+for name, mdl in models.items():
+    rmses, dir_accs = [], []
+    for tr_idx, te_idx in tscv.split(X_tab):
+        mdl.fit(X_tab[tr_idx], y_tab[tr_idx])
+        preds = mdl.predict(X_tab[te_idx])
+        rmses.append(np.sqrt(mean_squared_error(y_tab[te_idx], preds)))
+        dir_accs.append(np.mean(np.sign(preds) == np.sign(y_tab[te_idx])))
+    print(f"{name:18s} | CV RMSE: {np.mean(rmses):.5f} | Directional Acc: {np.mean(dir_accs)*100:.2f}%")
+
+# 3. Volatility-Targeted Portfolio Weight Backtest on Final Fold
+tr_idx, te_idx = list(tscv.split(X_tab))[-1]
+gbdt = models["GradientBoosting"].fit(X_tab[tr_idx], y_tab[tr_idx])
+pred_ret = gbdt.predict(X_tab[te_idx])
+vol_est = df["roll_vol_10"].values[te_idx]
+# Long/short signal scaled inversely by recent volatility
+weights = np.clip(np.sign(pred_ret) * (0.01 / np.maximum(vol_est, 1e-4)), -1.0, 1.0)
+port_ret = weights * y_tab[te_idx]
+sharpe = np.sqrt(252) * port_ret.mean() / (port_ret.std() + 1e-9)
+print(f"GBDT Volatility-Scaled Strategy Annualized Sharpe: {sharpe:.2f}")
+```
+
+
+## Summary of Concepts
+
+* **Machine Learning Ensembles**: Random Forests and GBDTs optimize second-order regularized split gains on engineered lag, rolling, and cyclical features, but must predict **stationary returns/differences** under strict rolling-origin CV.
+* **Deep Learning Sequence Models**: LSTMs and GRUs overcome vanishing gradients via additive/interpolated gating, TCNs parallelize long contexts via dilated causal convolutions, and Transformers apply causally masked scaled dot-product attention.
+* **Catastrophic Transitions**: Critical Slowing Down ($\lambda \to 0$) produces universal early warning signals—surging variance and $\rho(1) \to 1$—detectable before fold bifurcations.
+
+::: {.callout-tip}
+### Prescribed Textbook Cross-Walk
+| Concept | Cryer & Chan (2008) | Shumway & Stoffer (2011) | Box et al. (2016) | Nielsen (2019) |
+|:---|:---|:---|:---|:---|
+| ML Framing, Trees & Validation | — | — | — | Ch. 8–9 |
+| Deep Learning (RNN/LSTM/GRU/TCN) | — | — | — | Ch. 10 |
+| Spectral & Nonlinear Dynamics | Ch. 13–15 | Ch. 4, 7 | Ch. 13 | Ch. 11 |
+:::

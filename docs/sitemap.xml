@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://amrita.edu/course/22aie463-time-series-analysis/index.html</loc>
+    <lastmod>2026-11-17T14:42:57.765Z</lastmod>
+  </url>
+  <url>
+    <loc>https://amrita.edu/course/22aie463-time-series-analysis/chapters/00_bootcamp_foundations.html</loc>
+    <lastmod>2026-11-17T16:29:47.217Z</lastmod>
+  </url>
+  <url>
+    <loc>https://amrita.edu/course/22aie463-time-series-analysis/chapters/01_unit1_linear_models.html</loc>
+    <lastmod>2026-11-17T15:07:19.673Z</lastmod>
+  </url>
+  <url>
+    <loc>https://amrita.edu/course/22aie463-time-series-analysis/chapters/02_unit2_arima_var_garch.html</loc>
+    <lastmod>2026-11-17T15:21:14.945Z</lastmod>
+  </url>
+  <url>
+    <loc>https://amrita.edu/course/22aie463-time-series-analysis/chapters/03_unit3_nonlinear_statespace.html</loc>
+    <lastmod>2026-11-17T15:26:23.920Z</lastmod>
+  </url>
+  <url>
+    <loc>https://amrita.edu/course/22aie463-time-series-analysis/chapters/04_unit4_ml_dl_catastrophic.html</loc>
+    <lastmod>2026-11-17T16:24:14.322Z</lastmod>
+  </url>
+  <url>
+    <loc>https://amrita.edu/course/22aie463-time-series-analysis/references.html</loc>
+    <lastmod>2026-11-17T14:37:23.408Z</lastmod>
+  </url>
+  <url>
+    <loc>https://amrita.edu/course/22aie463-time-series-analysis/Time-Series-Analysis--First-Principles-to-Deep-Applications.pdf</loc>
+    <lastmod>2026-11-17T16:35:05.128Z</lastmod>
+  </url>
+</urlset>

@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.31">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Amrita Vishwa Vidyapeetham">
+<meta name="dcterms.date" content="2026-01-01">
+
+<title>Time Series Analysis: First Principles to Deep Applications</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./chapters/00_bootcamp_foundations.html" rel="next">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-4a990d8dcb58f517c7c86712b8f2ac7c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-46f4cc9626f044588a66931b604fc9c8.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-4a990d8dcb58f517c7c86712b8f2ac7c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-4c7a00f65c4f7b083d618916be6661e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-2f778816bbcb37d180fb5a0deea0cd82.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-4c7a00f65c4f7b083d618916be6661e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Course Overview &amp; Syllabus Mapping</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Time Series Analysis: First Principles to Deep Applications</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/amrita-aie/22AIE463-time-series-analysis" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Course Overview &amp; Syllabus Mapping</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/00_bootcamp_foundations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Chapter 0: Zero-Prerequisite Foundations Bootcamp</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/01_unit1_linear_models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Unit 1: Linear Time Series, Stationarity, Ergodicity, and Classical Processes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/02_unit2_arima_var_garch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Unit 2: ARMA, ARIMA, SARIMA, VAR, and Conditional Heteroscedastic Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/03_unit3_nonlinear_statespace.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Unit 3: Nonlinear Dynamics, Formal Hypothesis Testing, and State-Space Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapters/04_unit4_ml_dl_catastrophic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Unit 4: Machine Learning, Deep Learning, and Precursors for Catastrophic Transitions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prescribed Textbooks and References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#course-overview-syllabus-mapping" id="toc-course-overview-syllabus-mapping" class="nav-link active" data-scroll-target="#course-overview-syllabus-mapping">Course Overview &amp; Syllabus Mapping</a>
+  <ul class="collapse">
+  <li><a href="#course-information" id="toc-course-information" class="nav-link" data-scroll-target="#course-information">Course Information</a>
+  <ul class="collapse">
+  <li><a href="#course-objectives" id="toc-course-objectives" class="nav-link" data-scroll-target="#course-objectives">Course Objectives</a></li>
+  <li><a href="#course-outcomes-cos" id="toc-course-outcomes-cos" class="nav-link" data-scroll-target="#course-outcomes-cos">Course Outcomes (COs)</a></li>
+  <li><a href="#co-po-pso-mapping" id="toc-co-po-pso-mapping" class="nav-link" data-scroll-target="#co-po-pso-mapping">CO-PO &amp; PSO Mapping</a></li>
+  <li><a href="#evaluation-pattern" id="toc-evaluation-pattern" class="nav-link" data-scroll-target="#evaluation-pattern">Evaluation Pattern</a></li>
+  </ul></li>
+  <li><a href="#prescribed-textbooks-reference-literature" id="toc-prescribed-textbooks-reference-literature" class="nav-link" data-scroll-target="#prescribed-textbooks-reference-literature">Prescribed Textbooks &amp; Reference Literature</a></li>
+  <li><a href="#pedagogical-structure-of-each-chapter" id="toc-pedagogical-structure-of-each-chapter" class="nav-link" data-scroll-target="#pedagogical-structure-of-each-chapter">Pedagogical Structure of Each Chapter</a></li>
+  <li><a href="#mathematical-notational-conventions" id="toc-mathematical-notational-conventions" class="nav-link" data-scroll-target="#mathematical-notational-conventions">Mathematical Notational Conventions</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Time Series Analysis: First Principles to Deep Applications</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Analytical Problem Sets &amp; Dual-Track Lab Manual</p>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Amrita Vishwa Vidyapeetham </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            School of AI
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 1, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="course-overview-syllabus-mapping" class="level1 unnumbered">
+<h1 class="unnumbered">Course Overview &amp; Syllabus Mapping</h1>
+<p>Welcome to <strong>22AIE463: Time Series Analysis</strong>, an advanced core course in the Artificial Intelligence and Computer Science Engineering curriculum at Amrita Vishwa Vidyapeetham.</p>
+<p>Time series analysis occupies a distinct, foundational position at the intersection of mathematical statistics, dynamical systems theory, signal processing, and machine learning. In conventional statistical learning, observations are almost universally assumed to be independent and identically distributed (<span class="math inline">\(i.i.d.\)</span>). In the physical universe, however, time flows monotonically in a single direction; the past casts an enduring shadow upon the present, and the present constrains the future. When observations are temporally correlated, standard estimators collapse, standard errors evaporate into spurious precision, and regression lines mistake persistence for causality.</p>
+<p>This coursebook is formulated from first principles, weaving rigorous mathematical derivations into an intuitive narrative strictly anchored in the prescribed curriculum textbooks <span class="citation" data-cites="cryer2008time shumway2011time box2016time nielsen2019practical"><a href="references.html#ref-cryer2008time" role="doc-biblioref">[1]</a>, <a href="references.html#ref-shumway2011time" role="doc-biblioref">[2]</a>, <a href="references.html#ref-box2016time" role="doc-biblioref">[3]</a>, <a href="references.html#ref-nielsen2019practical" role="doc-biblioref">[4]</a></span>. Every chapter advances systematically from theoretical foundations to graduated analytical problems, culminating in comprehensive laboratory experiments utilizing real-world open datasets.</p>
+<hr>
+<section id="course-information" class="level2">
+<h2 class="anchored" data-anchor-id="course-information">Course Information</h2>
+<ul>
+<li><strong>Course Code</strong>: 22AIE463</li>
+<li><strong>Course Title</strong>: Time Series Analysis</li>
+<li><strong>Structure (L-T-P-C)</strong>: 2-0-3- 3 (2 Lecture hours, 0 Tutorial hours, 3 Practical/Lab hours per week; 3 Credits)</li>
+<li><strong>Target Audience</strong>: B.Tech Artificial Intelligence and Data Science / Computer Science Engineering</li>
+</ul>
+<section id="course-objectives" class="level3">
+<h3 class="anchored" data-anchor-id="course-objectives">Course Objectives</h3>
+<ul>
+<li>Cover fundamental mathematical tools and statistical techniques required to analyze, filter, and model temporally dependent stochastic processes.</li>
+<li>Establish unified theoretical foundations for both <strong>linear</strong> (AR, MA, ARMA, ARIMA, SARIMA, VAR) and <strong>nonlinear</strong> time series analysis (TAR, STAR, State-Space, ARCH/GARCH).</li>
+<li>Develop advanced predictive analytics capabilities utilizing <strong>Machine Learning</strong> (tree ensembles, sliding window feature engineering) and <strong>Deep Learning</strong> (LSTM, GRU, TCN, Attention/Transformers).</li>
+<li>Investigate mathematical early warning indicators and <strong>precursors for catastrophic transitions</strong> (bifurcations and tipping points) in complex dynamical systems.</li>
+</ul>
+</section>
+<section id="course-outcomes-cos" class="level3">
+<h3 class="anchored" data-anchor-id="course-outcomes-cos">Course Outcomes (COs)</h3>
+<p>Upon successful completion of this course, students will be able to:</p>
+<ul>
+<li><strong>CO1</strong>: Formulate, analyze, estimate, and evaluate linear time series models from first mathematical principles.</li>
+<li><strong>CO2</strong>: Mathematically characterize, detect, and model nonlinear dynamics and conditional heteroscedastic phenomena.</li>
+<li><strong>CO3</strong>: Rigorously analyze stationary and non-stationary stochastic processes using formal hypothesis testing frameworks.</li>
+<li><strong>CO4</strong>: Design, implement, and benchmark modern Machine Learning and Deep Learning architectures for temporal predictive analytics and tipping-point detection.</li>
+</ul>
+</section>
+<section id="co-po-pso-mapping" class="level3">
+<h3 class="anchored" data-anchor-id="co-po-pso-mapping">CO-PO &amp; PSO Mapping</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">CO</th>
+<th style="text-align: center;">PO1</th>
+<th style="text-align: center;">PO2</th>
+<th style="text-align: center;">PO3</th>
+<th style="text-align: center;">PO4</th>
+<th style="text-align: center;">PO5</th>
+<th style="text-align: center;">PO6</th>
+<th style="text-align: center;">PO7</th>
+<th style="text-align: center;">PO8</th>
+<th style="text-align: center;">PO9</th>
+<th style="text-align: center;">PO10</th>
+<th style="text-align: center;">PO11</th>
+<th style="text-align: center;">PO12</th>
+<th style="text-align: center;">PSO1</th>
+<th style="text-align: center;">PSO2</th>
+<th style="text-align: center;">PSO3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>CO1</strong></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>CO2</strong></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>CO3</strong></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>CO4</strong></td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">3</td>
+</tr>
+</tbody>
+</table>
+<p><em>Legend</em>: 3 = Strong Contribution, 2 = Moderate Contribution, 1 = Slight Contribution.</p>
+</section>
+<section id="evaluation-pattern" class="level3">
+<h3 class="anchored" data-anchor-id="evaluation-pattern">Evaluation Pattern</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 27%">
+<col style="width: 27%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Assessment Component</th>
+<th style="text-align: center;">Nature</th>
+<th style="text-align: center;">Weightage (%)</th>
+<th style="text-align: left;">Minimum Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Assignments</strong></td>
+<td style="text-align: center;">Internal</td>
+<td style="text-align: center;">30%</td>
+<td style="text-align: left;">Minimum 2 Comprehensive Practical Assignments</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Quizzes</strong></td>
+<td style="text-align: center;">Internal</td>
+<td style="text-align: center;">20%</td>
+<td style="text-align: left;">Minimum 2 Conceptual &amp; Analytical Quizzes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Mid-Term Examination</strong></td>
+<td style="text-align: center;">Internal</td>
+<td style="text-align: center;">20%</td>
+<td style="text-align: left;">Formal 2-hour Written &amp; Problem-Solving Exam</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Term Project / End Semester Exam</strong></td>
+<td style="text-align: center;">External</td>
+<td style="text-align: center;">30%</td>
+<td style="text-align: left;">Research-Grade Project &amp; Rigorous Theory Exam</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Total</strong></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><strong>100%</strong></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="prescribed-textbooks-reference-literature" class="level2">
+<h2 class="anchored" data-anchor-id="prescribed-textbooks-reference-literature">Prescribed Textbooks &amp; Reference Literature</h2>
+<p>This volume directly synthesizes and cites the four foundational textbooks prescribed in the curriculum:</p>
+<ol type="1">
+<li><strong>Cryer &amp; Chan (2008)</strong>: Jonathan D. Cryer and Kung-Sik Chan, <em>Time Series Analysis With Applications in R</em>, 2nd Edition, Springer <span class="citation" data-cites="cryer2008time"><a href="references.html#ref-cryer2008time" role="doc-biblioref">[1]</a></span>.</li>
+<li><strong>Shumway &amp; Stoffer (2011)</strong>: Robert H. Shumway and David S. Stoffer, <em>Time Series Analysis and Its Applications with R examples</em>, 3rd Edition, Springer <span class="citation" data-cites="shumway2011time"><a href="references.html#ref-shumway2011time" role="doc-biblioref">[2]</a></span>.</li>
+<li><strong>Box, Jenkins, Reinsel, &amp; Ljung (2016)</strong>: George E. P. Box, Gwilym M. Jenkins, Gregory C. Reinsel, and Greta M. Ljung, <em>Time Series Analysis: Forecasting and Control</em>, 5th Edition, John Wiley &amp; Sons <span class="citation" data-cites="box2016time"><a href="references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>.</li>
+<li><strong>Nielsen (2019)</strong>: Aileen Nielsen, <em>Practical Time Series Analysis: Prediction with Statistics and Machine Learning</em>, 1st Edition, O’Reilly Media <span class="citation" data-cites="nielsen2019practical"><a href="references.html#ref-nielsen2019practical" role="doc-biblioref">[4]</a></span>.</li>
+</ol>
+<hr>
+</section>
+<section id="pedagogical-structure-of-each-chapter" class="level2">
+<h2 class="anchored" data-anchor-id="pedagogical-structure-of-each-chapter">Pedagogical Structure of Each Chapter</h2>
+<p>To ensure maximum conceptual mastery and professional technical readiness, every module is structured into four pedagogical pillars:</p>
+<pre><code>┌────────────────────────────────────────────────────────┐
+│  1. Historical First Principles, Historical genesis,   │
+│      physical intuition, proofs.                       │
+├────────────────────────────────────────────────────────┤
+│  2. Mathematical Formulation &amp; Theoretical Derivations │
+│     Probability spaces, operators, stability theorems. │
+├────────────────────────────────────────────────────────┤
+│  3. Simple to Application-Level Analytical Problems    │
+│     Tier 1: Foundational, Tier 2: Parametric,          │
+│     Tier 3: Real-World Engineering Scenarios.          │
+├────────────────────────────────────────────────────────┤
+│  4. Laboratory Experimental Section (Open Datasets)    │
+│     Production-grade, runnable Python workflows, EDA,  │
+│     estimation, diagnostics, forecasting &amp; tasks.      │
+└────────────────────────────────────────────────────────┘</code></pre>
+<hr>
+</section>
+<section id="mathematical-notational-conventions" class="level2">
+<h2 class="anchored" data-anchor-id="mathematical-notational-conventions">Mathematical Notational Conventions</h2>
+<p>Throughout this text, we maintain rigorous notational consistency:</p>
+<ul>
+<li><span class="math inline">\((\Omega, \mathcal{F}, \mathbb{P})\)</span> denotes the underlying probability space.</li>
+<li><span class="math inline">\(\{X_t\}_{t \in \mathbb{Z}}\)</span> or <span class="math inline">\(\{Y_t\}_{t \in \mathbb{Z}}\)</span> denotes a discrete-time stochastic process.</li>
+<li><span class="math inline">\(\mathbb{E}[X]\)</span> denotes the mathematical expectation of random variable <span class="math inline">\(X\)</span>.</li>
+<li><span class="math inline">\(\gamma(s, t) = \mathrm{Cov}(X_s, X_t) = \mathbb{E}[(X_s - \mu_s)(X_t - \mu_t)]\)</span> denotes the autocovariance function. For weakly stationary processes, <span class="math inline">\(\gamma(h) = \mathrm{Cov}(X_t, X_{t+h})\)</span>.</li>
+<li><span class="math inline">\(\rho(h) = \frac{\gamma(h)}{\gamma(0)}\)</span> denotes the autocorrelation function (ACF) at lag <span class="math inline">\(h\)</span>.</li>
+<li><span class="math inline">\(\alpha(h)\)</span> or <span class="math inline">\(\phi_{hh}\)</span> denotes the partial autocorrelation function (PACF) at lag <span class="math inline">\(h\)</span>.</li>
+<li><span class="math inline">\(B\)</span> (or <span class="math inline">\(L\)</span>) denotes the backward shift (lag) operator, such that <span class="math inline">\(B^k X_t = X_{t-k}\)</span>.</li>
+<li><span class="math inline">\(\nabla = (1 - B)\)</span> denotes the first-difference operator: <span class="math inline">\(\nabla X_t = X_t - X_{t-1}\)</span>.</li>
+<li><span class="math inline">\(\{W_t\}\)</span> or <span class="math inline">\(\{Z_t\}\)</span> or <span class="math inline">\(\{\epsilon_t\}\)</span> denotes a white noise innovation sequence with mean zero and variance <span class="math inline">\(\sigma^2\)</span>, denoted <span class="math inline">\(WN(0, \sigma^2)\)</span> or <span class="math inline">\(i.i.d. \, \mathcal{N}(0, \sigma^2)\)</span>.</li>
+<li><span class="math inline">\(\Phi(B) = 1 - \phi_1 B - \dots - \phi_p B^p\)</span> denotes the autoregressive characteristic polynomial.</li>
+<li><span class="math inline">\(\Theta(B) = 1 + \theta_1 B + \dots + \theta_q B^q\)</span> denotes the moving average characteristic polynomial.</li>
+</ul>
+
+
+<!-- -->
+
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-cryer2008time" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">J. D. Cryer and K.-S. Chan, <em>Time series analysis: With applications in r</em>, 2nd ed. New York, NY: Springer, 2008. doi: <a href="https://doi.org/10.1007/978-0-387-75959-3">10.1007/978-0-387-75959-3</a>.</div>
+</div>
+<div id="ref-shumway2011time" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">R. H. Shumway and D. S. Stoffer, <em>Time series analysis and its applications: With r examples</em>, 3rd ed. New York, NY: Springer, 2011. doi: <a href="https://doi.org/10.1007/978-1-4419-7865-3">10.1007/978-1-4419-7865-3</a>.</div>
+</div>
+<div id="ref-box2016time" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">G. E. P. Box, G. M. Jenkins, G. C. Reinsel, and G. M. Ljung, <em>Time series analysis: Forecasting and control</em>, 5th ed. Hoboken, NJ: John Wiley &amp; Sons, 2016.</div>
+</div>
+<div id="ref-nielsen2019practical" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">A. Nielsen, <em>Practical time series analysis: Prediction with statistics and machine learning</em>, 1st ed. Sebastopol, CA: O’Reilly Media, 2019.</div>
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/amrita\.edu\/course\/22aie463-time-series-analysis");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./chapters/00_bootcamp_foundations.html" class="pagination-link" aria-label="Chapter 0: Zero-Prerequisite Foundations Bootcamp">
+        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Chapter 0: Zero-Prerequisite Foundations Bootcamp</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu"># Course Overview &amp; Syllabus Mapping {.unnumbered}</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a>Welcome to **22AIE463: Time Series Analysis**, an advanced core course in the Artificial Intelligence and Computer Science Engineering curriculum at Amrita Vishwa Vidyapeetham. </span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a>Time series analysis occupies a distinct, foundational position at the intersection of mathematical statistics, dynamical systems theory, signal processing, and machine learning. In conventional statistical learning, observations are almost universally assumed to be independent and identically distributed ($i.i.d.$). In the physical universe, however, time flows monotonically in a single direction; the past casts an enduring shadow upon the present, and the present constrains the future. When observations are temporally correlated, standard estimators collapse, standard errors evaporate into spurious precision, and regression lines mistake persistence for causality.</span>
+<span id="cb2-6"><a href="#cb2-6"></a></span>
+<span id="cb2-7"><a href="#cb2-7"></a>This coursebook is formulated from first principles, weaving rigorous mathematical derivations into an intuitive narrative strictly anchored in the prescribed curriculum textbooks <span class="co">[</span><span class="ot">@cryer2008time; @shumway2011time; @box2016time; @nielsen2019practical</span><span class="co">]</span>. Every chapter advances systematically from theoretical foundations to graduated analytical problems, culminating in comprehensive laboratory experiments utilizing real-world open datasets.</span>
+<span id="cb2-8"><a href="#cb2-8"></a></span>
+<span id="cb2-9"><a href="#cb2-9"></a>---</span>
+<span id="cb2-10"><a href="#cb2-10"></a></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="fu">## Course Information</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a></span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="ss">- </span>**Course Code**: 22AIE463</span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="ss">- </span>**Course Title**: Time Series Analysis</span>
+<span id="cb2-15"><a href="#cb2-15"></a><span class="ss">- </span>**Structure (L-T-P-C)**: 2-0-3- 3 (2 Lecture hours, 0 Tutorial hours, 3 Practical/Lab hours per week; 3 Credits)</span>
+<span id="cb2-16"><a href="#cb2-16"></a><span class="ss">- </span>**Target Audience**: B.Tech Artificial Intelligence and Data Science / Computer Science Engineering</span>
+<span id="cb2-17"><a href="#cb2-17"></a></span>
+<span id="cb2-18"><a href="#cb2-18"></a><span class="fu">### Course Objectives</span></span>
+<span id="cb2-19"><a href="#cb2-19"></a></span>
+<span id="cb2-20"><a href="#cb2-20"></a><span class="ss">- </span>Cover fundamental mathematical tools and statistical techniques required to analyze, filter, and model temporally dependent stochastic processes.</span>
+<span id="cb2-21"><a href="#cb2-21"></a><span class="ss">- </span>Establish unified theoretical foundations for both **linear** (AR, MA, ARMA, ARIMA, SARIMA, VAR) and **nonlinear** time series analysis (TAR, STAR, State-Space, ARCH/GARCH).</span>
+<span id="cb2-22"><a href="#cb2-22"></a><span class="ss">- </span>Develop advanced predictive analytics capabilities utilizing **Machine Learning** (tree ensembles, sliding window feature engineering) and **Deep Learning** (LSTM, GRU, TCN, Attention/Transformers).</span>
+<span id="cb2-23"><a href="#cb2-23"></a><span class="ss">- </span>Investigate mathematical early warning indicators and **precursors for catastrophic transitions** (bifurcations and tipping points) in complex dynamical systems.</span>
+<span id="cb2-24"><a href="#cb2-24"></a></span>
+<span id="cb2-25"><a href="#cb2-25"></a><span class="fu">### Course Outcomes (COs)</span></span>
+<span id="cb2-26"><a href="#cb2-26"></a></span>
+<span id="cb2-27"><a href="#cb2-27"></a>Upon successful completion of this course, students will be able to:</span>
+<span id="cb2-28"><a href="#cb2-28"></a></span>
+<span id="cb2-29"><a href="#cb2-29"></a><span class="ss">- </span>**CO1**: Formulate, analyze, estimate, and evaluate linear time series models from first mathematical principles.</span>
+<span id="cb2-30"><a href="#cb2-30"></a><span class="ss">- </span>**CO2**: Mathematically characterize, detect, and model nonlinear dynamics and conditional heteroscedastic phenomena.</span>
+<span id="cb2-31"><a href="#cb2-31"></a><span class="ss">- </span>**CO3**: Rigorously analyze stationary and non-stationary stochastic processes using formal hypothesis testing frameworks.</span>
+<span id="cb2-32"><a href="#cb2-32"></a><span class="ss">- </span>**CO4**: Design, implement, and benchmark modern Machine Learning and Deep Learning architectures for temporal predictive analytics and tipping-point detection.</span>
+<span id="cb2-33"><a href="#cb2-33"></a></span>
+<span id="cb2-34"><a href="#cb2-34"></a><span class="fu">### CO-PO &amp; PSO Mapping</span></span>
+<span id="cb2-35"><a href="#cb2-35"></a></span>
+<span id="cb2-36"><a href="#cb2-36"></a><span class="pp">|</span> CO <span class="pp">|</span> PO1 <span class="pp">|</span> PO2 <span class="pp">|</span> PO3 <span class="pp">|</span> PO4 <span class="pp">|</span> PO5 <span class="pp">|</span> PO6 <span class="pp">|</span> PO7 <span class="pp">|</span> PO8 <span class="pp">|</span> PO9 <span class="pp">|</span> PO10 <span class="pp">|</span> PO11 <span class="pp">|</span> PO12 <span class="pp">|</span> PSO1 <span class="pp">|</span> PSO2 <span class="pp">|</span> PSO3 <span class="pp">|</span></span>
+<span id="cb2-37"><a href="#cb2-37"></a><span class="pp">|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|</span></span>
+<span id="cb2-38"><a href="#cb2-38"></a><span class="pp">|</span> **CO1** <span class="pp">|</span> 2 <span class="pp">|</span> 3 <span class="pp">|</span> 2 <span class="pp">|</span> 2 <span class="pp">|</span> 3 <span class="pp">|</span> - <span class="pp">|</span> - <span class="pp">|</span> - <span class="pp">|</span> 1 <span class="pp">|</span> 2 <span class="pp">|</span> - <span class="pp">|</span> 2 <span class="pp">|</span> 2 <span class="pp">|</span> 1 <span class="pp">|</span> - <span class="pp">|</span></span>
+<span id="cb2-39"><a href="#cb2-39"></a><span class="pp">|</span> **CO2** <span class="pp">|</span> 2 <span class="pp">|</span> 3 <span class="pp">|</span> 2 <span class="pp">|</span> 2 <span class="pp">|</span> 3 <span class="pp">|</span> - <span class="pp">|</span> - <span class="pp">|</span> - <span class="pp">|</span> 1 <span class="pp">|</span> 2 <span class="pp">|</span> - <span class="pp">|</span> 2 <span class="pp">|</span> 2 <span class="pp">|</span> 1 <span class="pp">|</span> - <span class="pp">|</span></span>
+<span id="cb2-40"><a href="#cb2-40"></a><span class="pp">|</span> **CO3** <span class="pp">|</span> 2 <span class="pp">|</span> 3 <span class="pp">|</span> 3 <span class="pp">|</span> 2 <span class="pp">|</span> 3 <span class="pp">|</span> - <span class="pp">|</span> - <span class="pp">|</span> - <span class="pp">|</span> 1 <span class="pp">|</span> 2 <span class="pp">|</span> - <span class="pp">|</span> 2 <span class="pp">|</span> 2 <span class="pp">|</span> 1 <span class="pp">|</span> - <span class="pp">|</span></span>
+<span id="cb2-41"><a href="#cb2-41"></a><span class="pp">|</span> **CO4** <span class="pp">|</span> 2 <span class="pp">|</span> 3 <span class="pp">|</span> 3 <span class="pp">|</span> 2 <span class="pp">|</span> 3 <span class="pp">|</span> - <span class="pp">|</span> - <span class="pp">|</span> - <span class="pp">|</span> 1 <span class="pp">|</span> 2 <span class="pp">|</span> - <span class="pp">|</span> 2 <span class="pp">|</span> 2 <span class="pp">|</span> 1 <span class="pp">|</span> 3 <span class="pp">|</span></span>
+<span id="cb2-42"><a href="#cb2-42"></a></span>
+<span id="cb2-43"><a href="#cb2-43"></a>*Legend*: 3 = Strong Contribution, 2 = Moderate Contribution, 1 = Slight Contribution.</span>
+<span id="cb2-44"><a href="#cb2-44"></a></span>
+<span id="cb2-45"><a href="#cb2-45"></a><span class="fu">### Evaluation Pattern</span></span>
+<span id="cb2-46"><a href="#cb2-46"></a></span>
+<span id="cb2-47"><a href="#cb2-47"></a><span class="pp">|</span> Assessment Component <span class="pp">|</span> Nature <span class="pp">|</span> Weightage (%) <span class="pp">|</span> Minimum Requirement <span class="pp">|</span></span>
+<span id="cb2-48"><a href="#cb2-48"></a><span class="pp">|:---|:---:|:---:|:---|</span></span>
+<span id="cb2-49"><a href="#cb2-49"></a><span class="pp">|</span> **Assignments** <span class="pp">|</span> Internal <span class="pp">|</span> 30% <span class="pp">|</span> Minimum 2 Comprehensive Practical Assignments <span class="pp">|</span></span>
+<span id="cb2-50"><a href="#cb2-50"></a><span class="pp">|</span> **Quizzes** <span class="pp">|</span> Internal <span class="pp">|</span> 20% <span class="pp">|</span> Minimum 2 Conceptual &amp; Analytical Quizzes <span class="pp">|</span></span>
+<span id="cb2-51"><a href="#cb2-51"></a><span class="pp">|</span> **Mid-Term Examination** <span class="pp">|</span> Internal <span class="pp">|</span> 20% <span class="pp">|</span> Formal 2-hour Written &amp; Problem-Solving Exam <span class="pp">|</span></span>
+<span id="cb2-52"><a href="#cb2-52"></a><span class="pp">|</span> **Term Project / End Semester Exam** <span class="pp">|</span> External <span class="pp">|</span> 30% <span class="pp">|</span> Research-Grade Project &amp; Rigorous Theory Exam <span class="pp">|</span></span>
+<span id="cb2-53"><a href="#cb2-53"></a><span class="pp">|</span> **Total** | | **100%** <span class="pp">|</span> <span class="pp">|</span></span>
+<span id="cb2-54"><a href="#cb2-54"></a></span>
+<span id="cb2-55"><a href="#cb2-55"></a>---</span>
+<span id="cb2-56"><a href="#cb2-56"></a></span>
+<span id="cb2-57"><a href="#cb2-57"></a><span class="fu">## Prescribed Textbooks &amp; Reference Literature</span></span>
+<span id="cb2-58"><a href="#cb2-58"></a></span>
+<span id="cb2-59"><a href="#cb2-59"></a>This volume directly synthesizes and cites the four foundational textbooks prescribed in the curriculum:</span>
+<span id="cb2-60"><a href="#cb2-60"></a></span>
+<span id="cb2-61"><a href="#cb2-61"></a><span class="ss">1. </span>**Cryer &amp; Chan (2008)**: Jonathan D. Cryer and Kung-Sik Chan, *Time Series Analysis With Applications in R*, 2nd Edition, Springer <span class="co">[</span><span class="ot">@cryer2008time</span><span class="co">]</span>.</span>
+<span id="cb2-62"><a href="#cb2-62"></a><span class="ss">2. </span>**Shumway &amp; Stoffer (2011)**: Robert H. Shumway and David S. Stoffer, *Time Series Analysis and Its Applications with R examples*, 3rd Edition, Springer <span class="co">[</span><span class="ot">@shumway2011time</span><span class="co">]</span>.</span>
+<span id="cb2-63"><a href="#cb2-63"></a><span class="ss">3. </span>**Box, Jenkins, Reinsel, &amp; Ljung (2016)**: George E. P. Box, Gwilym M. Jenkins, Gregory C. Reinsel, and Greta M. Ljung, *Time Series Analysis: Forecasting and Control*, 5th Edition, John Wiley &amp; Sons <span class="co">[</span><span class="ot">@box2016time</span><span class="co">]</span>.</span>
+<span id="cb2-64"><a href="#cb2-64"></a><span class="ss">4. </span>**Nielsen (2019)**: Aileen Nielsen, *Practical Time Series Analysis: Prediction with Statistics and Machine Learning*, 1st Edition, O'Reilly Media <span class="co">[</span><span class="ot">@nielsen2019practical</span><span class="co">]</span>.</span>
+<span id="cb2-65"><a href="#cb2-65"></a></span>
+<span id="cb2-66"><a href="#cb2-66"></a>---</span>
+<span id="cb2-67"><a href="#cb2-67"></a></span>
+<span id="cb2-68"><a href="#cb2-68"></a><span class="fu">## Pedagogical Structure of Each Chapter</span></span>
+<span id="cb2-69"><a href="#cb2-69"></a></span>
+<span id="cb2-70"><a href="#cb2-70"></a>To ensure maximum conceptual mastery and professional technical readiness, every module is structured into four pedagogical pillars:</span>
+<span id="cb2-71"><a href="#cb2-71"></a></span>
+<span id="cb2-72"><a href="#cb2-72"></a><span class="in">```</span></span>
+<span id="cb2-73"><a href="#cb2-73"></a><span class="in">┌────────────────────────────────────────────────────────┐</span></span>
+<span id="cb2-74"><a href="#cb2-74"></a><span class="in">│  1. Historical First Principles, Historical genesis,   │</span></span>
+<span id="cb2-75"><a href="#cb2-75"></a><span class="in">│      physical intuition, proofs.                       │</span></span>
+<span id="cb2-76"><a href="#cb2-76"></a><span class="in">├────────────────────────────────────────────────────────┤</span></span>
+<span id="cb2-77"><a href="#cb2-77"></a><span class="in">│  2. Mathematical Formulation &amp; Theoretical Derivations │</span></span>
+<span id="cb2-78"><a href="#cb2-78"></a><span class="in">│     Probability spaces, operators, stability theorems. │</span></span>
+<span id="cb2-79"><a href="#cb2-79"></a><span class="in">├────────────────────────────────────────────────────────┤</span></span>
+<span id="cb2-80"><a href="#cb2-80"></a><span class="in">│  3. Simple to Application-Level Analytical Problems    │</span></span>
+<span id="cb2-81"><a href="#cb2-81"></a><span class="in">│     Tier 1: Foundational, Tier 2: Parametric,          │</span></span>
+<span id="cb2-82"><a href="#cb2-82"></a><span class="in">│     Tier 3: Real-World Engineering Scenarios.          │</span></span>
+<span id="cb2-83"><a href="#cb2-83"></a><span class="in">├────────────────────────────────────────────────────────┤</span></span>
+<span id="cb2-84"><a href="#cb2-84"></a><span class="in">│  4. Laboratory Experimental Section (Open Datasets)    │</span></span>
+<span id="cb2-85"><a href="#cb2-85"></a><span class="in">│     Production-grade, runnable Python workflows, EDA,  │</span></span>
+<span id="cb2-86"><a href="#cb2-86"></a><span class="in">│     estimation, diagnostics, forecasting &amp; tasks.      │</span></span>
+<span id="cb2-87"><a href="#cb2-87"></a><span class="in">└────────────────────────────────────────────────────────┘</span></span>
+<span id="cb2-88"><a href="#cb2-88"></a><span class="in">```</span></span>
+<span id="cb2-89"><a href="#cb2-89"></a></span>
+<span id="cb2-90"><a href="#cb2-90"></a>---</span>
+<span id="cb2-91"><a href="#cb2-91"></a></span>
+<span id="cb2-92"><a href="#cb2-92"></a><span class="fu">## Mathematical Notational Conventions</span></span>
+<span id="cb2-93"><a href="#cb2-93"></a></span>
+<span id="cb2-94"><a href="#cb2-94"></a>Throughout this text, we maintain rigorous notational consistency:</span>
+<span id="cb2-95"><a href="#cb2-95"></a></span>
+<span id="cb2-96"><a href="#cb2-96"></a><span class="ss">- </span>$(\Omega, \mathcal{F}, \mathbb{P})$ denotes the underlying probability space.</span>
+<span id="cb2-97"><a href="#cb2-97"></a><span class="ss">- </span>$<span class="sc">\{</span>X_t\}_{t \in \mathbb{Z}}$ or $\{Y_t\}_{t \in \mathbb{Z}}$ denotes a discrete-time stochastic process.</span>
+<span id="cb2-98"><a href="#cb2-98"></a><span class="ss">- </span>$\mathbb{E}<span class="co">[</span><span class="ot">X</span><span class="co">]</span>$ denotes the mathematical expectation of random variable $X$.</span>
+<span id="cb2-99"><a href="#cb2-99"></a><span class="ss">- </span>$\gamma(s, t) = \mathrm{Cov}(X_s, X_t) = \mathbb{E}[(X_s - \mu_s)(X_t - \mu_t)]$ denotes the autocovariance function. For weakly stationary processes, $\gamma(h) = \mathrm{Cov}(X_t, X_{t+h})$.</span>
+<span id="cb2-100"><a href="#cb2-100"></a><span class="ss">- </span>$\rho(h) = \frac{\gamma(h)}{\gamma(0)}$ denotes the autocorrelation function (ACF) at lag $h$.</span>
+<span id="cb2-101"><a href="#cb2-101"></a><span class="ss">- </span>$\alpha(h)$ or $\phi_{hh}$ denotes the partial autocorrelation function (PACF) at lag $h$.</span>
+<span id="cb2-102"><a href="#cb2-102"></a><span class="ss">- </span>$B$ (or $L$) denotes the backward shift (lag) operator, such that $B^k X_t = X_{t-k}$.</span>
+<span id="cb2-103"><a href="#cb2-103"></a><span class="ss">- </span>$\nabla = (1 - B)$ denotes the first-difference operator: $\nabla X_t = X_t - X_{t-1}$.</span>
+<span id="cb2-104"><a href="#cb2-104"></a><span class="ss">- </span>$<span class="sc">\{</span>W_t<span class="sc">\}</span>$ or $<span class="sc">\{</span>Z_t<span class="sc">\}</span>$ or $<span class="sc">\{</span>\epsilon_t<span class="sc">\}</span>$ denotes a white noise innovation sequence with mean zero and variance $\sigma^2$, denoted $WN(0, \sigma^2)$ or $i.i.d. \, \mathcal{N}(0, \sigma^2)$.</span>
+<span id="cb2-105"><a href="#cb2-105"></a><span class="ss">- </span>$\Phi(B) = 1 - \phi_1 B - \dots - \phi_p B^p$ denotes the autoregressive characteristic polynomial.</span>
+<span id="cb2-106"><a href="#cb2-106"></a><span class="ss">- </span>$\Theta(B) = 1 + \theta_1 B + \dots + \theta_q B^q$ denotes the moving average characteristic polynomial.</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

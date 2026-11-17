@@ -1,0 +1,406 @@
+# Unit 1: Linear Time Series, Stationarity, Ergodicity, and Classical Processes {#sec-unit1}
+
+::: {.callout-note appearance="simple"}
+### Unit 1 Curriculum Checklist
+- **Foundational Concepts**: Stochastic processes, ensemble vs. realization, mean, ACVF, ACF.
+- **Stationarity & Ergodicity**: Strict vs. Weak (wide-sense) stationarity, positive semi-definiteness, ergodicity of the mean.
+- **Correlation Structures**: Sample ACF, Bartlett's asymptotic variance, Partial Autocorrelation (PACF), Yule-Walker systems, Durbin-Levinson algorithm.
+- **Linear Processes**: Wold decomposition theorem, causality, invertibility.
+- **Classical Models**: Autoregressive (AR($p$)) and Moving Average (MA($q$)) models, characteristic polynomials, unit circle stability.
+- **Prescribed Text References**: Cryer & Chan (2008, Ch. 1–4) [@cryer2008time]; Shumway & Stoffer (2011, Ch. 1–2) [@shumway2011time]; Box et al. (2016, Ch. 2–3) [@box2016time]; Nielsen (2019, Ch. 1–2) [@nielsen2019practical].
+:::
+
+
+
+## The Illusion of Independence and the Birth of Temporal Memory
+
+In February 1926, George Udny Yule delivered a historic address before the Royal Statistical Society entitled *"Why do we sometimes get nonsense-correlations between Time-Series?"* Yule demonstrated that if you compute the ordinary Pearson correlation between two completely unrelated temporal sequences—such as the annual mortality rate in England and the proportion of Church of England marriages—you frequently obtain a correlation exceeding $0.95$, with conventional $t$-tests screaming significance at $p < 0.0001$.
+
+Why did classical statistics fail so catastrophically? Because time possesses **inertia**. Observations close together in time inherit the state of their predecessors. One year later, in 1927, the Soviet economist Eugen Slutsky published an equally startling revelation: if you take a sequence of pure, uncorrelated lottery draws (white noise) and apply consecutive moving averages, the resulting series exhibits smooth, undulating waves that mimic economic cycles—or cortical brainwaves—with uncanny fidelity. Slutsky proved that apparent rhythms arise naturally whenever random shocks are filtered through linear memory over time [@cryer2008time].
+
+Whether you are decoding **EEG voltage fluctuations** from a patient's scalp or modeling **daily equity returns** for a quantitative portfolio, your first task is always the same: measure how fast the past fades, separate true signal dynamics from random noise, and verify whether the statistical rules governing the series stay constant over time [@box2016time; @nielsen2019practical].
+
+
+
+## Stochastic Processes and Basic Statistical Moments
+
+To formalize time-ordered data, we model an observed time series not as a list of fixed numbers, but as one realization drawn from an underlying **stochastic process** [@shumway2011time].
+
+### Key Definitions & Important Terms
+
+* **Stochastic Process ($\{X_t(\omega) : t \in \mathcal{T}\}$)**: An indexed collection of random variables defined on a common probability space $(\Omega, \mathcal{F}, \mathbb{P})$. Here $\mathcal{T} = \mathbb{Z}$ denotes discrete time ticks.
+* **Sample Path / Realization ($\{x_1, x_2, \dots, x_N\}$)**: A single observed trajectory corresponding to one outcome $\omega_0 \in \Omega$ (e.g., one 5-second EEG recording or one historical S&P 500 path).
+* **Mean Function ($\mu_t$)**: The expected value at time $t$: $\mu_t = \mathbb{E}[X_t]$.
+* **Autocovariance Function ($\gamma(s, t)$)**: Measures the linear dependence between the process at time $s$ and time $t$:
+  $$\gamma(s, t) = \mathrm{Cov}(X_s, X_t) = \mathbb{E}\big[(X_s - \mu_s)(X_t - \mu_t)\big] \tag{1.1}$$
+* **Autocorrelation Function ($\rho(s, t)$)**: The scale-free correlation between $X_s$ and $X_t$:
+  $$\rho(s, t) = \frac{\gamma(s, t)}{\sqrt{\gamma(s, s)\gamma(t, t)}} \in [-1, 1] \tag{1.2}$$
+
+### First-Principles Result: Cauchy-Schwarz Bound on $\rho(s, t)$
+
+**Theorem 1.1**: For any two times $s, t$, $|\gamma(s, t)| \le \sqrt{\gamma(s, s)\gamma(t, t)}$, so $|\rho(s, t)| \le 1$.
+
+**Derivation from First Principles**:
+Let $\tilde{X}_s = X_s - \mu_s$ and $\tilde{X}_t = X_t - \mu_t$. For any real scalar $\lambda \in \mathbb{R}$, the squared random variable $(\tilde{X}_s + \lambda \tilde{X}_t)^2 \ge 0$ has non-negative expectation:
+$$g(\lambda) = \mathbb{E}\big[(\tilde{X}_s + \lambda \tilde{X}_t)^2\big] = \gamma(t, t)\lambda^2 + 2\gamma(s, t)\lambda + \gamma(s, s) \ge 0 \tag{1.3}$$
+Because this quadratic in $\lambda$ is never negative, its discriminant cannot be positive:
+$$4\gamma(s, t)^2 - 4\gamma(s, s)\gamma(t, t) \le 0 \implies \gamma(s, t)^2 \le \gamma(s, s)\gamma(t, t) \implies |\rho(s, t)| \le 1$$
+
+### Sample Problem 1.1 (Moments of a Random Walk)
+**Statement**: Let $X_t = \sum_{i=1}^t Z_i$ where $Z_i \sim WN(0, \sigma^2)$ and $t \ge 1$. Compute $\mu_t$, $\gamma(t, t)$, and $\gamma(s, t)$ for $s \le t$.
+
+**Solution**:
+
+1. $\mu_t = \sum_{i=1}^t \mathbb{E}[Z_i] = 0$.
+2. $\gamma(t, t) = \mathrm{Var}(\sum_{i=1}^t Z_i) = \sum_{i=1}^t \mathrm{Var}(Z_i) = t\sigma^2$ (variance grows linearly with time!).
+3. For $s \le t$: $\gamma(s, t) = \mathrm{Cov}(\sum_{i=1}^s Z_i, \sum_{j=1}^t Z_j) = \sum_{i=1}^s \mathrm{Var}(Z_i) = s\sigma^2 = \min(s, t)\sigma^2$.
+
+::: {.callout-tip}
+#### Key Takeaway:
+A stochastic process generalizes a single random variable to an infinite sequence of correlated variables. Notice in Problem 1.1 that a Random Walk's variance $t\sigma^2$ grows with $t$, which means its rules are not time-invariant.
+:::
+
+
+
+## Stationarity: Strict vs. Weak (Time-Invariance)
+
+If the mean $\mu_t$ and covariance $\gamma(s, t)$ shifted arbitrarily at every tick, a single historical series of length $N$ would never be enough to estimate them. **Stationarity** imposes time-invariance so historical patterns can generalize to the future [@box2016time].
+
+### Key Definitions & Important Terms
+
+::: {.callout-note icon="false"}
+#### Definition 1.1: Strict Stationarity
+A process $\{X_t\}_{t \in \mathbb{Z}}$ is **strictly stationary** if all joint finite-dimensional distributions are invariant under arbitrary calendar shifts $h \in \mathbb{Z}$:
+$$F_{t_1, \dots, t_k}(c_1, \dots, c_k) = F_{t_1+h, \dots, t_k+h}(c_1, \dots, c_k) \tag{1.4}$$
+:::
+
+::: {.callout-note icon="false"}
+#### Definition 1.2: Weak (Second-Order) Stationarity
+A process $\{X_t\}_{t \in \mathbb{Z}}$ is **weakly stationary** (covariance stationary) if:
+
+1. $\mathbb{E}[X_t^2] < \infty$ for all $t \in \mathbb{Z}$,
+2. $\mathbb{E}[X_t] = \mu$ (constant across all $t$), and
+3. $\mathrm{Cov}(X_t, X_{t+h}) = \gamma(h)$ depends **only** on the lag separation $h$, not on $t$.
+:::
+
+For weakly stationary processes, we write the ACF with a single lag argument $h$:
+$$\rho(h) = \frac{\gamma(h)}{\gamma(0)} \tag{1.5}$$
+
+### First-Principles Properties of $\gamma(h)$
+
+**Theorem 1.2**: A weakly stationary ACVF $\gamma(h)$ satisfies:
+
+1. $\gamma(0) = \mathrm{Var}(X_t) \ge 0$,
+2. $\gamma(h) = \gamma(-h)$ (even symmetry), and
+3. **Positive Semi-Definiteness**: For any $n \ge 1$ and constants $a_1, \dots, a_n \in \mathbb{R}$, $\sum_{i=1}^n \sum_{j=1}^n a_i a_j \gamma(t_i - t_j) \ge 0$.
+
+**Derivation from First Principles**:
+Symmetry follows directly from $\gamma(h) = \mathrm{Cov}(X_t, X_{t+h}) = \mathrm{Cov}(X_{t+h}, X_t) = \gamma(-h)$ (setting $s = t+h$). For positive semi-definiteness, define the linear combination $W = \sum_{i=1}^n a_i X_{t_i}$. Since variance is non-negative and covariance is bilinear:
+$$0 \le \mathrm{Var}(W) = \mathrm{Cov}\left(\sum_{i=1}^n a_i X_{t_i}, \sum_{j=1}^n a_j X_{t_j}\right) = \sum_{i=1}^n \sum_{j=1}^n a_i a_j \gamma(t_i - t_j) \tag{1.6}$$
+
+### Sample Problem 1.2 (Testing Weak Stationarity)
+**Statement**: Let $Z_t \sim WN(0, \sigma^2)$. Test whether $Y_t = 0.3 t + Z_t$ and $W_t = (-1)^t Z_t$ are weakly stationary.
+
+**Solution**:
+
+- For $Y_t$: $\mathbb{E}[Y_t] = 0.3 t$ depends on $t$ $\implies$ **Non-stationary**.
+- For $W_t$: $\mathbb{E}[W_t] = (-1)^t \cdot 0 = 0$ (constant). Covariance: $\mathrm{Cov}(W_t, W_{t+h}) = (-1)^{2t+h}\mathrm{Cov}(Z_t, Z_{t+h})$, which equals $\sigma^2$ if $h=0$ and $0$ if $h \neq 0$. Since both moments are independent of $t$, $W_t$ is **weakly stationary**.
+
+::: {.callout-tip}
+#### Key Takeaway:
+Weak stationarity requires three things: finite variance, constant mean, and lag-only autocovariance. For Gaussian processes, weak stationarity automatically implies strict stationarity [@shumway2011time].
+:::
+
+
+## Ergodicity: Bridging Ensemble Space and Historical Time
+
+In clinical trials, we average across 500 patients. In EEG or financial analysis, we observe **one** continuous historical trajectory $\{x_1, \dots, x_N\}$. **Ergodicity** tells us when a *time average* $\bar{X}_N = \frac{1}{N}\sum_{t=1}^N X_t$ converges to the *ensemble expectation* $\mu$ [@cryer2008time].
+
+### Key Definitions & Important Terms
+
+* **Sample Mean ($\bar{X}_N$)**: $\bar{X}_N = \frac{1}{N}\sum_{t=1}^N X_t$.
+* **Ergodic for the Mean**: A weakly stationary process is ergodic for the mean if $\lim_{N\to\infty} \mathbb{E}[(\bar{X}_N - \mu)^2] = 0$ (mean-square convergence).
+
+### First-Principles Derivation: Ergodicity of the Mean
+
+**Theorem 1.3**: A weakly stationary process $\{X_t\}$ with autocovariance $\gamma(h)$ is ergodic for the mean if and only if $\lim_{N\to\infty} \frac{1}{N}\sum_{h=0}^{N-1}\gamma(h) = 0$. A sufficient condition is $\sum_{h=0}^\infty |\gamma(h)| < \infty$.
+
+**Derivation from First Principles**:
+First, $\mathbb{E}[\bar{X}_N] = \frac{1}{N}\sum_{t=1}^N \mu = \mu$, so $\mathbb{E}[(\bar{X}_N - \mu)^2] = \mathrm{Var}(\bar{X}_N)$. Applying bilinearity of covariance:
+$$\mathrm{Var}(\bar{X}_N) = \frac{1}{N^2} \sum_{s=1}^N \sum_{t=1}^N \mathrm{Cov}(X_s, X_t) = \frac{1}{N^2} \sum_{s=1}^N \sum_{t=1}^N \gamma(s - t) \tag{1.7}$$
+Group pairs $(s, t)$ by their lag $h = s - t \in \{-(N-1), \dots, N-1\}$. For each fixed $h$, there are exactly $N - |h|$ pairs satisfying $s - t = h$. Using $\gamma(h) = \gamma(-h)$:
+$$\mathrm{Var}(\bar{X}_N) = \frac{1}{N} \sum_{h=-(N-1)}^{N-1} \left(1 - \frac{|h|}{N}\right)\gamma(h) = \frac{\gamma(0)}{N} + \frac{2}{N}\sum_{h=1}^{N-1}\left(1 - \frac{h}{N}\right)\gamma(h) \tag{1.8}$$
+If $\sum_{h=0}^\infty |\gamma(h)| < \infty$, then $|\mathrm{Var}(\bar{X}_N)| \le \frac{1}{N}\sum_{h=-\infty}^\infty |\gamma(h)| \to 0$ as $N \to \infty$.
+
+### Sample Problem 1.3 (Multi-Period Variance Inflation)
+**Statement**: Daily portfolio returns follow $r_t$ with $\gamma(0) = 0.0001$ and $\gamma(1) = 0.000025$ ($\gamma(h)=0$ for $h \ge 2$). Compute $\mathrm{Var}(\bar{r}_2)$ using Eq. (1.8) and compare with the naive $i.i.d.$ formula $\gamma(0)/2$.
+
+**Solution**:
+By Eq. (1.8) with $N = 2$:
+$$\mathrm{Var}(\bar{r}_2) = \frac{\gamma(0)}{2} + \frac{2}{2}\left(1 - \frac{1}{2}\right)\gamma(1) = \frac{0.0001}{2} + 0.5(0.000025) = 0.00005 + 0.0000125 = 0.0000625$$
+The naive $i.i.d.$ formula gives $0.00005$, underestimating variance by $25\%$!
+
+::: {.callout-tip}
+#### Key Takeaway:
+Ergodicity holds when memory decays fast enough ($\sum |\gamma(h)| < \infty$) so distant time blocks act nearly independently. Moreover, Equation (1.8) warns us that positive autocorrelation inflates the variance of averages and multi-day portfolio returns.
+:::
+
+
+## Sample ACF, Bartlett's Bounds, and PACF
+
+In practice, we never observe $\gamma(h)$ directly; we estimate it from a finite sample $\{x_1, \dots, x_N\}$ [@box2016time; @shumway2011time].
+
+### Key Definitions & Important Terms
+
+* **Sample ACVF ($\hat{\gamma}(h)$)**: $\hat{\gamma}(h) = \frac{1}{N}\sum_{t=1}^{N-h} (x_t - \bar{x})(x_{t+h} - \bar{x})$. (Dividing by $N$ ensures the sample covariance matrix remains positive semi-definite.)
+* **Sample ACF ($\hat{\rho}(h)$)**: $\hat{\rho}(h) = \frac{\hat{\gamma}(h)}{\hat{\gamma}(0)}$.
+* **Partial Autocorrelation Function (PACF, $\phi_{hh}$)**: The *direct* correlation between $X_t$ and $X_{t-h}$ after linearly projecting out the intermediate variables $\{X_{t-1}, \dots, X_{t-h+1}\}$:
+  $$\phi_{hh} = \mathrm{Corr}\Big(X_t - \mathcal{P}_{\mathcal{M}_1^{h-1}} X_t, \; X_{t-h} - \mathcal{P}_{\mathcal{M}_1^{h-1}} X_{t-h}\Big) \tag{1.9}$$
+
+### First-Principles Results: Bartlett's Bounds & Yule-Walker System
+
+1. **Bartlett's White Noise Asymptotic Variance**: For $Z_t \sim WN(0, \sigma^2)$ and large $N$, $\mathrm{Var}(\hat{\rho}(h)) \approx \frac{1}{N}$ for all $h \ge 1$ [@shumway2011time]. This gives the **95% white noise band**:
+   $$\pm \frac{1.96}{\sqrt{N}} \tag{1.10}$$
+2. **Yule-Walker Derivation**: Regress $X_t = \phi_{h1} X_{t-1} + \dots + \phi_{hh} X_{t-h} + \epsilon_t$, where $\epsilon_t$ is orthogonal to $X_{t-1}, \dots, X_{t-h}$. Multiplying both sides by $X_{t-k}$ ($k = 1, \dots, h$), taking expectations, and dividing by $\gamma(0)$ yields:
+   $$\rho(k) = \sum_{j=1}^h \phi_{hj} \rho(k - j), \quad k = 1, \dots, h \tag{1.11}$$
+   In matrix form, $\mathbf{R}_h \boldsymbol{\phi}_h = \boldsymbol{\rho}_h$, whose final entry $\phi_{hh}$ is the PACF at lag $h$.
+3. **Durbin-Levinson Recursion**: Solves Eq. (1.11) in $\mathcal{O}(h^2)$ operations starting from $\phi_{11} = \rho(1)$:
+   $$\phi_{hh} = \frac{\rho(h) - \sum_{j=1}^{h-1} \phi_{h-1,j}\rho(h-j)}{1 - \sum_{j=1}^{h-1} \phi_{h-1,j}\rho(j)}, \qquad \phi_{hj} = \phi_{h-1,j} - \phi_{hh}\phi_{h-1,h-j} \tag{1.12}$$
+
+### Sample Problem 1.4 (Manual Sample ACF & Bartlett Test)
+**Statement**: For the 5-point demeaned series $x = \{2, 1, -1, -2, 0\}$, compute $\hat{\gamma}(0)$, $\hat{\gamma}(1)$, and $\hat{\rho}(1)$ by hand.
+
+**Solution**:
+$\bar{x} = 0$. $\hat{\gamma}(0) = \frac{1}{5}(4 + 1 + 1 + 4 + 0) = 2.0$. $\hat{\gamma}(1) = \frac{1}{5}[(2)(1) + (1)(-1) + (-1)(-2) + (-2)(0)] = \frac{3}{5} = 0.6$. Hence $\hat{\rho}(1) = \frac{0.6}{2.0} = 0.30$.
+
+::: {.callout-tip}
+#### Key Takeaway:
+The ACF measures **total** correlation (direct + indirect), whereas the PACF isolates **direct** lag-$h$ dependence. Bartlett's $\pm 1.96/\sqrt{N}$ bands tell us whether sample spikes are statistically distinguishable from pure white noise.
+:::
+
+
+
+## Wold Decomposition and Linear Processes
+
+### Key Definitions & Important Terms
+
+* **General Linear Process**: $X_t = \mu + \sum_{j=0}^\infty \psi_j Z_{t-j}$ with $\sum_{j=0}^\infty \psi_j^2 < \infty$.
+* **Purely Indeterministic vs. Deterministic**: A process is purely indeterministic if its distant past carries zero predictive power ($\lim_{m\to\infty}\mathrm{Var}(\mathbb{E}[X_t|\mathcal{M}_{-\infty}^{t-m}]) = 0$).
+
+### Theorem 1.4: Wold Decomposition Theorem (1938)
+Any zero-mean weakly stationary process $\{X_t\}$ admits a unique orthogonal decomposition [@box2016time; @cryer2008time]:
+$$X_t = \sum_{j=0}^\infty \psi_j Z_{t-j} + V_t, \quad \psi_0 = 1, \quad \sum_{j=0}^\infty \psi_j^2 < \infty \tag{1.13}$$
+where $Z_t = X_t - \mathcal{P}_{\mathcal{M}_{-\infty}^{t-1}} X_t \sim WN(0, \sigma^2)$ is the one-step innovation, $V_t$ is deterministic ($\mathcal{P}_{\mathcal{M}_{-\infty}^{t-1}} V_t = V_t$), and $\mathrm{Cov}(Z_s, V_t) = 0$ for all $s, t$.
+
+::: {.callout-tip}
+#### Key Takeaway:
+Wold's theorem guarantees that every regular stationary time series—from EEG rhythms to stationary asset returns—can be represented as a linear filter of white noise shocks.
+:::
+
+
+## Autoregressive Models: AR($p$)
+
+An **AR($p$)** process models $X_t$ as a linear combination of its past $p$ values plus a fresh shock $Z_t \sim WN(0, \sigma^2)$ [@box2016time]:
+$$X_t = \phi_1 X_{t-1} + \dots + \phi_p X_{t-p} + Z_t \iff \Phi(B) X_t = Z_t \tag{1.14}$$
+where $\Phi(B) = 1 - \phi_1 B - \dots - \phi_p B^p$ is the **autoregressive characteristic polynomial**.
+
+### First-Principles Derivation: Moments, ACF, and PACF of AR(1)
+
+Consider $X_t = \phi X_{t-1} + Z_t$ with $|\phi| < 1$. From Chapter 0 (Eq. 0.7), $X_t = \sum_{j=0}^\infty \phi^j Z_{t-j}$.
+1. **Mean**: $\mathbb{E}[X_t] = \sum_{j=0}^\infty \phi^j \mathbb{E}[Z_{t-j}] = 0$.
+2. **Variance**: Since $Z_{t-j}$ are uncorrelated,
+   $$\gamma(0) = \mathrm{Var}\left(\sum_{j=0}^\infty \phi^j Z_{t-j}\right) = \sum_{j=0}^\infty \phi^{2j}\sigma^2 = \frac{\sigma^2}{1 - \phi^2} \tag{1.15}$$
+3. **ACF**: Multiply $X_t = \phi X_{t-1} + Z_t$ by $X_{t-h}$ ($h \ge 1$) and take expectations. Since $Z_t$ is uncorrelated with $X_{t-h}$:
+   $$\gamma(h) = \phi\gamma(h-1) \implies \gamma(h) = \phi^h \gamma(0) \implies \rho(h) = \phi^h \tag{1.16}$$
+4. **PACF**: By Eq. (1.11), $\phi_{11} = \rho(1) = \phi$. For $h = 2$, $\phi_{22} = \frac{\rho(2) - \rho(1)^2}{1 - \rho(1)^2} = \frac{\phi^2 - \phi^2}{1 - \phi^2} = 0$. By induction, $\phi_{hh} = 0$ for all $h \ge 2$.
+
+### Theorem 1.5: Causality Condition for AR($p$)
+An AR($p$) process $\Phi(B)X_t = Z_t$ is **causal** ($X_t = \sum_{j=0}^\infty \psi_j Z_{t-j}$ with $\sum |\psi_j| < \infty$) if and only if all roots of $\Phi(z) = 0$ lie strictly **outside the unit circle** ($|z| > 1$) [@cryer2008time; @box2016time].
+
+### Sample Problem 1.5 (AR(2) Causality & Yule-Walker)
+**Statement**: For $X_t = 0.7 X_{t-1} - 0.1 X_{t-2} + Z_t$ ($\sigma^2 = 1.44$), verify causality and find $\rho(1), \rho(2), \gamma(0)$.
+
+**Solution**:
+$\Phi(z) = 1 - 0.7z + 0.1z^2 = (1 - 0.5z)(1 - 0.2z) = 0 \implies z_1 = 2, z_2 = 5$ (both $|z_i| > 1$, **causal**).
+Yule-Walker: $\rho(1) = 0.7 - 0.1\rho(1) \implies \rho(1) = 0.7/1.1 \approx 0.6364$; $\rho(2) = 0.7(0.6364) - 0.1 \approx 0.3455$.
+Variance: $\gamma(0)[1 - 0.7\rho(1) + 0.1\rho(2)] = 1.44 \implies \gamma(0) \approx 2.4448$.
+
+::: {.callout-tip}
+#### Key Takeaway:
+An **AR($p$)** process has infinite shock memory: its **ACF tails off** (exponentially or as a damped sine wave), while its **PACF cuts off sharply after lag $p$**.
+:::
+
+
+## Moving Average Models: MA($q$)
+
+An **MA($q$)** process expresses $X_t$ as a *finite* linear combination of current and past white noise shocks [@box2016time]:
+$$X_t = Z_t + \theta_1 Z_{t-1} + \dots + \theta_q Z_{t-q} = \Theta(B) Z_t \tag{1.17}$$
+
+### First-Principles Derivation: Moments & Invertibility of MA(1)
+
+Consider $X_t = Z_t + \theta Z_{t-1}$ with $Z_t \sim WN(0, \sigma^2)$.
+1. **Mean & Variance**: $\mathbb{E}[X_t] = 0$, and $\gamma(0) = \mathrm{Var}(Z_t) + \theta^2\mathrm{Var}(Z_{t-1}) = \sigma^2(1 + \theta^2)$.
+2. **Autocovariance & ACF**:
+   $$\gamma(1) = \mathbb{E}[(Z_t + \theta Z_{t-1})(Z_{t-1} + \theta Z_{t-2})] = \theta \sigma^2, \qquad \gamma(h) = 0 \quad (|h| \ge 2) \tag{1.18}$$
+   $$\rho(1) = \frac{\theta}{1 + \theta^2} \in [-0.5, 0.5], \qquad \rho(h) = 0 \quad (|h| \ge 2) \tag{1.19}$$
+3. **Invertibility**: Notice that $\theta$ and $1/\theta$ yield the exact same $\rho(1)$. To uniquely recover shocks $Z_t$ from observed data via $Z_t = (1 + \theta B)^{-1} X_t = \sum_{j=0}^\infty (-\theta)^j X_{t-j}$ with decaying weights, we require $|\theta| < 1$. In general, an MA($q$) model is **invertible** if and only if all roots of $\Theta(z) = 0$ satisfy $|z| > 1$ [@shumway2011time].
+
+### Sample Problem 1.6 (MA(1) Identifiability)
+**Statement**: Compare Model A ($X_t = Z_t + 2.5 Z_{t-1}$, $\sigma_Z^2 = 0.16$) and Model B ($\tilde{X}_t = E_t + 0.4 E_{t-1}$, $\sigma_E^2 = 1.00$).
+
+**Solution**:
+Both yield $\gamma(0) = 1.16$, $\gamma(1) = 0.40$, and $\gamma(h) = 0$ ($|h|\ge 2$). However, Model A has root $z = -0.4$ ($|z| < 1$, **non-invertible**), while Model B has root $z = -2.5$ ($|z| > 1$, **invertible**). Only Model B is valid for forecasting.
+
+::: {.callout-tip}
+#### Key Takeaway:
+An **MA($q$)** process has finite shock memory: its **ACF cuts off sharply after lag $q$**, while its **PACF tails off**. Always select the **invertible** representation ($|z| > 1$).
+:::
+
+
+## 3-Tier Graduated Problem Ladder (Beginner to Domain Mastery)
+
+### Tier 1: By-Hand Intuition
+* **Problem 1.7 (Practice)**: Compute $\bar{x}$, $\hat{\gamma}(0)$, $\hat{\gamma}(1)$, and $\hat{\rho}(1)$ by hand for $x = \{4, 2, 0, -2, -4\}$. *(Answer: $\bar{x}=0$, $\hat{\gamma}(0)=8.0$, $\hat{\gamma}(1)=4.0$, $\hat{\rho}(1)=0.50$.)*
+* **Problem 1.8 (Practice)**: For $X_t = Z_t - 0.6 Z_{t-1}$ with $Z_t \sim WN(0, 2.5)$, compute $\gamma(0)$, $\gamma(1)$, $\rho(1)$, $\rho(2)$, and verify invertibility. *(Answer: $\gamma(0)=3.4$, $\gamma(1)=-1.5$, $\rho(1)\approx -0.441$, $\rho(2)=0$; invertible since $|z|=1.67 > 1$.)*
+
+### Tier 2: Analytical & Exam-Style
+* **Problem 1.9 (Worked — Signal-Plus-Noise Durbin-Levinson)**: An EEG electrode records $X_t = S_t + V_t$, where $S_t = 0.8 S_{t-1} + W_t$ ($\sigma_W^2 = 0.36$) and independent sensor noise $V_t \sim WN(0, 0.64)$. Compute $\rho_X(1), \rho_X(2)$, and $\phi_{22}$.
+  *Solution*: $\gamma_S(0) = \frac{0.36}{1 - 0.64} = 1.00$, so $\gamma_X(0) = 1.00 + 0.64 = 1.64$, while $\gamma_X(h) = \gamma_S(h) = 0.8^h$ for $h \ge 1$. Thus $\rho_X(1) = \frac{0.80}{1.64} \approx 0.4878$ and $\rho_X(2) = \frac{0.64}{1.64} \approx 0.3902$. By Eq. (1.12):
+  $$\phi_{22} = \frac{0.3902 - (0.4878)^2}{1 - (0.4878)^2} = \frac{0.1522}{0.7620} \approx 0.1997 \neq 0$$
+  Adding measurement noise turns a pure AR(1) into an ARMA(1,1) whose PACF no longer cuts off at lag 1.
+
+### Tier 3: Domain Case Studies (EEG Signals & Financial Analytics)
+
+#### Problem 1.10: EEG Alpha-Wave Resonance via AR(2) Complex Roots (Biomedical — Worked)
+**Statement**: A resting-state EEG segment sampled at $f_s = 100\text{ Hz}$ follows $X_t = 1.458 X_{t-1} - 0.810 X_{t-2} + Z_t$. Verify stationarity and compute the dominant frequency in Hz.
+
+**Solution**:
+
+1. Characteristic polynomial: $\Phi(z) = 1 - 1.458z + 0.810z^2 = 0$. Here $\phi_1 = 1.458, \phi_2 = -0.810$.
+2. Root modulus (Section 0.5): $|z| = 1/\sqrt{-\phi_2} = 1/\sqrt{0.810} = 1/0.9 \approx 1.111 > 1$ (**stationary**).
+3. Frequency (Eq. 0.8–0.9): $\cos\theta = \frac{1.458}{2\sqrt{0.810}} = 0.810 \implies \theta \approx 0.6266\text{ rad}$, so $f = \frac{100 \times 0.6266}{2\pi} \approx 9.97\text{ Hz}$ (classic **$10\text{ Hz}$ alpha rhythm**!).
+
+#### Problem 1.11: Testing Weak-Form Market Efficiency with Bartlett Bounds (Finance — Worked)
+**Statement**: An analyst observes sample ACF values $\hat{\rho}(1) = 0.095$, $\hat{\rho}(2) = -0.040$, $\hat{\rho}(3) = 0.025$ from $N = 625$ daily log returns. Test against white noise at the 5% level.
+
+**Solution**:
+Bartlett's 95% bound (Eq. 1.10) is $\pm \frac{1.96}{\sqrt{625}} = \pm 0.0784$. Because $|\hat{\rho}(1)| = 0.095 > 0.0784$, lag-1 autocorrelation is statistically significant, rejecting pure white noise at lag 1.
+
+#### Problem 1.12: Portfolio Variance Inflation (Practice)
+**Statement**: Daily fund returns follow $r_t = 0.25 r_{t-1} + Z_t$ with $\gamma(0) = 0.0001$. Compute $\mathrm{Var}(r_1 + r_2)$ and compare with $2\gamma(0)$. *(Answer: $0.00025$ vs. naive $0.00020$ — 25% higher.)*
+
+
+## Dual-Track Laboratory Experimental Section
+
+::: {.callout-note}
+### Dual-Track Lab Objectives (CO1 Focus)
+- **Track A (Biomedical / EEG Signal Analysis)**: Check epoch stationarity, plot sample ACF/PACF, fit AR($p$), and extract the dominant neural oscillation frequency from characteristic roots.
+- **Track B (Financial & Portfolio Analytics)**: Transform asset levels into log returns, test predictability via Bartlett's 95% bounds, compute autocorrelation-adjusted portfolio variance, and benchmark AR(1) against a random-walk mean.
+:::
+
+### Lab Track A: EEG Signal Spectral & AR($p$) Modeling
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+from statsmodels.tsa.ar_model import AutoReg
+
+fs = 100  # 100 Hz sampling rate
+t = np.arange(0, 5.0, 1/fs)
+np.random.seed(42)
+
+# Resting-state eyes-closed EEG (10 Hz alpha + 22 Hz beta + colored noise)
+alpha_wave = 15.0 * np.sin(2 * np.pi * 10.0 * t + 0.3)
+beta_wave  =  4.0 * np.sin(2 * np.pi * 22.0 * t)
+bg_noise = np.zeros(len(t))
+eps = np.random.normal(0, 3.5, len(t))
+for i in range(1, len(t)):
+    bg_noise[i] = 0.7 * bg_noise[i-1] + eps[i]
+
+eeg_series = pd.Series(alpha_wave + beta_wave + bg_noise, index=pd.Index(t, name="Time (s)"))
+
+mid = len(eeg_series) // 2
+print("--- Track A: EEG Epoch Stationarity Check ---")
+print(f"First Half  -> Mean: {eeg_series.iloc[:mid].mean():.2f} uV, Std: {eeg_series.iloc[:mid].std():.2f} uV")
+print(f"Second Half -> Mean: {eeg_series.iloc[mid:].mean():.2f} uV, Std: {eeg_series.iloc[mid:].std():.2f} uV")
+
+fig, axes = plt.subplots(3, 1, figsize=(11, 9))
+axes[0].plot(eeg_series.index, eeg_series.values, color="#0f766e", lw=1.1)
+axes[0].set_title("Resting-State EEG Trace (100 Hz Sampling)")
+axes[0].set_ylabel("Amplitude (uV)")
+axes[0].grid(True, alpha=0.3)
+
+sm.graphics.tsa.plot_acf(eeg_series, lags=40, ax=axes[1], title="EEG Sample ACF")
+sm.graphics.tsa.plot_pacf(eeg_series, lags=40, ax=axes[2], method="yule_walker", title="EEG Sample PACF")
+plt.tight_layout()
+plt.show()
+
+ar2_eeg = AutoReg(eeg_series.values, lags=2, old_names=False).fit()
+phi1, phi2 = ar2_eeg.params[1], ar2_eeg.params[2]
+roots = np.roots([-phi2, -phi1, 1.0])
+print(f"\nAR(2): phi1={phi1:.4f}, phi2={phi2:.4f} | Root Moduli: {np.abs(roots)}")
+if np.iscomplexobj(roots):
+    dom_freq = fs * np.abs(np.angle(roots[0])) / (2 * np.pi)
+    print(f"Extracted Dominant EEG Frequency: {dom_freq:.2f} Hz")
+```
+
+### Lab Track B: Financial Return Stationarity & Portfolio Risk Scaling
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+from statsmodels.tsa.ar_model import AutoReg
+from statsmodels.tsa.stattools import acf
+
+macro = sm.datasets.macrodata.load_pandas().data
+price_level = pd.Series(macro["realgdp"].values,
+                        index=pd.period_range("1959Q1", periods=len(macro), freq="Q").to_timestamp())
+log_returns = np.log(price_level / price_level.shift(1)).dropna()
+
+fig, axes = plt.subplots(2, 2, figsize=(12, 7))
+axes[0, 0].plot(price_level, color="#1e3a8a")
+axes[0, 0].set_title("Raw Index Level (Non-Stationary)")
+axes[0, 1].plot(log_returns, color="#c2410c")
+axes[0, 1].axhline(log_returns.mean(), color="black", ls="--", lw=0.8)
+axes[0, 1].set_title("Log Returns (Approximately Stationary)")
+sm.graphics.tsa.plot_acf(price_level, lags=20, ax=axes[1, 0], title="ACF of Raw Level")
+sm.graphics.tsa.plot_acf(log_returns, lags=20, ax=axes[1, 1], title="ACF of Log Returns (Bartlett Bounds)")
+plt.tight_layout()
+plt.show()
+
+acf_vals = acf(log_returns, nlags=5)
+K = 4
+naive_var = K * log_returns.var()
+corr_factor = 1 + 2 * sum((1 - h / K) * acf_vals[h] for h in range(1, K))
+print(f"Lag-1 ACF: {acf_vals[1]:.4f} | Portfolio Variance Inflation Factor (K={K}): {corr_factor:.3f}x")
+
+split = int(len(log_returns) * 0.8)
+train_r, test_r = log_returns.iloc[:split], log_returns.iloc[split:]
+ar1_fin = AutoReg(train_r.values, lags=1, old_names=False).fit()
+pred_ar1 = ar1_fin.predict(start=len(train_r), end=len(log_returns) - 1)
+pred_naive = np.repeat(train_r.mean(), len(test_r))
+print(f"Out-of-Sample RMSE -> AR(1): {np.sqrt(np.mean((test_r.values - pred_ar1)**2)):.5f} | Mean Baseline: {np.sqrt(np.mean((test_r.values - pred_naive)**2)):.5f}")
+```
+
+
+## Summary of Concepts
+
+* **Stationarity**: Weak stationarity requires finite variance, constant mean, and lag-only autocovariance $\gamma(h)$. It ensures historical patterns generalize across time.
+* **Ergodicity**: Guarantees that time averages ($\bar{X}_N$) converge to ensemble expectations ($\mu$) when $\sum |\gamma(h)| < \infty$, and exposes how positive autocorrelation inflates multi-period portfolio risk.
+* **ACF vs. PACF**: ACF measures total linear dependence and cuts off after lag $q$ for MA($q$); PACF removes intermediate lags via Yule-Walker/Durbin-Levinson and cuts off after lag $p$ for AR($p$).
+* **Wold Decomposition**: Every regular stationary process is an infinite linear filter of white noise shocks.
+* **Causality & Invertibility**: Both require all roots of $\Phi(z)=0$ (for AR) and $\Theta(z)=0$ (for MA) to lie strictly outside the unit circle ($|z| > 1$).
+
+::: {.callout-tip}
+### Prescribed Textbook Cross-Walk (Unit 1)
+| Concept | Cryer & Chan (2008) | Shumway & Stoffer (2011) | Box et al. (2016) | Nielsen (2019) |
+|:---|:---|:---|:---|:---|
+| Stationarity, ACVF, ACF | Ch. 2.1–2.3 | Ch. 1.3–1.4 | Ch. 2.1 | Ch. 2, Ch. 3 |
+| Ergodicity & Sample ACF Bounds | Ch. 6.1 | Ch. 1.5 | Ch. 2.1.6 | Ch. 3 |
+| PACF & Durbin-Levinson | Ch. 6.2 | Ch. 3.2–3.3 | Ch. 3.2 | Ch. 3 |
+| Wold Decomposition, AR($p$), MA($q$) | Ch. 4.1–4.3 | Ch. 3.1–3.2 | Ch. 3.1–3.3 | Ch. 6 |
+:::

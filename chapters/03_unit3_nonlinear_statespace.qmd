@@ -1,0 +1,227 @@
+# Unit 3: Nonlinear Dynamics, Formal Hypothesis Testing, and State-Space Models {#sec-unit3}
+
+::: {.callout-note appearance="simple"}
+### Unit 3 Curriculum Checklist
+- **Nonlinear Time Series**: Time irreversibility, asymmetric limit cycles, Threshold Autoregressive (SETAR), Smooth Transition (STAR).
+- **Formal Stationarity Tests**: Unit roots, Augmented Dickey-Fuller (ADF) non-standard distribution, Phillips-Perron (PP), KPSS test, confirmatory decision matrix.
+- **Formal Nonlinearity Tests**: McLeod-Li squared-residual test, Keenan/Tsay quadratic tests, BDS chaos test.
+- **State-Space Models & Kalman Filter**: Latent state vs. measurement equations, first-principles derivation of the Kalman Filter (prediction, innovation, optimal Kalman gain $\mathbf{K}_t$, update), RTS smoothing.
+- **Prescribed Text References**: Cryer & Chan (2008, Ch. 13–15) [@cryer2008time]; Shumway & Stoffer (2011, Ch. 6) [@shumway2011time]; Box et al. (2016, Ch. 11–12) [@box2016time]; Nielsen (2019, Ch. 6–7) [@nielsen2019practical]; Kalman (1960) [@kalman1960new]; Tong (1990) [@tong1990non]; Dickey & Fuller (1979) [@dickey1979distribution]; Kwiatkowski et al. (1992) [@kwiatkowski1992testing].
+:::
+
+
+## Nonlinear Asymmetry and Apollo's Navigation Filter
+
+Every stationary Gaussian linear model is *time-reversible*: if you play an AR(2) trajectory backward in time, its statistical moments look identical [@cryer2008time]. Yet real-world systems are fiercely asymmetric. Stock markets climb slowly over years of bull runs and crash vertically in weeks; epileptic EEG spikes rise abruptly and decay slowly; predator-prey populations (like Howell Tong's famous Canadian Lynx data) build gradually and collapse suddenly [@tong1990non]. In 1980, Tong broke the linear barrier with *Threshold Autoregressive (TAR)* models, allowing system dynamics to switch regimes across physical thresholds.
+
+At the same time, Rudolf Kalman (1960) revolutionized tracking by separating the *unobserved true physical state* (a spacecraft's orbit, a patient's true cortical potential, or a stock's latent beta) from *noisy sensor measurements* [@kalman1960new; @shumway2011time]. Embedded in the Apollo Guidance Computer, the Kalman filter remains the gold standard for real-time filtering and smoothing.
+
+
+
+## Nonlinear Time Series: SETAR and STAR
+
+### Key Definitions & Important Terms
+
+* **Time Irreversibility**: Statistical asymmetry between forward ($X_1, \dots, X_T$) and reversed ($X_T, \dots, X_1$) paths—impossible in Gaussian linear models.
+* **SETAR($k; p_1, \dots, p_k$)**: Self-Exciting Threshold Autoregressive model where regime $j$ activates when lag $X_{t-d}$ falls in $(r_{j-1}, r_j]$ [@tong1990non]:
+  $$X_t = \sum_{j=1}^k \left(\phi_0^{(j)} + \sum_{i=1}^{p_j} \phi_i^{(j)} X_{t-i} + \sigma^{(j)} Z_t\right) \mathbb{I}(r_{j-1} < X_{t-d} \le r_j) \tag{3.1}$$
+* **Smooth Transition AR (STAR)**: Replaces the hard indicator step with a smooth logistic transition $G(X_{t-d}; \gamma, c) = \big[1 + \exp(-\gamma(X_{t-d}-c))\big]^{-1} \in (0,1)$.
+
+### First-Principles Insight: Asymmetric Limit Cycles in SETAR(2;1,1)
+
+Consider a 2-regime system with threshold $r = 3.0$:
+$$X_t = \begin{cases} 0.5 + 0.85 X_{t-1} + Z_t, & X_{t-1} \le 3.0 \\ 6.0 - 0.40 X_{t-1} + Z_t, & X_{t-1} > 3.0 \end{cases}$$
+In Regime 1, the deterministic fixed point $x_1^* = 0.5/(1-0.85) = 3.333$ lies *above* the threshold $3.0$, pushing $X_t$ upward until it crosses $3.0$. Once above $3.0$, Regime 2 takes over with negative slope $-0.40$, snapping the state back down—generating self-sustaining asymmetric cycles.
+
+### Sample Problem 3.1 (Tracing a SETAR Deterministic Skeleton)
+**Statement**: Starting from $X_0 = 2.8$ with $Z_t = 0$, compute $X_1, X_2, X_3$ for the SETAR model above.
+
+**Solution**:
+
+- $X_0 = 2.8 \le 3.0 \implies X_1 = 0.5 + 0.85(2.8) = 2.88$.
+- $X_1 = 2.88 \le 3.0 \implies X_2 = 0.5 + 0.85(2.88) = 2.948$.
+- $X_2 = 2.948 \le 3.0 \implies X_3 = 0.5 + 0.85(2.948) = 3.0058 > 3.0$ (crosses threshold into Regime 2 on the next step!).
+
+::: {.callout-tip}
+#### Key Takeaway:
+SETAR and STAR models capture regime-dependent slopes, volatility asymmetry, and limit cycles that linear ARMA models cannot reproduce.
+:::
+
+
+
+## Formal Hypothesis Tests for Stationarity
+
+Visual ACF inspection can mislead. So we pair two complementary unit-root tests to form a *confirmatory stationarity matrix* [@cryer2008time; @nielsen2019practical].
+
+### Key Definitions & Important Terms
+
+* **Augmented Dickey-Fuller (ADF) Test**: Tests $H_0: \gamma = 0$ (Unit Root / Non-Stationary) against $H_1: \gamma < 0$ (Stationary) in:
+  $$\Delta X_t = \alpha + \beta t + \gamma X_{t-1} + \sum_{i=1}^p \psi_i \Delta X_{t-i} + e_t \tag{3.2}$$
+  Under $H_0$, $t_\gamma = \hat{\gamma}/\mathrm{SE}(\hat{\gamma})$ follows the non-standard **Dickey-Fuller Brownian motion distribution**, which has much more negative critical values than Student's $t$ [@dickey1979distribution].
+* **Phillips-Perron (PP) Test**: Non-parametric alternative to ADF using Newey-West HAC variance correction instead of lagged $\Delta X_{t-i}$ terms.
+* **KPSS Test (1992)**: Reverses the hypotheses! $H_0$: Stationary ($\sigma_u^2 = 0$ in random-walk component) vs. $H_1$: Unit Root, using $LM = \frac{\sum_{t=1}^T S_t^2}{T^2 s^2(l)}$ where $S_t = \sum_{i=1}^t e_i$ [@kwiatkowski1992testing].
+
+### Confirmatory Stationarity Decision Matrix
+
+| ADF Outcome ($H_0$: Unit Root) | KPSS Outcome ($H_0$: Stationary) | Diagnosis | Action |
+|:---|:---|:---|:---|
+| Reject ($p < 0.05$) | Fail to Reject ($p > 0.05$) | **Stationary** | Model in levels (ARMA) |
+| Fail to Reject ($p > 0.05$) | Reject ($p < 0.05$) | **Unit Root** | Difference ($\nabla X_t$) |
+| Reject ($p < 0.05$) | Reject ($p < 0.05$) | **Structural Break / Long Memory** | Segment or fractional diff |
+
+### Sample Problem 3.2 (ADF Statistic Evaluation)
+**Statement**: An OLS fit yields $\Delta X_t = -0.15 X_{t-1} + 0.25 \Delta X_{t-1} + e_t$ with $\mathrm{SE}(\hat{\gamma}) = 0.05$ ($5\%$ DF critical value $= -1.95$). Test for a unit root.
+
+**Solution**:
+$ADF = \frac{-0.15}{0.05} = -3.00$. Since $-3.00 < -1.95$ (deeper in the left tail), we **reject $H_0$** and conclude the series is stationary.
+
+::: {.callout-tip}
+#### Key Takeaway:
+Always run **ADF and KPSS together**: ADF checks if a unit root can be rejected, while KPSS checks if stationarity can be rejected.
+:::
+
+
+## Formal Hypothesis Tests for Nonlinearity
+
+Before abandoning linear models, we test whether linear ARMA residuals $\hat{e}_t$ still hide nonlinear structure [@cryer2008time; @shumway2011time].
+
+### Key Definitions & Important Terms
+
+* **McLeod-Li Test**: Applies the Ljung-Box portmanteau statistic to **squared residuals** $\hat{e}_t^2$:
+  $$Q_{ML} = T(T+2)\sum_{k=1}^M \frac{\hat{r}_{ee}^2(k)}{T - k} \sim \chi^2(M) \tag{3.3}$$
+  Rejection indicates ARCH effects or quadratic nonlinearity.
+* **Keenan's & Tsay's Tests**: Regress $X_t$ on squared fitted values $\hat{X}_t^2$ (Keenan) or all cross-products $X_{t-i}X_{t-j}$ (Tsay) via an $F$-test.
+* **BDS Test**: Uses correlation integrals $C_m(\epsilon, T)$ from chaos theory; under $i.i.d.$ residuals, $W_m = \sqrt{T}\frac{C_m - C_1^m}{\hat{\sigma}_m} \xrightarrow{d} \mathcal{N}(0,1)$.
+
+### Sample Problem 3.3 (McLeod-Li Decision)
+**Statement**: An AR(1) fit to $T=200$ stock returns leaves uncorrelated residuals $\hat{e}_t$, but $Q_{ML}$ at lag $M=10$ is $34.2$ ($\chi^2_{0.95}(10) = 18.31$). What do you conclude?
+
+**Solution**:
+Since $34.2 > 18.31$, we reject linearity/$i.i.d.$ residuals and diagnose significant conditional heteroscedasticity (ARCH/GARCH) or nonlinear dependence.
+
+::: {.callout-tip}
+#### Key Takeaway:
+Linear white residuals ($\hat{\rho}_e(k) \approx 0$) do not guarantee independence; McLeod-Li and BDS detect hidden nonlinear or volatility structure.
+:::
+
+
+## State-Space Models and the Kalman Filter
+
+A **State-Space Model (SSM)** separates latent physical dynamics from noisy observations [@shumway2011time; @kalman1960new].
+
+### Key Definitions & Important Terms
+
+::: {.callout-note icon="false"}
+#### Definition 3.1: Linear Gaussian State-Space Model
+$$\begin{aligned}
+\text{State Equation:} \quad \mathbf{x}_t &= \mathbf{\Phi}_t \mathbf{x}_{t-1} + \mathbf{w}_t, & \mathbf{w}_t &\sim \mathcal{N}(\mathbf{0}, \mathbf{Q}_t) \\
+\text{Observation Equation:} \quad \mathbf{y}_t &= \mathbf{A}_t \mathbf{x}_t + \mathbf{v}_t, & \mathbf{v}_t &\sim \mathcal{N}(\mathbf{0}, \mathbf{R}_t)
+\end{aligned} \tag{3.4}$$
+:::
+
+* **Filtering ($\mathbf{x}_{t|t}$)** vs. **Smoothing ($\mathbf{x}_{t|T}$)**: Filtering estimates the state using data up to $t$; smoothing (Rauch-Tung-Striebel) uses the entire record $[1, T]$.
+
+### First-Principles Derivation of the Optimal Kalman Gain $\mathbf{K}_t$
+
+Let $\mathbf{x}_{t|t-1} = \mathbf{\Phi}_t \mathbf{x}_{t-1|t-1}$ and $\mathbf{P}_{t|t-1} = \mathbf{\Phi}_t \mathbf{P}_{t-1|t-1}\mathbf{\Phi}_t^T + \mathbf{Q}_t$ be the prior prediction and covariance. When $\mathbf{y}_t$ arrives, the innovation is $\boldsymbol{\nu}_t = \mathbf{y}_t - \mathbf{A}_t \mathbf{x}_{t|t-1}$ with covariance $\mathbf{F}_t = \mathbf{A}_t \mathbf{P}_{t|t-1}\mathbf{A}_t^T + \mathbf{R}_t$.
+
+We update the state linearly: $\mathbf{x}_{t|t} = \mathbf{x}_{t|t-1} + \mathbf{K}_t \boldsymbol{\nu}_t$. The posterior error is $\mathbf{e}_t = (\mathbf{I} - \mathbf{K}_t \mathbf{A}_t)(\mathbf{x}_t - \mathbf{x}_{t|t-1}) - \mathbf{K}_t \mathbf{v}_t$, giving posterior covariance:
+$$\mathbf{P}_{t|t} = (\mathbf{I} - \mathbf{K}_t \mathbf{A}_t)\mathbf{P}_{t|t-1}(\mathbf{I} - \mathbf{K}_t \mathbf{A}_t)^T + \mathbf{K}_t \mathbf{R}_t \mathbf{K}_t^T \tag{3.5}$$
+Differentiating $\mathrm{Tr}(\mathbf{P}_{t|t})$ with respect to $\mathbf{K}_t$ and setting to zero:
+$$\frac{\partial \mathrm{Tr}(\mathbf{P}_{t|t})}{\partial \mathbf{K}_t} = -2(\mathbf{I} - \mathbf{K}_t\mathbf{A}_t)\mathbf{P}_{t|t-1}\mathbf{A}_t^T + 2\mathbf{K}_t\mathbf{R}_t = \mathbf{0} \implies \mathbf{K}_t(\mathbf{A}_t\mathbf{P}_{t|t-1}\mathbf{A}_t^T + \mathbf{R}_t) = \mathbf{P}_{t|t-1}\mathbf{A}_t^T$$
+$$\mathbf{K}_t = \mathbf{P}_{t|t-1}\mathbf{A}_t^T \mathbf{F}_t^{-1}, \qquad \mathbf{P}_{t|t} = (\mathbf{I} - \mathbf{K}_t\mathbf{A}_t)\mathbf{P}_{t|t-1} \tag{3.6}$$
+
+### Sample Problem 3.4 (1D Scalar Kalman Filter Update)
+**Statement**: Let $x_t = 0.9 x_{t-1} + w_t$ ($Q=4$) and $y_t = x_t + v_t$ ($R=2$). Given $x_{0|0} = 10$, $P_{0|0} = 5$, and $y_1 = 12$, compute $x_{1|1}$ and $P_{1|1}$.
+
+**Solution**:
+
+1. *Predict*: $x_{1|0} = 0.9(10) = 9.0$; $P_{1|0} = 0.9^2(5) + 4 = 8.05$.
+2. *Innovation*: $\nu_1 = 12 - 9.0 = 3.0$; $F_1 = 8.05 + 2 = 10.05$.
+3. *Gain*: $K_1 = 8.05 / 10.05 \approx 0.8010$.
+4. *Update*: $x_{1|1} = 9.0 + 0.8010(3.0) \approx 11.403$; $P_{1|1} = (1 - 0.8010)(8.05) \approx 1.602$.
+
+::: {.callout-tip}
+#### Key Takeaway: Section 3.5
+The Kalman gain $\mathbf{K}_t$ automatically balances trust between the physical state model ($\mathbf{P}_{t|t-1}$) and incoming sensor measurements ($\mathbf{R}_t$).
+:::
+
+
+
+## 3-Tier Graduated Problem Ladder
+
+### Tier 1: By-Hand Intuition
+* **Problem 3.5 (Practice)**: In a scalar Local Level model ($x_t = x_{t-1} + w_t$, $Q=1$, $R=9$), if $P_{1|0} = 3$, compute $K_1$. *(Answer: $K_1 = 3/(3+9) = 0.25$ — low trust in noisy sensor.)*
+* **Problem 3.6 (Practice)**: An ADF test gives $p = 0.42$ and KPSS gives $p = 0.01$. What is the diagnosis? *(Answer: Non-stationary unit root; first-difference the series.)*
+
+### Tier 2: Analytical & Exam-Style
+* **Problem 3.7 (Worked — Local Linear Trend State Matrices)**: Write $\mathbf{\Phi}$ and $\mathbf{A}$ for $y_t = \mu_t + \epsilon_t$, $\mu_t = \mu_{t-1} + \beta_{t-1} + \eta_t$, $\beta_t = \beta_{t-1} + \zeta_t$.
+  *Solution*: Setting $\mathbf{x}_t = [\mu_t, \beta_t]^T$, we get $\mathbf{\Phi} = \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}$ and $\mathbf{A} = \begin{bmatrix} 1 & 0 \end{bmatrix}$.
+
+### Tier 3: Domain Case Studies (EEG & Finance)
+* **Problem 3.8 (EEG Kalman Denoising — Worked)**: An EEG electrode suffers sudden motion-artifact noise ($R$ jumps from $2$ to $50$ $\mu\text{V}^2$) while $P_{t|t-1} = 4$. How does $K_t$ react?
+  *Solution*: $K_t$ drops from $4/(4+2) = 0.67$ down to $4/(4+50) = 0.074$, automatically shielding the latent cortical estimate from the noisy spike.
+* **Problem 3.9 (Dynamic CAPM Beta via Kalman Filter — Practice)**: Formulate a stock's excess return $y_t = \beta_t r_{m,t} + v_t$ where latent beta follows a random walk $\beta_t = \beta_{t-1} + w_t$. Identify $\mathbf{\Phi}_t$ and $\mathbf{A}_t$. *(Answer: $\Phi_t = 1$, time-varying observation matrix $A_t = r_{m,t}$.)*
+
+
+## Dual-Track Laboratory Experimental Section
+
+### Lab Track A: EEG Denoising via Kalman Filtering & Smoothing
+
+```python
+import numpy as np
+import pandas as pd
+from statsmodels.tsa.statespace.structural import UnobservedComponents
+from statsmodels.stats.diagnostic import acorr_ljungbox
+
+# Simulate latent cortical potential + heavy electrode measurement noise
+np.random.seed(7)
+T = 300
+t = np.arange(T)
+true_eeg = 12 * np.sin(2 * np.pi * t / 25) + np.cumsum(np.random.normal(0, 0.3, T))
+noisy_eeg = true_eeg + np.random.normal(0, 4.0, T)
+
+# Fit Local Level State-Space Model & extract Kalman Filtered / RTS Smoothed states
+ssm = UnobservedComponents(noisy_eeg, level="local level").fit(disp=False)
+print(f"Estimated Measurement Var R: {ssm.params['sigma2.measurement']:.2f}")
+print(f"RMSE Raw Noisy: {np.sqrt(np.mean((noisy_eeg - true_eeg)**2)):.2f}")
+print(f"RMSE RTS Smoothed: {np.sqrt(np.mean((ssm.smoothed_state[0] - true_eeg)**2)):.2f}")
+
+# McLeod-Li test on standardized residuals
+std_res = ssm.resid / np.sqrt(ssm.params["sigma2.measurement"])
+print("\nMcLeod-Li Nonlinearity Test:\n", acorr_ljungbox(std_res**2, lags=[5, 10], return_df=True))
+```
+
+### Lab Track B: Confirmatory Stationarity & Structural Breaks on Nile / Financial Levels
+
+```python
+import statsmodels.api as sm
+from statsmodels.tsa.stattools import adfuller, kpss
+
+nile = sm.datasets.nile.load_pandas().data["volume"]
+adf_stat, adf_p, *_ = adfuller(nile, autolag="AIC")
+kpss_stat, kpss_p, *_ = kpss(nile, regression="c", nlags="auto")
+
+print(f"Nile Flow -> ADF p={adf_p:.4f} | KPSS p={kpss_p:.4f}")
+# Difference once and re-run Confirmatory Matrix
+d_nile = nile.diff().dropna()
+print(f"Differenced -> ADF p={adfuller(d_nile)[1]:.4e} | KPSS p={kpss(d_nile, nlags='auto')[1]:.4f}")
+```
+
+
+
+## Summary of Concepts 
+
+* **Nonlinear Models (SETAR/STAR)**: Capture asymmetric cycles and regime switching that linear ARMA cannot represent.
+* **Confirmatory Stationarity**: Pairing ADF ($H_0$: unit root) with KPSS ($H_0$: stationary) prevents false stationarity claims.
+* **Nonlinearity Tests**: McLeod-Li, Keenan/Tsay, and BDS detect hidden nonlinear or ARCH structure in linear residuals.
+* **State-Space & Kalman Filter**: Recursively estimates unobserved latent states from noisy observations via optimal minimum-MSE Kalman gain $\mathbf{K}_t$.
+
+::: {.callout-tip}
+### Prescribed Textbook Cross-Walk
+| Concept | Cryer & Chan (2008) | Shumway & Stoffer (2011) | Box et al. (2016) | Nielsen (2019) |
+|:---|:---|:---|:---|:---|
+| Nonlinear Models (TAR/STAR) | Ch. 15 | Ch. 5.5 | — | Ch. 7 |
+| Stationarity & Nonlinearity Tests | Ch. 5.4, 15.3 | Ch. 3.6 | Ch. 4 | Ch. 3 |
+| State-Space & Kalman Filter | — | Ch. 6 | Ch. 13 | Ch. 7 |
+:::

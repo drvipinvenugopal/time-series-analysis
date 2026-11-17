@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.31">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>4&nbsp; Unit 3: Nonlinear Dynamics, Formal Hypothesis Testing, and State-Space Models – Time Series Analysis: First Principles to Deep Applications</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/04_unit4_ml_dl_catastrophic.html" rel="next">
+<link href="../chapters/02_unit2_arima_var_garch.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-4a990d8dcb58f517c7c86712b8f2ac7c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-46f4cc9626f044588a66931b604fc9c8.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-4a990d8dcb58f517c7c86712b8f2ac7c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-4c7a00f65c4f7b083d618916be6661e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-2f778816bbcb37d180fb5a0deea0cd82.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-4c7a00f65c4f7b083d618916be6661e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/03_unit3_nonlinear_statespace.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Unit 3: Nonlinear Dynamics, Formal Hypothesis Testing, and State-Space Models</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Time Series Analysis: First Principles to Deep Applications</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/amrita-aie/22AIE463-time-series-analysis" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Course Overview &amp; Syllabus Mapping</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/00_bootcamp_foundations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Chapter 0: Zero-Prerequisite Foundations Bootcamp</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01_unit1_linear_models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Unit 1: Linear Time Series, Stationarity, Ergodicity, and Classical Processes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02_unit2_arima_var_garch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Unit 2: ARMA, ARIMA, SARIMA, VAR, and Conditional Heteroscedastic Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03_unit3_nonlinear_statespace.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Unit 3: Nonlinear Dynamics, Formal Hypothesis Testing, and State-Space Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04_unit4_ml_dl_catastrophic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Unit 4: Machine Learning, Deep Learning, and Precursors for Catastrophic Transitions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prescribed Textbooks and References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#nonlinear-asymmetry-and-apollos-navigation-filter" id="toc-nonlinear-asymmetry-and-apollos-navigation-filter" class="nav-link active" data-scroll-target="#nonlinear-asymmetry-and-apollos-navigation-filter"><span class="header-section-number">4.1</span> Nonlinear Asymmetry and Apollo’s Navigation Filter</a></li>
+  <li><a href="#nonlinear-time-series-setar-and-star" id="toc-nonlinear-time-series-setar-and-star" class="nav-link" data-scroll-target="#nonlinear-time-series-setar-and-star"><span class="header-section-number">4.2</span> Nonlinear Time Series: SETAR and STAR</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms" id="toc-key-definitions-important-terms" class="nav-link" data-scroll-target="#key-definitions-important-terms"><span class="header-section-number">4.2.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#first-principles-insight-asymmetric-limit-cycles-in-setar211" id="toc-first-principles-insight-asymmetric-limit-cycles-in-setar211" class="nav-link" data-scroll-target="#first-principles-insight-asymmetric-limit-cycles-in-setar211"><span class="header-section-number">4.2.2</span> First-Principles Insight: Asymmetric Limit Cycles in SETAR(2;1,1)</a></li>
+  <li><a href="#sample-problem-3.1-tracing-a-setar-deterministic-skeleton" id="toc-sample-problem-3.1-tracing-a-setar-deterministic-skeleton" class="nav-link" data-scroll-target="#sample-problem-3.1-tracing-a-setar-deterministic-skeleton"><span class="header-section-number">4.2.3</span> Sample Problem 3.1 (Tracing a SETAR Deterministic Skeleton)</a></li>
+  </ul></li>
+  <li><a href="#formal-hypothesis-tests-for-stationarity" id="toc-formal-hypothesis-tests-for-stationarity" class="nav-link" data-scroll-target="#formal-hypothesis-tests-for-stationarity"><span class="header-section-number">4.3</span> Formal Hypothesis Tests for Stationarity</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms-1" id="toc-key-definitions-important-terms-1" class="nav-link" data-scroll-target="#key-definitions-important-terms-1"><span class="header-section-number">4.3.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#confirmatory-stationarity-decision-matrix" id="toc-confirmatory-stationarity-decision-matrix" class="nav-link" data-scroll-target="#confirmatory-stationarity-decision-matrix"><span class="header-section-number">4.3.2</span> Confirmatory Stationarity Decision Matrix</a></li>
+  <li><a href="#sample-problem-3.2-adf-statistic-evaluation" id="toc-sample-problem-3.2-adf-statistic-evaluation" class="nav-link" data-scroll-target="#sample-problem-3.2-adf-statistic-evaluation"><span class="header-section-number">4.3.3</span> Sample Problem 3.2 (ADF Statistic Evaluation)</a></li>
+  </ul></li>
+  <li><a href="#formal-hypothesis-tests-for-nonlinearity" id="toc-formal-hypothesis-tests-for-nonlinearity" class="nav-link" data-scroll-target="#formal-hypothesis-tests-for-nonlinearity"><span class="header-section-number">4.4</span> Formal Hypothesis Tests for Nonlinearity</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms-2" id="toc-key-definitions-important-terms-2" class="nav-link" data-scroll-target="#key-definitions-important-terms-2"><span class="header-section-number">4.4.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#sample-problem-3.3-mcleod-li-decision" id="toc-sample-problem-3.3-mcleod-li-decision" class="nav-link" data-scroll-target="#sample-problem-3.3-mcleod-li-decision"><span class="header-section-number">4.4.2</span> Sample Problem 3.3 (McLeod-Li Decision)</a></li>
+  </ul></li>
+  <li><a href="#state-space-models-and-the-kalman-filter" id="toc-state-space-models-and-the-kalman-filter" class="nav-link" data-scroll-target="#state-space-models-and-the-kalman-filter"><span class="header-section-number">4.5</span> State-Space Models and the Kalman Filter</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms-3" id="toc-key-definitions-important-terms-3" class="nav-link" data-scroll-target="#key-definitions-important-terms-3"><span class="header-section-number">4.5.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#first-principles-derivation-of-the-optimal-kalman-gain-mathbfk_t" id="toc-first-principles-derivation-of-the-optimal-kalman-gain-mathbfk_t" class="nav-link" data-scroll-target="#first-principles-derivation-of-the-optimal-kalman-gain-mathbfk_t"><span class="header-section-number">4.5.2</span> First-Principles Derivation of the Optimal Kalman Gain <span class="math inline">\(\mathbf{K}_t\)</span></a></li>
+  <li><a href="#sample-problem-3.4-1d-scalar-kalman-filter-update" id="toc-sample-problem-3.4-1d-scalar-kalman-filter-update" class="nav-link" data-scroll-target="#sample-problem-3.4-1d-scalar-kalman-filter-update"><span class="header-section-number">4.5.3</span> Sample Problem 3.4 (1D Scalar Kalman Filter Update)</a></li>
+  </ul></li>
+  <li><a href="#tier-graduated-problem-ladder" id="toc-tier-graduated-problem-ladder" class="nav-link" data-scroll-target="#tier-graduated-problem-ladder"><span class="header-section-number">4.6</span> 3-Tier Graduated Problem Ladder</a>
+  <ul class="collapse">
+  <li><a href="#tier-1-by-hand-intuition" id="toc-tier-1-by-hand-intuition" class="nav-link" data-scroll-target="#tier-1-by-hand-intuition"><span class="header-section-number">4.6.1</span> Tier 1: By-Hand Intuition</a></li>
+  <li><a href="#tier-2-analytical-exam-style" id="toc-tier-2-analytical-exam-style" class="nav-link" data-scroll-target="#tier-2-analytical-exam-style"><span class="header-section-number">4.6.2</span> Tier 2: Analytical &amp; Exam-Style</a></li>
+  <li><a href="#tier-3-domain-case-studies-eeg-finance" id="toc-tier-3-domain-case-studies-eeg-finance" class="nav-link" data-scroll-target="#tier-3-domain-case-studies-eeg-finance"><span class="header-section-number">4.6.3</span> Tier 3: Domain Case Studies (EEG &amp; Finance)</a></li>
+  </ul></li>
+  <li><a href="#dual-track-laboratory-experimental-section" id="toc-dual-track-laboratory-experimental-section" class="nav-link" data-scroll-target="#dual-track-laboratory-experimental-section"><span class="header-section-number">4.7</span> Dual-Track Laboratory Experimental Section</a>
+  <ul class="collapse">
+  <li><a href="#lab-track-a-eeg-denoising-via-kalman-filtering-smoothing" id="toc-lab-track-a-eeg-denoising-via-kalman-filtering-smoothing" class="nav-link" data-scroll-target="#lab-track-a-eeg-denoising-via-kalman-filtering-smoothing"><span class="header-section-number">4.7.1</span> Lab Track A: EEG Denoising via Kalman Filtering &amp; Smoothing</a></li>
+  <li><a href="#lab-track-b-confirmatory-stationarity-structural-breaks-on-nile-financial-levels" id="toc-lab-track-b-confirmatory-stationarity-structural-breaks-on-nile-financial-levels" class="nav-link" data-scroll-target="#lab-track-b-confirmatory-stationarity-structural-breaks-on-nile-financial-levels"><span class="header-section-number">4.7.2</span> Lab Track B: Confirmatory Stationarity &amp; Structural Breaks on Nile / Financial Levels</a></li>
+  </ul></li>
+  <li><a href="#summary-of-concepts" id="toc-summary-of-concepts" class="nav-link" data-scroll-target="#summary-of-concepts"><span class="header-section-number">4.8</span> Summary of Concepts</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-unit3" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Unit 3: Nonlinear Dynamics, Formal Hypothesis Testing, and State-Space Models</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Unit 3 Curriculum Checklist
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Nonlinear Time Series</strong>: Time irreversibility, asymmetric limit cycles, Threshold Autoregressive (SETAR), Smooth Transition (STAR).</li>
+<li><strong>Formal Stationarity Tests</strong>: Unit roots, Augmented Dickey-Fuller (ADF) non-standard distribution, Phillips-Perron (PP), KPSS test, confirmatory decision matrix.</li>
+<li><strong>Formal Nonlinearity Tests</strong>: McLeod-Li squared-residual test, Keenan/Tsay quadratic tests, BDS chaos test.</li>
+<li><strong>State-Space Models &amp; Kalman Filter</strong>: Latent state vs.&nbsp;measurement equations, first-principles derivation of the Kalman Filter (prediction, innovation, optimal Kalman gain <span class="math inline">\(\mathbf{K}_t\)</span>, update), RTS smoothing.</li>
+<li><strong>Prescribed Text References</strong>: Cryer &amp; Chan (2008, Ch. 13–15) <span class="citation" data-cites="cryer2008time"><a href="../references.html#ref-cryer2008time" role="doc-biblioref">[1]</a></span>; Shumway &amp; Stoffer (2011, Ch. 6) <span class="citation" data-cites="shumway2011time"><a href="../references.html#ref-shumway2011time" role="doc-biblioref">[2]</a></span>; Box et al.&nbsp;(2016, Ch. 11–12) <span class="citation" data-cites="box2016time"><a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>; Nielsen (2019, Ch. 6–7) <span class="citation" data-cites="nielsen2019practical"><a href="../references.html#ref-nielsen2019practical" role="doc-biblioref">[4]</a></span>; Kalman (1960) <span class="citation" data-cites="kalman1960new"><a href="../references.html#ref-kalman1960new" role="doc-biblioref">[5]</a></span>; Tong (1990) <span class="citation" data-cites="tong1990non"><a href="../references.html#ref-tong1990non" role="doc-biblioref">[6]</a></span>; Dickey &amp; Fuller (1979) <span class="citation" data-cites="dickey1979distribution"><a href="../references.html#ref-dickey1979distribution" role="doc-biblioref">[7]</a></span>; Kwiatkowski et al.&nbsp;(1992) <span class="citation" data-cites="kwiatkowski1992testing"><a href="../references.html#ref-kwiatkowski1992testing" role="doc-biblioref">[8]</a></span>.</li>
+</ul>
+</div>
+</div>
+<section id="nonlinear-asymmetry-and-apollos-navigation-filter" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="nonlinear-asymmetry-and-apollos-navigation-filter"><span class="header-section-number">4.1</span> Nonlinear Asymmetry and Apollo’s Navigation Filter</h2>
+<p>Every stationary Gaussian linear model is <em>time-reversible</em>: if you play an AR(2) trajectory backward in time, its statistical moments look identical <span class="citation" data-cites="cryer2008time"><a href="../references.html#ref-cryer2008time" role="doc-biblioref">[1]</a></span>. Yet real-world systems are fiercely asymmetric. Stock markets climb slowly over years of bull runs and crash vertically in weeks; epileptic EEG spikes rise abruptly and decay slowly; predator-prey populations (like Howell Tong’s famous Canadian Lynx data) build gradually and collapse suddenly <span class="citation" data-cites="tong1990non"><a href="../references.html#ref-tong1990non" role="doc-biblioref">[6]</a></span>. In 1980, Tong broke the linear barrier with <em>Threshold Autoregressive (TAR)</em> models, allowing system dynamics to switch regimes across physical thresholds.</p>
+<p>At the same time, Rudolf Kalman (1960) revolutionized tracking by separating the <em>unobserved true physical state</em> (a spacecraft’s orbit, a patient’s true cortical potential, or a stock’s latent beta) from <em>noisy sensor measurements</em> <span class="citation" data-cites="kalman1960new shumway2011time"><a href="../references.html#ref-shumway2011time" role="doc-biblioref">[2]</a>, <a href="../references.html#ref-kalman1960new" role="doc-biblioref">[5]</a></span>. Embedded in the Apollo Guidance Computer, the Kalman filter remains the gold standard for real-time filtering and smoothing.</p>
+</section>
+<section id="nonlinear-time-series-setar-and-star" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="nonlinear-time-series-setar-and-star"><span class="header-section-number">4.2</span> Nonlinear Time Series: SETAR and STAR</h2>
+<section id="key-definitions-important-terms" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="key-definitions-important-terms"><span class="header-section-number">4.2.1</span> Key Definitions &amp; Important Terms</h3>
+<ul>
+<li><strong>Time Irreversibility</strong>: Statistical asymmetry between forward (<span class="math inline">\(X_1, \dots, X_T\)</span>) and reversed (<span class="math inline">\(X_T, \dots, X_1\)</span>) paths—impossible in Gaussian linear models.</li>
+<li><strong>SETAR(<span class="math inline">\(k; p_1, \dots, p_k\)</span>)</strong>: Self-Exciting Threshold Autoregressive model where regime <span class="math inline">\(j\)</span> activates when lag <span class="math inline">\(X_{t-d}\)</span> falls in <span class="math inline">\((r_{j-1}, r_j]\)</span> <span class="citation" data-cites="tong1990non"><a href="../references.html#ref-tong1990non" role="doc-biblioref">[6]</a></span>: <span class="math display">\[X_t = \sum_{j=1}^k \left(\phi_0^{(j)} + \sum_{i=1}^{p_j} \phi_i^{(j)} X_{t-i} + \sigma^{(j)} Z_t\right) \mathbb{I}(r_{j-1} &lt; X_{t-d} \le r_j) \tag{3.1}\]</span></li>
+<li><strong>Smooth Transition AR (STAR)</strong>: Replaces the hard indicator step with a smooth logistic transition <span class="math inline">\(G(X_{t-d}; \gamma, c) = \big[1 + \exp(-\gamma(X_{t-d}-c))\big]^{-1} \in (0,1)\)</span>.</li>
+</ul>
+</section>
+<section id="first-principles-insight-asymmetric-limit-cycles-in-setar211" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="first-principles-insight-asymmetric-limit-cycles-in-setar211"><span class="header-section-number">4.2.2</span> First-Principles Insight: Asymmetric Limit Cycles in SETAR(2;1,1)</h3>
+<p>Consider a 2-regime system with threshold <span class="math inline">\(r = 3.0\)</span>: <span class="math display">\[X_t = \begin{cases} 0.5 + 0.85 X_{t-1} + Z_t, &amp; X_{t-1} \le 3.0 \\ 6.0 - 0.40 X_{t-1} + Z_t, &amp; X_{t-1} &gt; 3.0 \end{cases}\]</span> In Regime 1, the deterministic fixed point <span class="math inline">\(x_1^* = 0.5/(1-0.85) = 3.333\)</span> lies <em>above</em> the threshold <span class="math inline">\(3.0\)</span>, pushing <span class="math inline">\(X_t\)</span> upward until it crosses <span class="math inline">\(3.0\)</span>. Once above <span class="math inline">\(3.0\)</span>, Regime 2 takes over with negative slope <span class="math inline">\(-0.40\)</span>, snapping the state back down—generating self-sustaining asymmetric cycles.</p>
+</section>
+<section id="sample-problem-3.1-tracing-a-setar-deterministic-skeleton" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="sample-problem-3.1-tracing-a-setar-deterministic-skeleton"><span class="header-section-number">4.2.3</span> Sample Problem 3.1 (Tracing a SETAR Deterministic Skeleton)</h3>
+<p><strong>Statement</strong>: Starting from <span class="math inline">\(X_0 = 2.8\)</span> with <span class="math inline">\(Z_t = 0\)</span>, compute <span class="math inline">\(X_1, X_2, X_3\)</span> for the SETAR model above.</p>
+<p><strong>Solution</strong>:</p>
+<ul>
+<li><span class="math inline">\(X_0 = 2.8 \le 3.0 \implies X_1 = 0.5 + 0.85(2.8) = 2.88\)</span>.</li>
+<li><span class="math inline">\(X_1 = 2.88 \le 3.0 \implies X_2 = 0.5 + 0.85(2.88) = 2.948\)</span>.</li>
+<li><span class="math inline">\(X_2 = 2.948 \le 3.0 \implies X_3 = 0.5 + 0.85(2.948) = 3.0058 &gt; 3.0\)</span> (crosses threshold into Regime 2 on the next step!).</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>SETAR and STAR models capture regime-dependent slopes, volatility asymmetry, and limit cycles that linear ARMA models cannot reproduce.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="formal-hypothesis-tests-for-stationarity" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="formal-hypothesis-tests-for-stationarity"><span class="header-section-number">4.3</span> Formal Hypothesis Tests for Stationarity</h2>
+<p>Visual ACF inspection can mislead. So we pair two complementary unit-root tests to form a <em>confirmatory stationarity matrix</em> <span class="citation" data-cites="cryer2008time nielsen2019practical"><a href="../references.html#ref-cryer2008time" role="doc-biblioref">[1]</a>, <a href="../references.html#ref-nielsen2019practical" role="doc-biblioref">[4]</a></span>.</p>
+<section id="key-definitions-important-terms-1" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="key-definitions-important-terms-1"><span class="header-section-number">4.3.1</span> Key Definitions &amp; Important Terms</h3>
+<ul>
+<li><strong>Augmented Dickey-Fuller (ADF) Test</strong>: Tests <span class="math inline">\(H_0: \gamma = 0\)</span> (Unit Root / Non-Stationary) against <span class="math inline">\(H_1: \gamma &lt; 0\)</span> (Stationary) in: <span class="math display">\[\Delta X_t = \alpha + \beta t + \gamma X_{t-1} + \sum_{i=1}^p \psi_i \Delta X_{t-i} + e_t \tag{3.2}\]</span> Under <span class="math inline">\(H_0\)</span>, <span class="math inline">\(t_\gamma = \hat{\gamma}/\mathrm{SE}(\hat{\gamma})\)</span> follows the non-standard <strong>Dickey-Fuller Brownian motion distribution</strong>, which has much more negative critical values than Student’s <span class="math inline">\(t\)</span> <span class="citation" data-cites="dickey1979distribution"><a href="../references.html#ref-dickey1979distribution" role="doc-biblioref">[7]</a></span>.</li>
+<li><strong>Phillips-Perron (PP) Test</strong>: Non-parametric alternative to ADF using Newey-West HAC variance correction instead of lagged <span class="math inline">\(\Delta X_{t-i}\)</span> terms.</li>
+<li><strong>KPSS Test (1992)</strong>: Reverses the hypotheses! <span class="math inline">\(H_0\)</span>: Stationary (<span class="math inline">\(\sigma_u^2 = 0\)</span> in random-walk component) vs.&nbsp;<span class="math inline">\(H_1\)</span>: Unit Root, using <span class="math inline">\(LM = \frac{\sum_{t=1}^T S_t^2}{T^2 s^2(l)}\)</span> where <span class="math inline">\(S_t = \sum_{i=1}^t e_i\)</span> <span class="citation" data-cites="kwiatkowski1992testing"><a href="../references.html#ref-kwiatkowski1992testing" role="doc-biblioref">[8]</a></span>.</li>
+</ul>
+</section>
+<section id="confirmatory-stationarity-decision-matrix" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="confirmatory-stationarity-decision-matrix"><span class="header-section-number">4.3.2</span> Confirmatory Stationarity Decision Matrix</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">ADF Outcome (<span class="math inline">\(H_0\)</span>: Unit Root)</th>
+<th style="text-align: left;">KPSS Outcome (<span class="math inline">\(H_0\)</span>: Stationary)</th>
+<th style="text-align: left;">Diagnosis</th>
+<th style="text-align: left;">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Reject (<span class="math inline">\(p &lt; 0.05\)</span>)</td>
+<td style="text-align: left;">Fail to Reject (<span class="math inline">\(p &gt; 0.05\)</span>)</td>
+<td style="text-align: left;"><strong>Stationary</strong></td>
+<td style="text-align: left;">Model in levels (ARMA)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Fail to Reject (<span class="math inline">\(p &gt; 0.05\)</span>)</td>
+<td style="text-align: left;">Reject (<span class="math inline">\(p &lt; 0.05\)</span>)</td>
+<td style="text-align: left;"><strong>Unit Root</strong></td>
+<td style="text-align: left;">Difference (<span class="math inline">\(\nabla X_t\)</span>)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Reject (<span class="math inline">\(p &lt; 0.05\)</span>)</td>
+<td style="text-align: left;">Reject (<span class="math inline">\(p &lt; 0.05\)</span>)</td>
+<td style="text-align: left;"><strong>Structural Break / Long Memory</strong></td>
+<td style="text-align: left;">Segment or fractional diff</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sample-problem-3.2-adf-statistic-evaluation" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3" class="anchored" data-anchor-id="sample-problem-3.2-adf-statistic-evaluation"><span class="header-section-number">4.3.3</span> Sample Problem 3.2 (ADF Statistic Evaluation)</h3>
+<p><strong>Statement</strong>: An OLS fit yields <span class="math inline">\(\Delta X_t = -0.15 X_{t-1} + 0.25 \Delta X_{t-1} + e_t\)</span> with <span class="math inline">\(\mathrm{SE}(\hat{\gamma}) = 0.05\)</span> (<span class="math inline">\(5\%\)</span> DF critical value <span class="math inline">\(= -1.95\)</span>). Test for a unit root.</p>
+<p><strong>Solution</strong>: <span class="math inline">\(ADF = \frac{-0.15}{0.05} = -3.00\)</span>. Since <span class="math inline">\(-3.00 &lt; -1.95\)</span> (deeper in the left tail), we <strong>reject <span class="math inline">\(H_0\)</span></strong> and conclude the series is stationary.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Always run <strong>ADF and KPSS together</strong>: ADF checks if a unit root can be rejected, while KPSS checks if stationarity can be rejected.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="formal-hypothesis-tests-for-nonlinearity" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="formal-hypothesis-tests-for-nonlinearity"><span class="header-section-number">4.4</span> Formal Hypothesis Tests for Nonlinearity</h2>
+<p>Before abandoning linear models, we test whether linear ARMA residuals <span class="math inline">\(\hat{e}_t\)</span> still hide nonlinear structure <span class="citation" data-cites="cryer2008time shumway2011time"><a href="../references.html#ref-cryer2008time" role="doc-biblioref">[1]</a>, <a href="../references.html#ref-shumway2011time" role="doc-biblioref">[2]</a></span>.</p>
+<section id="key-definitions-important-terms-2" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="key-definitions-important-terms-2"><span class="header-section-number">4.4.1</span> Key Definitions &amp; Important Terms</h3>
+<ul>
+<li><strong>McLeod-Li Test</strong>: Applies the Ljung-Box portmanteau statistic to <strong>squared residuals</strong> <span class="math inline">\(\hat{e}_t^2\)</span>: <span class="math display">\[Q_{ML} = T(T+2)\sum_{k=1}^M \frac{\hat{r}_{ee}^2(k)}{T - k} \sim \chi^2(M) \tag{3.3}\]</span> Rejection indicates ARCH effects or quadratic nonlinearity.</li>
+<li><strong>Keenan’s &amp; Tsay’s Tests</strong>: Regress <span class="math inline">\(X_t\)</span> on squared fitted values <span class="math inline">\(\hat{X}_t^2\)</span> (Keenan) or all cross-products <span class="math inline">\(X_{t-i}X_{t-j}\)</span> (Tsay) via an <span class="math inline">\(F\)</span>-test.</li>
+<li><strong>BDS Test</strong>: Uses correlation integrals <span class="math inline">\(C_m(\epsilon, T)\)</span> from chaos theory; under <span class="math inline">\(i.i.d.\)</span> residuals, <span class="math inline">\(W_m = \sqrt{T}\frac{C_m - C_1^m}{\hat{\sigma}_m} \xrightarrow{d} \mathcal{N}(0,1)\)</span>.</li>
+</ul>
+</section>
+<section id="sample-problem-3.3-mcleod-li-decision" class="level3" data-number="4.4.2">
+<h3 data-number="4.4.2" class="anchored" data-anchor-id="sample-problem-3.3-mcleod-li-decision"><span class="header-section-number">4.4.2</span> Sample Problem 3.3 (McLeod-Li Decision)</h3>
+<p><strong>Statement</strong>: An AR(1) fit to <span class="math inline">\(T=200\)</span> stock returns leaves uncorrelated residuals <span class="math inline">\(\hat{e}_t\)</span>, but <span class="math inline">\(Q_{ML}\)</span> at lag <span class="math inline">\(M=10\)</span> is <span class="math inline">\(34.2\)</span> (<span class="math inline">\(\chi^2_{0.95}(10) = 18.31\)</span>). What do you conclude?</p>
+<p><strong>Solution</strong>: Since <span class="math inline">\(34.2 &gt; 18.31\)</span>, we reject linearity/<span class="math inline">\(i.i.d.\)</span> residuals and diagnose significant conditional heteroscedasticity (ARCH/GARCH) or nonlinear dependence.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Linear white residuals (<span class="math inline">\(\hat{\rho}_e(k) \approx 0\)</span>) do not guarantee independence; McLeod-Li and BDS detect hidden nonlinear or volatility structure.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="state-space-models-and-the-kalman-filter" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="state-space-models-and-the-kalman-filter"><span class="header-section-number">4.5</span> State-Space Models and the Kalman Filter</h2>
+<p>A <strong>State-Space Model (SSM)</strong> separates latent physical dynamics from noisy observations <span class="citation" data-cites="shumway2011time kalman1960new"><a href="../references.html#ref-shumway2011time" role="doc-biblioref">[2]</a>, <a href="../references.html#ref-kalman1960new" role="doc-biblioref">[5]</a></span>.</p>
+<section id="key-definitions-important-terms-3" class="level3" data-number="4.5.1">
+<h3 data-number="4.5.1" class="anchored" data-anchor-id="key-definitions-important-terms-3"><span class="header-section-number">4.5.1</span> Key Definitions &amp; Important Terms</h3>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definition 3.1: Linear Gaussian State-Space Model
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[\begin{aligned}
+\text{State Equation:} \quad \mathbf{x}_t &amp;= \mathbf{\Phi}_t \mathbf{x}_{t-1} + \mathbf{w}_t, &amp; \mathbf{w}_t &amp;\sim \mathcal{N}(\mathbf{0}, \mathbf{Q}_t) \\
+\text{Observation Equation:} \quad \mathbf{y}_t &amp;= \mathbf{A}_t \mathbf{x}_t + \mathbf{v}_t, &amp; \mathbf{v}_t &amp;\sim \mathcal{N}(\mathbf{0}, \mathbf{R}_t)
+\end{aligned} \tag{3.4}\]</span></p>
+</div>
+</div>
+<ul>
+<li><strong>Filtering (<span class="math inline">\(\mathbf{x}_{t|t}\)</span>)</strong> vs.&nbsp;<strong>Smoothing (<span class="math inline">\(\mathbf{x}_{t|T}\)</span>)</strong>: Filtering estimates the state using data up to <span class="math inline">\(t\)</span>; smoothing (Rauch-Tung-Striebel) uses the entire record <span class="math inline">\([1, T]\)</span>.</li>
+</ul>
+</section>
+<section id="first-principles-derivation-of-the-optimal-kalman-gain-mathbfk_t" class="level3" data-number="4.5.2">
+<h3 data-number="4.5.2" class="anchored" data-anchor-id="first-principles-derivation-of-the-optimal-kalman-gain-mathbfk_t"><span class="header-section-number">4.5.2</span> First-Principles Derivation of the Optimal Kalman Gain <span class="math inline">\(\mathbf{K}_t\)</span></h3>
+<p>Let <span class="math inline">\(\mathbf{x}_{t|t-1} = \mathbf{\Phi}_t \mathbf{x}_{t-1|t-1}\)</span> and <span class="math inline">\(\mathbf{P}_{t|t-1} = \mathbf{\Phi}_t \mathbf{P}_{t-1|t-1}\mathbf{\Phi}_t^T + \mathbf{Q}_t\)</span> be the prior prediction and covariance. When <span class="math inline">\(\mathbf{y}_t\)</span> arrives, the innovation is <span class="math inline">\(\boldsymbol{\nu}_t = \mathbf{y}_t - \mathbf{A}_t \mathbf{x}_{t|t-1}\)</span> with covariance <span class="math inline">\(\mathbf{F}_t = \mathbf{A}_t \mathbf{P}_{t|t-1}\mathbf{A}_t^T + \mathbf{R}_t\)</span>.</p>
+<p>We update the state linearly: <span class="math inline">\(\mathbf{x}_{t|t} = \mathbf{x}_{t|t-1} + \mathbf{K}_t \boldsymbol{\nu}_t\)</span>. The posterior error is <span class="math inline">\(\mathbf{e}_t = (\mathbf{I} - \mathbf{K}_t \mathbf{A}_t)(\mathbf{x}_t - \mathbf{x}_{t|t-1}) - \mathbf{K}_t \mathbf{v}_t\)</span>, giving posterior covariance: <span class="math display">\[\mathbf{P}_{t|t} = (\mathbf{I} - \mathbf{K}_t \mathbf{A}_t)\mathbf{P}_{t|t-1}(\mathbf{I} - \mathbf{K}_t \mathbf{A}_t)^T + \mathbf{K}_t \mathbf{R}_t \mathbf{K}_t^T \tag{3.5}\]</span> Differentiating <span class="math inline">\(\mathrm{Tr}(\mathbf{P}_{t|t})\)</span> with respect to <span class="math inline">\(\mathbf{K}_t\)</span> and setting to zero: <span class="math display">\[\frac{\partial \mathrm{Tr}(\mathbf{P}_{t|t})}{\partial \mathbf{K}_t} = -2(\mathbf{I} - \mathbf{K}_t\mathbf{A}_t)\mathbf{P}_{t|t-1}\mathbf{A}_t^T + 2\mathbf{K}_t\mathbf{R}_t = \mathbf{0} \implies \mathbf{K}_t(\mathbf{A}_t\mathbf{P}_{t|t-1}\mathbf{A}_t^T + \mathbf{R}_t) = \mathbf{P}_{t|t-1}\mathbf{A}_t^T\]</span> <span class="math display">\[\mathbf{K}_t = \mathbf{P}_{t|t-1}\mathbf{A}_t^T \mathbf{F}_t^{-1}, \qquad \mathbf{P}_{t|t} = (\mathbf{I} - \mathbf{K}_t\mathbf{A}_t)\mathbf{P}_{t|t-1} \tag{3.6}\]</span></p>
+</section>
+<section id="sample-problem-3.4-1d-scalar-kalman-filter-update" class="level3" data-number="4.5.3">
+<h3 data-number="4.5.3" class="anchored" data-anchor-id="sample-problem-3.4-1d-scalar-kalman-filter-update"><span class="header-section-number">4.5.3</span> Sample Problem 3.4 (1D Scalar Kalman Filter Update)</h3>
+<p><strong>Statement</strong>: Let <span class="math inline">\(x_t = 0.9 x_{t-1} + w_t\)</span> (<span class="math inline">\(Q=4\)</span>) and <span class="math inline">\(y_t = x_t + v_t\)</span> (<span class="math inline">\(R=2\)</span>). Given <span class="math inline">\(x_{0|0} = 10\)</span>, <span class="math inline">\(P_{0|0} = 5\)</span>, and <span class="math inline">\(y_1 = 12\)</span>, compute <span class="math inline">\(x_{1|1}\)</span> and <span class="math inline">\(P_{1|1}\)</span>.</p>
+<p><strong>Solution</strong>:</p>
+<ol type="1">
+<li><em>Predict</em>: <span class="math inline">\(x_{1|0} = 0.9(10) = 9.0\)</span>; <span class="math inline">\(P_{1|0} = 0.9^2(5) + 4 = 8.05\)</span>.</li>
+<li><em>Innovation</em>: <span class="math inline">\(\nu_1 = 12 - 9.0 = 3.0\)</span>; <span class="math inline">\(F_1 = 8.05 + 2 = 10.05\)</span>.</li>
+<li><em>Gain</em>: <span class="math inline">\(K_1 = 8.05 / 10.05 \approx 0.8010\)</span>.</li>
+<li><em>Update</em>: <span class="math inline">\(x_{1|1} = 9.0 + 0.8010(3.0) \approx 11.403\)</span>; <span class="math inline">\(P_{1|1} = (1 - 0.8010)(8.05) \approx 1.602\)</span>.</li>
+</ol>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway: Section 3.5
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Kalman gain <span class="math inline">\(\mathbf{K}_t\)</span> automatically balances trust between the physical state model (<span class="math inline">\(\mathbf{P}_{t|t-1}\)</span>) and incoming sensor measurements (<span class="math inline">\(\mathbf{R}_t\)</span>).</p>
+</div>
+</div>
+</section>
+</section>
+<section id="tier-graduated-problem-ladder" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="tier-graduated-problem-ladder"><span class="header-section-number">4.6</span> 3-Tier Graduated Problem Ladder</h2>
+<section id="tier-1-by-hand-intuition" class="level3" data-number="4.6.1">
+<h3 data-number="4.6.1" class="anchored" data-anchor-id="tier-1-by-hand-intuition"><span class="header-section-number">4.6.1</span> Tier 1: By-Hand Intuition</h3>
+<ul>
+<li><strong>Problem 3.5 (Practice)</strong>: In a scalar Local Level model (<span class="math inline">\(x_t = x_{t-1} + w_t\)</span>, <span class="math inline">\(Q=1\)</span>, <span class="math inline">\(R=9\)</span>), if <span class="math inline">\(P_{1|0} = 3\)</span>, compute <span class="math inline">\(K_1\)</span>. <em>(Answer: <span class="math inline">\(K_1 = 3/(3+9) = 0.25\)</span> — low trust in noisy sensor.)</em></li>
+<li><strong>Problem 3.6 (Practice)</strong>: An ADF test gives <span class="math inline">\(p = 0.42\)</span> and KPSS gives <span class="math inline">\(p = 0.01\)</span>. What is the diagnosis? <em>(Answer: Non-stationary unit root; first-difference the series.)</em></li>
+</ul>
+</section>
+<section id="tier-2-analytical-exam-style" class="level3" data-number="4.6.2">
+<h3 data-number="4.6.2" class="anchored" data-anchor-id="tier-2-analytical-exam-style"><span class="header-section-number">4.6.2</span> Tier 2: Analytical &amp; Exam-Style</h3>
+<ul>
+<li><strong>Problem 3.7 (Worked — Local Linear Trend State Matrices)</strong>: Write <span class="math inline">\(\mathbf{\Phi}\)</span> and <span class="math inline">\(\mathbf{A}\)</span> for <span class="math inline">\(y_t = \mu_t + \epsilon_t\)</span>, <span class="math inline">\(\mu_t = \mu_{t-1} + \beta_{t-1} + \eta_t\)</span>, <span class="math inline">\(\beta_t = \beta_{t-1} + \zeta_t\)</span>. <em>Solution</em>: Setting <span class="math inline">\(\mathbf{x}_t = [\mu_t, \beta_t]^T\)</span>, we get <span class="math inline">\(\mathbf{\Phi} = \begin{bmatrix} 1 &amp; 1 \\ 0 &amp; 1 \end{bmatrix}\)</span> and <span class="math inline">\(\mathbf{A} = \begin{bmatrix} 1 &amp; 0 \end{bmatrix}\)</span>.</li>
+</ul>
+</section>
+<section id="tier-3-domain-case-studies-eeg-finance" class="level3" data-number="4.6.3">
+<h3 data-number="4.6.3" class="anchored" data-anchor-id="tier-3-domain-case-studies-eeg-finance"><span class="header-section-number">4.6.3</span> Tier 3: Domain Case Studies (EEG &amp; Finance)</h3>
+<ul>
+<li><strong>Problem 3.8 (EEG Kalman Denoising — Worked)</strong>: An EEG electrode suffers sudden motion-artifact noise (<span class="math inline">\(R\)</span> jumps from <span class="math inline">\(2\)</span> to <span class="math inline">\(50\)</span> <span class="math inline">\(\mu\text{V}^2\)</span>) while <span class="math inline">\(P_{t|t-1} = 4\)</span>. How does <span class="math inline">\(K_t\)</span> react? <em>Solution</em>: <span class="math inline">\(K_t\)</span> drops from <span class="math inline">\(4/(4+2) = 0.67\)</span> down to <span class="math inline">\(4/(4+50) = 0.074\)</span>, automatically shielding the latent cortical estimate from the noisy spike.</li>
+<li><strong>Problem 3.9 (Dynamic CAPM Beta via Kalman Filter — Practice)</strong>: Formulate a stock’s excess return <span class="math inline">\(y_t = \beta_t r_{m,t} + v_t\)</span> where latent beta follows a random walk <span class="math inline">\(\beta_t = \beta_{t-1} + w_t\)</span>. Identify <span class="math inline">\(\mathbf{\Phi}_t\)</span> and <span class="math inline">\(\mathbf{A}_t\)</span>. <em>(Answer: <span class="math inline">\(\Phi_t = 1\)</span>, time-varying observation matrix <span class="math inline">\(A_t = r_{m,t}\)</span>.)</em></li>
+</ul>
+</section>
+</section>
+<section id="dual-track-laboratory-experimental-section" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="dual-track-laboratory-experimental-section"><span class="header-section-number">4.7</span> Dual-Track Laboratory Experimental Section</h2>
+<section id="lab-track-a-eeg-denoising-via-kalman-filtering-smoothing" class="level3" data-number="4.7.1">
+<h3 data-number="4.7.1" class="anchored" data-anchor-id="lab-track-a-eeg-denoising-via-kalman-filtering-smoothing"><span class="header-section-number">4.7.1</span> Lab Track A: EEG Denoising via Kalman Filtering &amp; Smoothing</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">from</span> statsmodels.tsa.statespace.structural <span class="im">import</span> UnobservedComponents</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="im">from</span> statsmodels.stats.diagnostic <span class="im">import</span> acorr_ljungbox</span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co"># Simulate latent cortical potential + heavy electrode measurement noise</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a>np.random.seed(<span class="dv">7</span>)</span>
+<span id="cb1-8"><a href="#cb1-8"></a>T <span class="op">=</span> <span class="dv">300</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a>t <span class="op">=</span> np.arange(T)</span>
+<span id="cb1-10"><a href="#cb1-10"></a>true_eeg <span class="op">=</span> <span class="dv">12</span> <span class="op">*</span> np.sin(<span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> t <span class="op">/</span> <span class="dv">25</span>) <span class="op">+</span> np.cumsum(np.random.normal(<span class="dv">0</span>, <span class="fl">0.3</span>, T))</span>
+<span id="cb1-11"><a href="#cb1-11"></a>noisy_eeg <span class="op">=</span> true_eeg <span class="op">+</span> np.random.normal(<span class="dv">0</span>, <span class="fl">4.0</span>, T)</span>
+<span id="cb1-12"><a href="#cb1-12"></a></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="co"># Fit Local Level State-Space Model &amp; extract Kalman Filtered / RTS Smoothed states</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a>ssm <span class="op">=</span> UnobservedComponents(noisy_eeg, level<span class="op">=</span><span class="st">"local level"</span>).fit(disp<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="bu">print</span>(<span class="ss">f"Estimated Measurement Var R: </span><span class="sc">{</span>ssm<span class="sc">.</span>params[<span class="st">'sigma2.measurement'</span>]<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="bu">print</span>(<span class="ss">f"RMSE Raw Noisy: </span><span class="sc">{</span>np<span class="sc">.</span>sqrt(np.mean((noisy_eeg <span class="op">-</span> true_eeg)<span class="op">**</span><span class="dv">2</span>))<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="bu">print</span>(<span class="ss">f"RMSE RTS Smoothed: </span><span class="sc">{</span>np<span class="sc">.</span>sqrt(np.mean((ssm.smoothed_state[<span class="dv">0</span>] <span class="op">-</span> true_eeg)<span class="op">**</span><span class="dv">2</span>))<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb1-18"><a href="#cb1-18"></a></span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="co"># McLeod-Li test on standardized residuals</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a>std_res <span class="op">=</span> ssm.resid <span class="op">/</span> np.sqrt(ssm.params[<span class="st">"sigma2.measurement"</span>])</span>
+<span id="cb1-21"><a href="#cb1-21"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">McLeod-Li Nonlinearity Test:</span><span class="ch">\n</span><span class="st">"</span>, acorr_ljungbox(std_res<span class="op">**</span><span class="dv">2</span>, lags<span class="op">=</span>[<span class="dv">5</span>, <span class="dv">10</span>], return_df<span class="op">=</span><span class="va">True</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="lab-track-b-confirmatory-stationarity-structural-breaks-on-nile-financial-levels" class="level3" data-number="4.7.2">
+<h3 data-number="4.7.2" class="anchored" data-anchor-id="lab-track-b-confirmatory-stationarity-structural-breaks-on-nile-financial-levels"><span class="header-section-number">4.7.2</span> Lab Track B: Confirmatory Stationarity &amp; Structural Breaks on Nile / Financial Levels</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="im">from</span> statsmodels.tsa.stattools <span class="im">import</span> adfuller, kpss</span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a>nile <span class="op">=</span> sm.datasets.nile.load_pandas().data[<span class="st">"volume"</span>]</span>
+<span id="cb2-5"><a href="#cb2-5"></a>adf_stat, adf_p, <span class="op">*</span>_ <span class="op">=</span> adfuller(nile, autolag<span class="op">=</span><span class="st">"AIC"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6"></a>kpss_stat, kpss_p, <span class="op">*</span>_ <span class="op">=</span> kpss(nile, regression<span class="op">=</span><span class="st">"c"</span>, nlags<span class="op">=</span><span class="st">"auto"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7"></a></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="bu">print</span>(<span class="ss">f"Nile Flow -&gt; ADF p=</span><span class="sc">{</span>adf_p<span class="sc">:.4f}</span><span class="ss"> | KPSS p=</span><span class="sc">{</span>kpss_p<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="co"># Difference once and re-run Confirmatory Matrix</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a>d_nile <span class="op">=</span> nile.diff().dropna()</span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="bu">print</span>(<span class="ss">f"Differenced -&gt; ADF p=</span><span class="sc">{</span>adfuller(d_nile)[<span class="dv">1</span>]<span class="sc">:.4e}</span><span class="ss"> | KPSS p=</span><span class="sc">{</span>kpss(d_nile, nlags<span class="op">=</span><span class="st">'auto'</span>)[<span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="summary-of-concepts" class="level2" data-number="4.8">
+<h2 data-number="4.8" class="anchored" data-anchor-id="summary-of-concepts"><span class="header-section-number">4.8</span> Summary of Concepts</h2>
+<ul>
+<li><strong>Nonlinear Models (SETAR/STAR)</strong>: Capture asymmetric cycles and regime switching that linear ARMA cannot represent.</li>
+<li><strong>Confirmatory Stationarity</strong>: Pairing ADF (<span class="math inline">\(H_0\)</span>: unit root) with KPSS (<span class="math inline">\(H_0\)</span>: stationary) prevents false stationarity claims.</li>
+<li><strong>Nonlinearity Tests</strong>: McLeod-Li, Keenan/Tsay, and BDS detect hidden nonlinear or ARCH structure in linear residuals.</li>
+<li><strong>State-Space &amp; Kalman Filter</strong>: Recursively estimates unobserved latent states from noisy observations via optimal minimum-MSE Kalman gain <span class="math inline">\(\mathbf{K}_t\)</span>.</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Prescribed Textbook Cross-Walk
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Concept</th>
+<th style="text-align: left;">Cryer &amp; Chan (2008)</th>
+<th style="text-align: left;">Shumway &amp; Stoffer (2011)</th>
+<th style="text-align: left;">Box et al.&nbsp;(2016)</th>
+<th style="text-align: left;">Nielsen (2019)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Nonlinear Models (TAR/STAR)</td>
+<td style="text-align: left;">Ch. 15</td>
+<td style="text-align: left;">Ch. 5.5</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Ch. 7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Stationarity &amp; Nonlinearity Tests</td>
+<td style="text-align: left;">Ch. 5.4, 15.3</td>
+<td style="text-align: left;">Ch. 3.6</td>
+<td style="text-align: left;">Ch. 4</td>
+<td style="text-align: left;">Ch. 3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">State-Space &amp; Kalman Filter</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Ch. 6</td>
+<td style="text-align: left;">Ch. 13</td>
+<td style="text-align: left;">Ch. 7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<!-- -->
+
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-cryer2008time" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">J. D. Cryer and K.-S. Chan, <em>Time series analysis: With applications in r</em>, 2nd ed. New York, NY: Springer, 2008. doi: <a href="https://doi.org/10.1007/978-0-387-75959-3">10.1007/978-0-387-75959-3</a>.</div>
+</div>
+<div id="ref-shumway2011time" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">R. H. Shumway and D. S. Stoffer, <em>Time series analysis and its applications: With r examples</em>, 3rd ed. New York, NY: Springer, 2011. doi: <a href="https://doi.org/10.1007/978-1-4419-7865-3">10.1007/978-1-4419-7865-3</a>.</div>
+</div>
+<div id="ref-box2016time" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">G. E. P. Box, G. M. Jenkins, G. C. Reinsel, and G. M. Ljung, <em>Time series analysis: Forecasting and control</em>, 5th ed. Hoboken, NJ: John Wiley &amp; Sons, 2016.</div>
+</div>
+<div id="ref-nielsen2019practical" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">A. Nielsen, <em>Practical time series analysis: Prediction with statistics and machine learning</em>, 1st ed. Sebastopol, CA: O’Reilly Media, 2019.</div>
+</div>
+<div id="ref-kalman1960new" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">R. E. Kalman, <span>“A new approach to linear filtering and prediction problems,”</span> <em>Journal of Basic Engineering</em>, vol. 82, no. 1, pp. 35–45, 1960, doi: <a href="https://doi.org/10.1115/1.3662552">10.1115/1.3662552</a>.</div>
+</div>
+<div id="ref-tong1990non" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline">H. Tong, <em>Non-linear time series: A dynamical system approach</em>. Oxford, UK: Oxford University Press, 1990.</div>
+</div>
+<div id="ref-dickey1979distribution" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[7] </div><div class="csl-right-inline">D. A. Dickey and W. A. Fuller, <span>“Distribution of the estimators for autoregressive time series with a unit root,”</span> <em>Journal of the American Statistical Association</em>, vol. 74, no. 366, pp. 427–431, 1979.</div>
+</div>
+<div id="ref-kwiatkowski1992testing" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[8] </div><div class="csl-right-inline">D. Kwiatkowski, P. C. B. Phillips, P. Schmidt, and Y. Shin, <span>“Testing the null hypothesis of stationarity against the alternative of a unit root,”</span> <em>Journal of Econometrics</em>, vol. 54, no. 1–3, pp. 159–178, 1992.</div>
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/amrita\.edu\/course\/22aie463-time-series-analysis");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../chapters/02_unit2_arima_var_garch.html" class="pagination-link" aria-label="Unit 2: ARMA, ARIMA, SARIMA, VAR, and Conditional Heteroscedastic Models">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Unit 2: ARMA, ARIMA, SARIMA, VAR, and Conditional Heteroscedastic Models</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/04_unit4_ml_dl_catastrophic.html" class="pagination-link" aria-label="Unit 4: Machine Learning, Deep Learning, and Precursors for Catastrophic Transitions">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Unit 4: Machine Learning, Deep Learning, and Precursors for Catastrophic Transitions</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu"># Unit 3: Nonlinear Dynamics, Formal Hypothesis Testing, and State-Space Models {#sec-unit3}</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="fu">### Unit 3 Curriculum Checklist</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="ss">- </span>**Nonlinear Time Series**: Time irreversibility, asymmetric limit cycles, Threshold Autoregressive (SETAR), Smooth Transition (STAR).</span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="ss">- </span>**Formal Stationarity Tests**: Unit roots, Augmented Dickey-Fuller (ADF) non-standard distribution, Phillips-Perron (PP), KPSS test, confirmatory decision matrix.</span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="ss">- </span>**Formal Nonlinearity Tests**: McLeod-Li squared-residual test, Keenan/Tsay quadratic tests, BDS chaos test.</span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="ss">- </span>**State-Space Models &amp; Kalman Filter**: Latent state vs. measurement equations, first-principles derivation of the Kalman Filter (prediction, innovation, optimal Kalman gain $\mathbf{K}_t$, update), RTS smoothing.</span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="ss">- </span>**Prescribed Text References**: Cryer &amp; Chan (2008, Ch. 13–15) <span class="co">[</span><span class="ot">@cryer2008time</span><span class="co">]</span>; Shumway &amp; Stoffer (2011, Ch. 6) <span class="co">[</span><span class="ot">@shumway2011time</span><span class="co">]</span>; Box et al. (2016, Ch. 11–12) <span class="co">[</span><span class="ot">@box2016time</span><span class="co">]</span>; Nielsen (2019, Ch. 6–7) <span class="co">[</span><span class="ot">@nielsen2019practical</span><span class="co">]</span>; Kalman (1960) <span class="co">[</span><span class="ot">@kalman1960new</span><span class="co">]</span>; Tong (1990) <span class="co">[</span><span class="ot">@tong1990non</span><span class="co">]</span>; Dickey &amp; Fuller (1979) <span class="co">[</span><span class="ot">@dickey1979distribution</span><span class="co">]</span>; Kwiatkowski et al. (1992) <span class="co">[</span><span class="ot">@kwiatkowski1992testing</span><span class="co">]</span>.</span>
+<span id="cb3-10"><a href="#cb3-10"></a>:::</span>
+<span id="cb3-11"><a href="#cb3-11"></a></span>
+<span id="cb3-12"><a href="#cb3-12"></a></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="fu">## Nonlinear Asymmetry and Apollo's Navigation Filter</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a></span>
+<span id="cb3-15"><a href="#cb3-15"></a>Every stationary Gaussian linear model is *time-reversible*: if you play an AR(2) trajectory backward in time, its statistical moments look identical [@cryer2008time]. Yet real-world systems are fiercely asymmetric. Stock markets climb slowly over years of bull runs and crash vertically in weeks; epileptic EEG spikes rise abruptly and decay slowly; predator-prey populations (like Howell Tong's famous Canadian Lynx data) build gradually and collapse suddenly [@tong1990non]. In 1980, Tong broke the linear barrier with *Threshold Autoregressive (TAR)* models, allowing system dynamics to switch regimes across physical thresholds.</span>
+<span id="cb3-16"><a href="#cb3-16"></a></span>
+<span id="cb3-17"><a href="#cb3-17"></a>At the same time, Rudolf Kalman (1960) revolutionized tracking by separating the *unobserved true physical state* (a spacecraft's orbit, a patient's true cortical potential, or a stock's latent beta) from *noisy sensor measurements* <span class="co">[</span><span class="ot">@kalman1960new; @shumway2011time</span><span class="co">]</span>. Embedded in the Apollo Guidance Computer, the Kalman filter remains the gold standard for real-time filtering and smoothing.</span>
+<span id="cb3-18"><a href="#cb3-18"></a></span>
+<span id="cb3-19"><a href="#cb3-19"></a></span>
+<span id="cb3-20"><a href="#cb3-20"></a></span>
+<span id="cb3-21"><a href="#cb3-21"></a><span class="fu">## Nonlinear Time Series: SETAR and STAR</span></span>
+<span id="cb3-22"><a href="#cb3-22"></a></span>
+<span id="cb3-23"><a href="#cb3-23"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-24"><a href="#cb3-24"></a></span>
+<span id="cb3-25"><a href="#cb3-25"></a><span class="ss">* </span>**Time Irreversibility**: Statistical asymmetry between forward ($X_1, \dots, X_T$) and reversed ($X_T, \dots, X_1$) paths—impossible in Gaussian linear models.</span>
+<span id="cb3-26"><a href="#cb3-26"></a><span class="ss">* </span>**SETAR($k; p_1, \dots, p_k$)**: Self-Exciting Threshold Autoregressive model where regime $j$ activates when lag $X_{t-d}$ falls in $(r_{j-1}, r_j]$ <span class="co">[</span><span class="ot">@tong1990non</span><span class="co">]</span>:</span>
+<span id="cb3-27"><a href="#cb3-27"></a>  $$X_t = \sum_{j=1}^k \left(\phi_0^{(j)} + \sum_{i=1}^{p_j} \phi_i^{(j)} X_{t-i} + \sigma^{(j)} Z_t\right) \mathbb{I}(r_{j-1} &lt; X_{t-d} \le r_j) \tag{3.1}$$</span>
+<span id="cb3-28"><a href="#cb3-28"></a><span class="ss">* </span>**Smooth Transition AR (STAR)**: Replaces the hard indicator step with a smooth logistic transition $G(X_{t-d}; \gamma, c) = \big[1 + \exp(-\gamma(X_{t-d}-c))\big]^{-1} \in (0,1)$.</span>
+<span id="cb3-29"><a href="#cb3-29"></a></span>
+<span id="cb3-30"><a href="#cb3-30"></a><span class="fu">### First-Principles Insight: Asymmetric Limit Cycles in SETAR(2;1,1)</span></span>
+<span id="cb3-31"><a href="#cb3-31"></a></span>
+<span id="cb3-32"><a href="#cb3-32"></a>Consider a 2-regime system with threshold $r = 3.0$:</span>
+<span id="cb3-33"><a href="#cb3-33"></a>$$X_t = \begin{cases} 0.5 + 0.85 X_{t-1} + Z_t, &amp; X_{t-1} \le 3.0 <span class="sc">\\</span> 6.0 - 0.40 X_{t-1} + Z_t, &amp; X_{t-1} &gt; 3.0 \end{cases}$$</span>
+<span id="cb3-34"><a href="#cb3-34"></a>In Regime 1, the deterministic fixed point $x_1^* = 0.5/(1-0.85) = 3.333$ lies *above* the threshold $3.0$, pushing $X_t$ upward until it crosses $3.0$. Once above $3.0$, Regime 2 takes over with negative slope $-0.40$, snapping the state back down—generating self-sustaining asymmetric cycles.</span>
+<span id="cb3-35"><a href="#cb3-35"></a></span>
+<span id="cb3-36"><a href="#cb3-36"></a><span class="fu">### Sample Problem 3.1 (Tracing a SETAR Deterministic Skeleton)</span></span>
+<span id="cb3-37"><a href="#cb3-37"></a>**Statement**: Starting from $X_0 = 2.8$ with $Z_t = 0$, compute $X_1, X_2, X_3$ for the SETAR model above.</span>
+<span id="cb3-38"><a href="#cb3-38"></a></span>
+<span id="cb3-39"><a href="#cb3-39"></a>**Solution**:</span>
+<span id="cb3-40"><a href="#cb3-40"></a></span>
+<span id="cb3-41"><a href="#cb3-41"></a><span class="ss">- </span>$X_0 = 2.8 \le 3.0 \implies X_1 = 0.5 + 0.85(2.8) = 2.88$.</span>
+<span id="cb3-42"><a href="#cb3-42"></a><span class="ss">- </span>$X_1 = 2.88 \le 3.0 \implies X_2 = 0.5 + 0.85(2.88) = 2.948$.</span>
+<span id="cb3-43"><a href="#cb3-43"></a><span class="ss">- </span>$X_2 = 2.948 \le 3.0 \implies X_3 = 0.5 + 0.85(2.948) = 3.0058 &gt; 3.0$ (crosses threshold into Regime 2 on the next step!).</span>
+<span id="cb3-44"><a href="#cb3-44"></a></span>
+<span id="cb3-45"><a href="#cb3-45"></a>::: {.callout-tip}</span>
+<span id="cb3-46"><a href="#cb3-46"></a><span class="fu">#### Key Takeaway:</span></span>
+<span id="cb3-47"><a href="#cb3-47"></a>SETAR and STAR models capture regime-dependent slopes, volatility asymmetry, and limit cycles that linear ARMA models cannot reproduce.</span>
+<span id="cb3-48"><a href="#cb3-48"></a>:::</span>
+<span id="cb3-49"><a href="#cb3-49"></a></span>
+<span id="cb3-50"><a href="#cb3-50"></a></span>
+<span id="cb3-51"><a href="#cb3-51"></a></span>
+<span id="cb3-52"><a href="#cb3-52"></a><span class="fu">## Formal Hypothesis Tests for Stationarity</span></span>
+<span id="cb3-53"><a href="#cb3-53"></a></span>
+<span id="cb3-54"><a href="#cb3-54"></a>Visual ACF inspection can mislead. So we pair two complementary unit-root tests to form a *confirmatory stationarity matrix* <span class="co">[</span><span class="ot">@cryer2008time; @nielsen2019practical</span><span class="co">]</span>.</span>
+<span id="cb3-55"><a href="#cb3-55"></a></span>
+<span id="cb3-56"><a href="#cb3-56"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-57"><a href="#cb3-57"></a></span>
+<span id="cb3-58"><a href="#cb3-58"></a><span class="ss">* </span>**Augmented Dickey-Fuller (ADF) Test**: Tests $H_0: \gamma = 0$ (Unit Root / Non-Stationary) against $H_1: \gamma &lt; 0$ (Stationary) in:</span>
+<span id="cb3-59"><a href="#cb3-59"></a>  $$\Delta X_t = \alpha + \beta t + \gamma X_{t-1} + \sum_{i=1}^p \psi_i \Delta X_{t-i} + e_t \tag{3.2}$$</span>
+<span id="cb3-60"><a href="#cb3-60"></a>  Under $H_0$, $t_\gamma = \hat{\gamma}/\mathrm{SE}(\hat{\gamma})$ follows the non-standard **Dickey-Fuller Brownian motion distribution**, which has much more negative critical values than Student's $t$ <span class="co">[</span><span class="ot">@dickey1979distribution</span><span class="co">]</span>.</span>
+<span id="cb3-61"><a href="#cb3-61"></a><span class="ss">* </span>**Phillips-Perron (PP) Test**: Non-parametric alternative to ADF using Newey-West HAC variance correction instead of lagged $\Delta X_{t-i}$ terms.</span>
+<span id="cb3-62"><a href="#cb3-62"></a><span class="ss">* </span>**KPSS Test (1992)**: Reverses the hypotheses! $H_0$: Stationary ($\sigma_u^2 = 0$ in random-walk component) vs. $H_1$: Unit Root, using $LM = \frac{\sum_{t=1}^T S_t^2}{T^2 s^2(l)}$ where $S_t = \sum_{i=1}^t e_i$ <span class="co">[</span><span class="ot">@kwiatkowski1992testing</span><span class="co">]</span>.</span>
+<span id="cb3-63"><a href="#cb3-63"></a></span>
+<span id="cb3-64"><a href="#cb3-64"></a><span class="fu">### Confirmatory Stationarity Decision Matrix</span></span>
+<span id="cb3-65"><a href="#cb3-65"></a></span>
+<span id="cb3-66"><a href="#cb3-66"></a><span class="pp">|</span> ADF Outcome ($H_0$: Unit Root) <span class="pp">|</span> KPSS Outcome ($H_0$: Stationary) <span class="pp">|</span> Diagnosis <span class="pp">|</span> Action <span class="pp">|</span></span>
+<span id="cb3-67"><a href="#cb3-67"></a><span class="pp">|:---|:---|:---|:---|</span></span>
+<span id="cb3-68"><a href="#cb3-68"></a><span class="pp">|</span> Reject ($p &lt; 0.05$) <span class="pp">|</span> Fail to Reject ($p &gt; 0.05$) <span class="pp">|</span> **Stationary** <span class="pp">|</span> Model in levels (ARMA) <span class="pp">|</span></span>
+<span id="cb3-69"><a href="#cb3-69"></a><span class="pp">|</span> Fail to Reject ($p &gt; 0.05$) <span class="pp">|</span> Reject ($p &lt; 0.05$) <span class="pp">|</span> **Unit Root** <span class="pp">|</span> Difference ($\nabla X_t$) <span class="pp">|</span></span>
+<span id="cb3-70"><a href="#cb3-70"></a><span class="pp">|</span> Reject ($p &lt; 0.05$) <span class="pp">|</span> Reject ($p &lt; 0.05$) <span class="pp">|</span> **Structural Break / Long Memory** <span class="pp">|</span> Segment or fractional diff <span class="pp">|</span></span>
+<span id="cb3-71"><a href="#cb3-71"></a></span>
+<span id="cb3-72"><a href="#cb3-72"></a><span class="fu">### Sample Problem 3.2 (ADF Statistic Evaluation)</span></span>
+<span id="cb3-73"><a href="#cb3-73"></a>**Statement**: An OLS fit yields $\Delta X_t = -0.15 X_{t-1} + 0.25 \Delta X_{t-1} + e_t$ with $\mathrm{SE}(\hat{\gamma}) = 0.05$ ($5\%$ DF critical value $= -1.95$). Test for a unit root.</span>
+<span id="cb3-74"><a href="#cb3-74"></a></span>
+<span id="cb3-75"><a href="#cb3-75"></a>**Solution**:</span>
+<span id="cb3-76"><a href="#cb3-76"></a>$ADF = \frac{-0.15}{0.05} = -3.00$. Since $-3.00 &lt; -1.95$ (deeper in the left tail), we **reject $H_0$** and conclude the series is stationary.</span>
+<span id="cb3-77"><a href="#cb3-77"></a></span>
+<span id="cb3-78"><a href="#cb3-78"></a>::: {.callout-tip}</span>
+<span id="cb3-79"><a href="#cb3-79"></a><span class="fu">#### Key Takeaway:</span></span>
+<span id="cb3-80"><a href="#cb3-80"></a>Always run **ADF and KPSS together**: ADF checks if a unit root can be rejected, while KPSS checks if stationarity can be rejected.</span>
+<span id="cb3-81"><a href="#cb3-81"></a>:::</span>
+<span id="cb3-82"><a href="#cb3-82"></a></span>
+<span id="cb3-83"><a href="#cb3-83"></a></span>
+<span id="cb3-84"><a href="#cb3-84"></a><span class="fu">## Formal Hypothesis Tests for Nonlinearity</span></span>
+<span id="cb3-85"><a href="#cb3-85"></a></span>
+<span id="cb3-86"><a href="#cb3-86"></a>Before abandoning linear models, we test whether linear ARMA residuals $\hat{e}_t$ still hide nonlinear structure <span class="co">[</span><span class="ot">@cryer2008time; @shumway2011time</span><span class="co">]</span>.</span>
+<span id="cb3-87"><a href="#cb3-87"></a></span>
+<span id="cb3-88"><a href="#cb3-88"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-89"><a href="#cb3-89"></a></span>
+<span id="cb3-90"><a href="#cb3-90"></a><span class="ss">* </span>**McLeod-Li Test**: Applies the Ljung-Box portmanteau statistic to **squared residuals** $\hat{e}_t^2$:</span>
+<span id="cb3-91"><a href="#cb3-91"></a>  $$Q_{ML} = T(T+2)\sum_{k=1}^M \frac{\hat{r}_{ee}^2(k)}{T - k} \sim \chi^2(M) \tag{3.3}$$</span>
+<span id="cb3-92"><a href="#cb3-92"></a>  Rejection indicates ARCH effects or quadratic nonlinearity.</span>
+<span id="cb3-93"><a href="#cb3-93"></a><span class="ss">* </span>**Keenan's &amp; Tsay's Tests**: Regress $X_t$ on squared fitted values $\hat{X}_t^2$ (Keenan) or all cross-products $X_{t-i}X_{t-j}$ (Tsay) via an $F$-test.</span>
+<span id="cb3-94"><a href="#cb3-94"></a><span class="ss">* </span>**BDS Test**: Uses correlation integrals $C_m(\epsilon, T)$ from chaos theory; under $i.i.d.$ residuals, $W_m = \sqrt{T}\frac{C_m - C_1^m}{\hat{\sigma}_m} \xrightarrow{d} \mathcal{N}(0,1)$.</span>
+<span id="cb3-95"><a href="#cb3-95"></a></span>
+<span id="cb3-96"><a href="#cb3-96"></a><span class="fu">### Sample Problem 3.3 (McLeod-Li Decision)</span></span>
+<span id="cb3-97"><a href="#cb3-97"></a>**Statement**: An AR(1) fit to $T=200$ stock returns leaves uncorrelated residuals $\hat{e}_t$, but $Q_{ML}$ at lag $M=10$ is $34.2$ ($\chi^2_{0.95}(10) = 18.31$). What do you conclude?</span>
+<span id="cb3-98"><a href="#cb3-98"></a></span>
+<span id="cb3-99"><a href="#cb3-99"></a>**Solution**:</span>
+<span id="cb3-100"><a href="#cb3-100"></a>Since $34.2 &gt; 18.31$, we reject linearity/$i.i.d.$ residuals and diagnose significant conditional heteroscedasticity (ARCH/GARCH) or nonlinear dependence.</span>
+<span id="cb3-101"><a href="#cb3-101"></a></span>
+<span id="cb3-102"><a href="#cb3-102"></a>::: {.callout-tip}</span>
+<span id="cb3-103"><a href="#cb3-103"></a><span class="fu">#### Key Takeaway:</span></span>
+<span id="cb3-104"><a href="#cb3-104"></a>Linear white residuals ($\hat{\rho}_e(k) \approx 0$) do not guarantee independence; McLeod-Li and BDS detect hidden nonlinear or volatility structure.</span>
+<span id="cb3-105"><a href="#cb3-105"></a>:::</span>
+<span id="cb3-106"><a href="#cb3-106"></a></span>
+<span id="cb3-107"><a href="#cb3-107"></a></span>
+<span id="cb3-108"><a href="#cb3-108"></a><span class="fu">## State-Space Models and the Kalman Filter</span></span>
+<span id="cb3-109"><a href="#cb3-109"></a></span>
+<span id="cb3-110"><a href="#cb3-110"></a>A **State-Space Model (SSM)** separates latent physical dynamics from noisy observations <span class="co">[</span><span class="ot">@shumway2011time; @kalman1960new</span><span class="co">]</span>.</span>
+<span id="cb3-111"><a href="#cb3-111"></a></span>
+<span id="cb3-112"><a href="#cb3-112"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-113"><a href="#cb3-113"></a></span>
+<span id="cb3-114"><a href="#cb3-114"></a>::: {.callout-note icon="false"}</span>
+<span id="cb3-115"><a href="#cb3-115"></a><span class="fu">#### Definition 3.1: Linear Gaussian State-Space Model</span></span>
+<span id="cb3-116"><a href="#cb3-116"></a>$$\begin{aligned}</span>
+<span id="cb3-117"><a href="#cb3-117"></a>\text{State Equation:} \quad \mathbf{x}_t &amp;= \mathbf{\Phi}_t \mathbf{x}_{t-1} + \mathbf{w}_t, &amp; \mathbf{w}_t &amp;\sim \mathcal{N}(\mathbf{0}, \mathbf{Q}_t) <span class="sc">\\</span></span>
+<span id="cb3-118"><a href="#cb3-118"></a>\text{Observation Equation:} \quad \mathbf{y}_t &amp;= \mathbf{A}_t \mathbf{x}_t + \mathbf{v}_t, &amp; \mathbf{v}_t &amp;\sim \mathcal{N}(\mathbf{0}, \mathbf{R}_t)</span>
+<span id="cb3-119"><a href="#cb3-119"></a>\end{aligned} \tag{3.4}$$</span>
+<span id="cb3-120"><a href="#cb3-120"></a>:::</span>
+<span id="cb3-121"><a href="#cb3-121"></a></span>
+<span id="cb3-122"><a href="#cb3-122"></a><span class="ss">* </span>**Filtering ($\mathbf{x}_{t|t}$)** vs. **Smoothing ($\mathbf{x}_{t|T}$)**: Filtering estimates the state using data up to $t$; smoothing (Rauch-Tung-Striebel) uses the entire record $<span class="co">[</span><span class="ot">1, T</span><span class="co">]</span>$.</span>
+<span id="cb3-123"><a href="#cb3-123"></a></span>
+<span id="cb3-124"><a href="#cb3-124"></a><span class="fu">### First-Principles Derivation of the Optimal Kalman Gain $\mathbf{K}_t$</span></span>
+<span id="cb3-125"><a href="#cb3-125"></a></span>
+<span id="cb3-126"><a href="#cb3-126"></a>Let $\mathbf{x}_{t|t-1} = \mathbf{\Phi}_t \mathbf{x}_{t-1|t-1}$ and $\mathbf{P}_{t|t-1} = \mathbf{\Phi}_t \mathbf{P}_{t-1|t-1}\mathbf{\Phi}_t^T + \mathbf{Q}_t$ be the prior prediction and covariance. When $\mathbf{y}_t$ arrives, the innovation is $\boldsymbol{\nu}_t = \mathbf{y}_t - \mathbf{A}_t \mathbf{x}_{t|t-1}$ with covariance $\mathbf{F}_t = \mathbf{A}_t \mathbf{P}_{t|t-1}\mathbf{A}_t^T + \mathbf{R}_t$.</span>
+<span id="cb3-127"><a href="#cb3-127"></a></span>
+<span id="cb3-128"><a href="#cb3-128"></a>We update the state linearly: $\mathbf{x}_{t|t} = \mathbf{x}_{t|t-1} + \mathbf{K}_t \boldsymbol{\nu}_t$. The posterior error is $\mathbf{e}_t = (\mathbf{I} - \mathbf{K}_t \mathbf{A}_t)(\mathbf{x}_t - \mathbf{x}_{t|t-1}) - \mathbf{K}_t \mathbf{v}_t$, giving posterior covariance:</span>
+<span id="cb3-129"><a href="#cb3-129"></a>$$\mathbf{P}_{t|t} = (\mathbf{I} - \mathbf{K}_t \mathbf{A}_t)\mathbf{P}_{t|t-1}(\mathbf{I} - \mathbf{K}_t \mathbf{A}_t)^T + \mathbf{K}_t \mathbf{R}_t \mathbf{K}_t^T \tag{3.5}$$</span>
+<span id="cb3-130"><a href="#cb3-130"></a>Differentiating $\mathrm{Tr}(\mathbf{P}_{t|t})$ with respect to $\mathbf{K}_t$ and setting to zero:</span>
+<span id="cb3-131"><a href="#cb3-131"></a>$$\frac{\partial \mathrm{Tr}(\mathbf{P}_{t|t})}{\partial \mathbf{K}_t} = -2(\mathbf{I} - \mathbf{K}_t\mathbf{A}_t)\mathbf{P}_{t|t-1}\mathbf{A}_t^T + 2\mathbf{K}_t\mathbf{R}_t = \mathbf{0} \implies \mathbf{K}_t(\mathbf{A}_t\mathbf{P}_{t|t-1}\mathbf{A}_t^T + \mathbf{R}_t) = \mathbf{P}_{t|t-1}\mathbf{A}_t^T$$</span>
+<span id="cb3-132"><a href="#cb3-132"></a>$$\mathbf{K}_t = \mathbf{P}_{t|t-1}\mathbf{A}_t^T \mathbf{F}_t^{-1}, \qquad \mathbf{P}_{t|t} = (\mathbf{I} - \mathbf{K}_t\mathbf{A}_t)\mathbf{P}_{t|t-1} \tag{3.6}$$</span>
+<span id="cb3-133"><a href="#cb3-133"></a></span>
+<span id="cb3-134"><a href="#cb3-134"></a><span class="fu">### Sample Problem 3.4 (1D Scalar Kalman Filter Update)</span></span>
+<span id="cb3-135"><a href="#cb3-135"></a>**Statement**: Let $x_t = 0.9 x_{t-1} + w_t$ ($Q=4$) and $y_t = x_t + v_t$ ($R=2$). Given $x_{0|0} = 10$, $P_{0|0} = 5$, and $y_1 = 12$, compute $x_{1|1}$ and $P_{1|1}$.</span>
+<span id="cb3-136"><a href="#cb3-136"></a></span>
+<span id="cb3-137"><a href="#cb3-137"></a>**Solution**:</span>
+<span id="cb3-138"><a href="#cb3-138"></a></span>
+<span id="cb3-139"><a href="#cb3-139"></a><span class="ss">1. </span>*Predict*: $x_{1|0} = 0.9(10) = 9.0$; $P_{1|0} = 0.9^2(5) + 4 = 8.05$.</span>
+<span id="cb3-140"><a href="#cb3-140"></a><span class="ss">2. </span>*Innovation*: $\nu_1 = 12 - 9.0 = 3.0$; $F_1 = 8.05 + 2 = 10.05$.</span>
+<span id="cb3-141"><a href="#cb3-141"></a><span class="ss">3. </span>*Gain*: $K_1 = 8.05 / 10.05 \approx 0.8010$.</span>
+<span id="cb3-142"><a href="#cb3-142"></a><span class="ss">4. </span>*Update*: $x_{1|1} = 9.0 + 0.8010(3.0) \approx 11.403$; $P_{1|1} = (1 - 0.8010)(8.05) \approx 1.602$.</span>
+<span id="cb3-143"><a href="#cb3-143"></a></span>
+<span id="cb3-144"><a href="#cb3-144"></a>::: {.callout-tip}</span>
+<span id="cb3-145"><a href="#cb3-145"></a><span class="fu">#### Key Takeaway: Section 3.5</span></span>
+<span id="cb3-146"><a href="#cb3-146"></a>The Kalman gain $\mathbf{K}_t$ automatically balances trust between the physical state model ($\mathbf{P}_{t|t-1}$) and incoming sensor measurements ($\mathbf{R}_t$).</span>
+<span id="cb3-147"><a href="#cb3-147"></a>:::</span>
+<span id="cb3-148"><a href="#cb3-148"></a></span>
+<span id="cb3-149"><a href="#cb3-149"></a></span>
+<span id="cb3-150"><a href="#cb3-150"></a></span>
+<span id="cb3-151"><a href="#cb3-151"></a><span class="fu">## 3-Tier Graduated Problem Ladder</span></span>
+<span id="cb3-152"><a href="#cb3-152"></a></span>
+<span id="cb3-153"><a href="#cb3-153"></a><span class="fu">### Tier 1: By-Hand Intuition</span></span>
+<span id="cb3-154"><a href="#cb3-154"></a><span class="ss">* </span>**Problem 3.5 (Practice)**: In a scalar Local Level model ($x_t = x_{t-1} + w_t$, $Q=1$, $R=9$), if $P_{1|0} = 3$, compute $K_1$. *(Answer: $K_1 = 3/(3+9) = 0.25$ — low trust in noisy sensor.)*</span>
+<span id="cb3-155"><a href="#cb3-155"></a><span class="ss">* </span>**Problem 3.6 (Practice)**: An ADF test gives $p = 0.42$ and KPSS gives $p = 0.01$. What is the diagnosis? *(Answer: Non-stationary unit root; first-difference the series.)*</span>
+<span id="cb3-156"><a href="#cb3-156"></a></span>
+<span id="cb3-157"><a href="#cb3-157"></a><span class="fu">### Tier 2: Analytical &amp; Exam-Style</span></span>
+<span id="cb3-158"><a href="#cb3-158"></a><span class="ss">* </span>**Problem 3.7 (Worked — Local Linear Trend State Matrices)**: Write $\mathbf{\Phi}$ and $\mathbf{A}$ for $y_t = \mu_t + \epsilon_t$, $\mu_t = \mu_{t-1} + \beta_{t-1} + \eta_t$, $\beta_t = \beta_{t-1} + \zeta_t$.</span>
+<span id="cb3-159"><a href="#cb3-159"></a>  *Solution*: Setting $\mathbf{x}_t = <span class="co">[</span><span class="ot">\mu_t, \beta_t</span><span class="co">]</span>^T$, we get $\mathbf{\Phi} = \begin{bmatrix} 1 &amp; 1 <span class="sc">\\</span> 0 &amp; 1 \end{bmatrix}$ and $\mathbf{A} = \begin{bmatrix} 1 &amp; 0 \end{bmatrix}$.</span>
+<span id="cb3-160"><a href="#cb3-160"></a></span>
+<span id="cb3-161"><a href="#cb3-161"></a><span class="fu">### Tier 3: Domain Case Studies (EEG &amp; Finance)</span></span>
+<span id="cb3-162"><a href="#cb3-162"></a><span class="ss">* </span>**Problem 3.8 (EEG Kalman Denoising — Worked)**: An EEG electrode suffers sudden motion-artifact noise ($R$ jumps from $2$ to $50$ $\mu\text{V}^2$) while $P_{t|t-1} = 4$. How does $K_t$ react?</span>
+<span id="cb3-163"><a href="#cb3-163"></a>  *Solution*: $K_t$ drops from $4/(4+2) = 0.67$ down to $4/(4+50) = 0.074$, automatically shielding the latent cortical estimate from the noisy spike.</span>
+<span id="cb3-164"><a href="#cb3-164"></a><span class="ss">* </span>**Problem 3.9 (Dynamic CAPM Beta via Kalman Filter — Practice)**: Formulate a stock's excess return $y_t = \beta_t r_{m,t} + v_t$ where latent beta follows a random walk $\beta_t = \beta_{t-1} + w_t$. Identify $\mathbf{\Phi}_t$ and $\mathbf{A}_t$. *(Answer: $\Phi_t = 1$, time-varying observation matrix $A_t = r_{m,t}$.)*</span>
+<span id="cb3-165"><a href="#cb3-165"></a></span>
+<span id="cb3-166"><a href="#cb3-166"></a></span>
+<span id="cb3-167"><a href="#cb3-167"></a><span class="fu">## Dual-Track Laboratory Experimental Section</span></span>
+<span id="cb3-168"><a href="#cb3-168"></a></span>
+<span id="cb3-169"><a href="#cb3-169"></a><span class="fu">### Lab Track A: EEG Denoising via Kalman Filtering &amp; Smoothing</span></span>
+<span id="cb3-170"><a href="#cb3-170"></a></span>
+<span id="cb3-171"><a href="#cb3-171"></a><span class="in">```python</span></span>
+<span id="cb3-172"><a href="#cb3-172"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-173"><a href="#cb3-173"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-174"><a href="#cb3-174"></a><span class="im">from</span> statsmodels.tsa.statespace.structural <span class="im">import</span> UnobservedComponents</span>
+<span id="cb3-175"><a href="#cb3-175"></a><span class="im">from</span> statsmodels.stats.diagnostic <span class="im">import</span> acorr_ljungbox</span>
+<span id="cb3-176"><a href="#cb3-176"></a></span>
+<span id="cb3-177"><a href="#cb3-177"></a><span class="co"># Simulate latent cortical potential + heavy electrode measurement noise</span></span>
+<span id="cb3-178"><a href="#cb3-178"></a>np.random.seed(<span class="dv">7</span>)</span>
+<span id="cb3-179"><a href="#cb3-179"></a>T <span class="op">=</span> <span class="dv">300</span></span>
+<span id="cb3-180"><a href="#cb3-180"></a>t <span class="op">=</span> np.arange(T)</span>
+<span id="cb3-181"><a href="#cb3-181"></a>true_eeg <span class="op">=</span> <span class="dv">12</span> <span class="op">*</span> np.sin(<span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> t <span class="op">/</span> <span class="dv">25</span>) <span class="op">+</span> np.cumsum(np.random.normal(<span class="dv">0</span>, <span class="fl">0.3</span>, T))</span>
+<span id="cb3-182"><a href="#cb3-182"></a>noisy_eeg <span class="op">=</span> true_eeg <span class="op">+</span> np.random.normal(<span class="dv">0</span>, <span class="fl">4.0</span>, T)</span>
+<span id="cb3-183"><a href="#cb3-183"></a></span>
+<span id="cb3-184"><a href="#cb3-184"></a><span class="co"># Fit Local Level State-Space Model &amp; extract Kalman Filtered / RTS Smoothed states</span></span>
+<span id="cb3-185"><a href="#cb3-185"></a>ssm <span class="op">=</span> UnobservedComponents(noisy_eeg, level<span class="op">=</span><span class="st">"local level"</span>).fit(disp<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-186"><a href="#cb3-186"></a><span class="bu">print</span>(<span class="ss">f"Estimated Measurement Var R: </span><span class="sc">{</span>ssm<span class="sc">.</span>params[<span class="st">'sigma2.measurement'</span>]<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb3-187"><a href="#cb3-187"></a><span class="bu">print</span>(<span class="ss">f"RMSE Raw Noisy: </span><span class="sc">{</span>np<span class="sc">.</span>sqrt(np.mean((noisy_eeg <span class="op">-</span> true_eeg)<span class="op">**</span><span class="dv">2</span>))<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb3-188"><a href="#cb3-188"></a><span class="bu">print</span>(<span class="ss">f"RMSE RTS Smoothed: </span><span class="sc">{</span>np<span class="sc">.</span>sqrt(np.mean((ssm.smoothed_state[<span class="dv">0</span>] <span class="op">-</span> true_eeg)<span class="op">**</span><span class="dv">2</span>))<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb3-189"><a href="#cb3-189"></a></span>
+<span id="cb3-190"><a href="#cb3-190"></a><span class="co"># McLeod-Li test on standardized residuals</span></span>
+<span id="cb3-191"><a href="#cb3-191"></a>std_res <span class="op">=</span> ssm.resid <span class="op">/</span> np.sqrt(ssm.params[<span class="st">"sigma2.measurement"</span>])</span>
+<span id="cb3-192"><a href="#cb3-192"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">McLeod-Li Nonlinearity Test:</span><span class="ch">\n</span><span class="st">"</span>, acorr_ljungbox(std_res<span class="op">**</span><span class="dv">2</span>, lags<span class="op">=</span>[<span class="dv">5</span>, <span class="dv">10</span>], return_df<span class="op">=</span><span class="va">True</span>))</span>
+<span id="cb3-193"><a href="#cb3-193"></a><span class="in">```</span></span>
+<span id="cb3-194"><a href="#cb3-194"></a></span>
+<span id="cb3-195"><a href="#cb3-195"></a><span class="fu">### Lab Track B: Confirmatory Stationarity &amp; Structural Breaks on Nile / Financial Levels</span></span>
+<span id="cb3-196"><a href="#cb3-196"></a></span>
+<span id="cb3-197"><a href="#cb3-197"></a><span class="in">```python</span></span>
+<span id="cb3-198"><a href="#cb3-198"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb3-199"><a href="#cb3-199"></a><span class="im">from</span> statsmodels.tsa.stattools <span class="im">import</span> adfuller, kpss</span>
+<span id="cb3-200"><a href="#cb3-200"></a></span>
+<span id="cb3-201"><a href="#cb3-201"></a>nile <span class="op">=</span> sm.datasets.nile.load_pandas().data[<span class="st">"volume"</span>]</span>
+<span id="cb3-202"><a href="#cb3-202"></a>adf_stat, adf_p, <span class="op">*</span>_ <span class="op">=</span> adfuller(nile, autolag<span class="op">=</span><span class="st">"AIC"</span>)</span>
+<span id="cb3-203"><a href="#cb3-203"></a>kpss_stat, kpss_p, <span class="op">*</span>_ <span class="op">=</span> kpss(nile, regression<span class="op">=</span><span class="st">"c"</span>, nlags<span class="op">=</span><span class="st">"auto"</span>)</span>
+<span id="cb3-204"><a href="#cb3-204"></a></span>
+<span id="cb3-205"><a href="#cb3-205"></a><span class="bu">print</span>(<span class="ss">f"Nile Flow -&gt; ADF p=</span><span class="sc">{</span>adf_p<span class="sc">:.4f}</span><span class="ss"> | KPSS p=</span><span class="sc">{</span>kpss_p<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb3-206"><a href="#cb3-206"></a><span class="co"># Difference once and re-run Confirmatory Matrix</span></span>
+<span id="cb3-207"><a href="#cb3-207"></a>d_nile <span class="op">=</span> nile.diff().dropna()</span>
+<span id="cb3-208"><a href="#cb3-208"></a><span class="bu">print</span>(<span class="ss">f"Differenced -&gt; ADF p=</span><span class="sc">{</span>adfuller(d_nile)[<span class="dv">1</span>]<span class="sc">:.4e}</span><span class="ss"> | KPSS p=</span><span class="sc">{</span>kpss(d_nile, nlags<span class="op">=</span><span class="st">'auto'</span>)[<span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb3-209"><a href="#cb3-209"></a><span class="in">```</span></span>
+<span id="cb3-210"><a href="#cb3-210"></a></span>
+<span id="cb3-211"><a href="#cb3-211"></a></span>
+<span id="cb3-212"><a href="#cb3-212"></a></span>
+<span id="cb3-213"><a href="#cb3-213"></a><span class="fu">## Summary of Concepts </span></span>
+<span id="cb3-214"><a href="#cb3-214"></a></span>
+<span id="cb3-215"><a href="#cb3-215"></a><span class="ss">* </span>**Nonlinear Models (SETAR/STAR)**: Capture asymmetric cycles and regime switching that linear ARMA cannot represent.</span>
+<span id="cb3-216"><a href="#cb3-216"></a><span class="ss">* </span>**Confirmatory Stationarity**: Pairing ADF ($H_0$: unit root) with KPSS ($H_0$: stationary) prevents false stationarity claims.</span>
+<span id="cb3-217"><a href="#cb3-217"></a><span class="ss">* </span>**Nonlinearity Tests**: McLeod-Li, Keenan/Tsay, and BDS detect hidden nonlinear or ARCH structure in linear residuals.</span>
+<span id="cb3-218"><a href="#cb3-218"></a><span class="ss">* </span>**State-Space &amp; Kalman Filter**: Recursively estimates unobserved latent states from noisy observations via optimal minimum-MSE Kalman gain $\mathbf{K}_t$.</span>
+<span id="cb3-219"><a href="#cb3-219"></a></span>
+<span id="cb3-220"><a href="#cb3-220"></a>::: {.callout-tip}</span>
+<span id="cb3-221"><a href="#cb3-221"></a><span class="fu">### Prescribed Textbook Cross-Walk</span></span>
+<span id="cb3-222"><a href="#cb3-222"></a><span class="pp">|</span> Concept <span class="pp">|</span> Cryer &amp; Chan (2008) <span class="pp">|</span> Shumway &amp; Stoffer (2011) <span class="pp">|</span> Box et al. (2016) <span class="pp">|</span> Nielsen (2019) <span class="pp">|</span></span>
+<span id="cb3-223"><a href="#cb3-223"></a><span class="pp">|:---|:---|:---|:---|:---|</span></span>
+<span id="cb3-224"><a href="#cb3-224"></a><span class="pp">|</span> Nonlinear Models (TAR/STAR) <span class="pp">|</span> Ch. 15 <span class="pp">|</span> Ch. 5.5 <span class="pp">|</span> — <span class="pp">|</span> Ch. 7 <span class="pp">|</span></span>
+<span id="cb3-225"><a href="#cb3-225"></a><span class="pp">|</span> Stationarity &amp; Nonlinearity Tests <span class="pp">|</span> Ch. 5.4, 15.3 <span class="pp">|</span> Ch. 3.6 <span class="pp">|</span> Ch. 4 <span class="pp">|</span> Ch. 3 <span class="pp">|</span></span>
+<span id="cb3-226"><a href="#cb3-226"></a><span class="pp">|</span> State-Space &amp; Kalman Filter <span class="pp">|</span> — <span class="pp">|</span> Ch. 6 <span class="pp">|</span> Ch. 13 <span class="pp">|</span> Ch. 7 <span class="pp">|</span></span>
+<span id="cb3-227"><a href="#cb3-227"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

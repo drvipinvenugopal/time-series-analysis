@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.31">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>1&nbsp; Chapter 0: Zero-Prerequisite Foundations Bootcamp – Time Series Analysis: First Principles to Deep Applications</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/01_unit1_linear_models.html" rel="next">
+<link href="../index.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-4a990d8dcb58f517c7c86712b8f2ac7c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-46f4cc9626f044588a66931b604fc9c8.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-4a990d8dcb58f517c7c86712b8f2ac7c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-4c7a00f65c4f7b083d618916be6661e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-2f778816bbcb37d180fb5a0deea0cd82.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-4c7a00f65c4f7b083d618916be6661e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/00_bootcamp_foundations.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Chapter 0: Zero-Prerequisite Foundations Bootcamp</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Time Series Analysis: First Principles to Deep Applications</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/amrita-aie/22AIE463-time-series-analysis" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Course Overview &amp; Syllabus Mapping</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/00_bootcamp_foundations.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Chapter 0: Zero-Prerequisite Foundations Bootcamp</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01_unit1_linear_models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Unit 1: Linear Time Series, Stationarity, Ergodicity, and Classical Processes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02_unit2_arima_var_garch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Unit 2: ARMA, ARIMA, SARIMA, VAR, and Conditional Heteroscedastic Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03_unit3_nonlinear_statespace.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Unit 3: Nonlinear Dynamics, Formal Hypothesis Testing, and State-Space Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04_unit4_ml_dl_catastrophic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Unit 4: Machine Learning, Deep Learning, and Precursors for Catastrophic Transitions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prescribed Textbooks and References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#opening-two-signals-one-mathematical-backbone" id="toc-opening-two-signals-one-mathematical-backbone" class="nav-link active" data-scroll-target="#opening-two-signals-one-mathematical-backbone"><span class="header-section-number">1.1</span> Opening: Two Signals, One Mathematical Backbone</a></li>
+  <li><a href="#probability-moment-algebra-from-scratch" id="toc-probability-moment-algebra-from-scratch" class="nav-link" data-scroll-target="#probability-moment-algebra-from-scratch"><span class="header-section-number">1.2</span> Probability &amp; Moment Algebra From Scratch</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms" id="toc-key-definitions-important-terms" class="nav-link" data-scroll-target="#key-definitions-important-terms"><span class="header-section-number">1.2.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#first-principles-derivations-of-moment-identities" id="toc-first-principles-derivations-of-moment-identities" class="nav-link" data-scroll-target="#first-principles-derivations-of-moment-identities"><span class="header-section-number">1.2.2</span> First-Principles Derivations of Moment Identities</a></li>
+  <li><a href="#sample-problem-0.1-moment-algebra" id="toc-sample-problem-0.1-moment-algebra" class="nav-link" data-scroll-target="#sample-problem-0.1-moment-algebra"><span class="header-section-number">1.2.3</span> Sample Problem 0.1 (Moment Algebra)</a></li>
+  </ul></li>
+  <li><a href="#white-noise-the-base-of-time-series" id="toc-white-noise-the-base-of-time-series" class="nav-link" data-scroll-target="#white-noise-the-base-of-time-series"><span class="header-section-number">1.3</span> White Noise: The base of Time Series</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms-1" id="toc-key-definitions-important-terms-1" class="nav-link" data-scroll-target="#key-definitions-important-terms-1"><span class="header-section-number">1.3.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#sample-problem-0.2-checking-white-noise-properties" id="toc-sample-problem-0.2-checking-white-noise-properties" class="nav-link" data-scroll-target="#sample-problem-0.2-checking-white-noise-properties"><span class="header-section-number">1.3.2</span> Sample Problem 0.2 (Checking White Noise Properties)</a></li>
+  </ul></li>
+  <li><a href="#difference-equations-the-backward-shift-operator-b" id="toc-difference-equations-the-backward-shift-operator-b" class="nav-link" data-scroll-target="#difference-equations-the-backward-shift-operator-b"><span class="header-section-number">1.4</span> Difference Equations &amp; The Backward Shift Operator <span class="math inline">\(B\)</span></a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms-2" id="toc-key-definitions-important-terms-2" class="nav-link" data-scroll-target="#key-definitions-important-terms-2"><span class="header-section-number">1.4.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#first-principles-derivation-geometric-inversion-of-1---phi-b" id="toc-first-principles-derivation-geometric-inversion-of-1---phi-b" class="nav-link" data-scroll-target="#first-principles-derivation-geometric-inversion-of-1---phi-b"><span class="header-section-number">1.4.2</span> First-Principles Derivation: Geometric Inversion of <span class="math inline">\((1 - \phi B)\)</span></a></li>
+  <li><a href="#sample-problem-0.3-lag-operator-algebra" id="toc-sample-problem-0.3-lag-operator-algebra" class="nav-link" data-scroll-target="#sample-problem-0.3-lag-operator-algebra"><span class="header-section-number">1.4.3</span> Sample Problem 0.3 (Lag Operator Algebra)</a></li>
+  </ul></li>
+  <li><a href="#complex-numbers-the-unit-circle-why-oscillations-happen" id="toc-complex-numbers-the-unit-circle-why-oscillations-happen" class="nav-link" data-scroll-target="#complex-numbers-the-unit-circle-why-oscillations-happen"><span class="header-section-number">1.5</span> Complex Numbers &amp; The Unit Circle (Why Oscillations Happen)</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms-3" id="toc-key-definitions-important-terms-3" class="nav-link" data-scroll-target="#key-definitions-important-terms-3"><span class="header-section-number">1.5.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#first-principles-derivation-root-modulus-stability-and-oscillation-frequency" id="toc-first-principles-derivation-root-modulus-stability-and-oscillation-frequency" class="nav-link" data-scroll-target="#first-principles-derivation-root-modulus-stability-and-oscillation-frequency"><span class="header-section-number">1.5.2</span> First-Principles Derivation: Root Modulus, Stability, and Oscillation Frequency</a></li>
+  <li><a href="#sample-problem-0.4-unit-circle-stability-oscillation-period" id="toc-sample-problem-0.4-unit-circle-stability-oscillation-period" class="nav-link" data-scroll-target="#sample-problem-0.4-unit-circle-stability-oscillation-period"><span class="header-section-number">1.5.3</span> Sample Problem 0.4 (Unit Circle Stability &amp; Oscillation Period)</a></li>
+  </ul></li>
+  <li><a href="#financial-returns-vs.-raw-prices-essential-transformation" id="toc-financial-returns-vs.-raw-prices-essential-transformation" class="nav-link" data-scroll-target="#financial-returns-vs.-raw-prices-essential-transformation"><span class="header-section-number">1.6</span> Financial Returns vs.&nbsp;Raw Prices (Essential Transformation)</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms-4" id="toc-key-definitions-important-terms-4" class="nav-link" data-scroll-target="#key-definitions-important-terms-4"><span class="header-section-number">1.6.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#first-principles-proof-time-additivity-small-return-equivalence" id="toc-first-principles-proof-time-additivity-small-return-equivalence" class="nav-link" data-scroll-target="#first-principles-proof-time-additivity-small-return-equivalence"><span class="header-section-number">1.6.2</span> First-Principles Proof: Time-Additivity &amp; Small-Return Equivalence</a></li>
+  <li><a href="#sample-problem-0.5-simple-vs.-log-returns" id="toc-sample-problem-0.5-simple-vs.-log-returns" class="nav-link" data-scroll-target="#sample-problem-0.5-simple-vs.-log-returns"><span class="header-section-number">1.6.3</span> Sample Problem 0.5 (Simple vs.&nbsp;Log Returns)</a></li>
+  </ul></li>
+  <li><a href="#bootcamp-python-lab-time-indexing-lags-and-returns" id="toc-bootcamp-python-lab-time-indexing-lags-and-returns" class="nav-link" data-scroll-target="#bootcamp-python-lab-time-indexing-lags-and-returns"><span class="header-section-number">1.7</span> Bootcamp Python Lab: Time-Indexing, Lags, and Returns</a></li>
+  <li><a href="#summary-of-concepts-chapter-0" id="toc-summary-of-concepts-chapter-0" class="nav-link" data-scroll-target="#summary-of-concepts-chapter-0"><span class="header-section-number">1.8</span> Summary of Concepts (Chapter 0)</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-chapter0" class="quarto-section-identifier"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Chapter 0: Zero-Prerequisite Foundations Bootcamp</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Who This Chapter Is For
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you have <strong>never studied time series analysis before</strong>, start here. Before we touch autoregressive equations, Kalman filters, or deep sequence networks, this chapter builds every mathematical and computational tool you will use across Units 1–4—from expectation algebra and difference equations to complex roots on the unit circle and Python time-indexing.</p>
+<ul>
+<li><strong>Prescribed Text Bridges</strong>: Cryer &amp; Chan (2008, Ch. 1–2) <span class="citation" data-cites="cryer2008time"><a href="../references.html#ref-cryer2008time" role="doc-biblioref">[1]</a></span>; Shumway &amp; Stoffer (2011, Ch. 1 &amp; Appendix A) <span class="citation" data-cites="shumway2011time"><a href="../references.html#ref-shumway2011time" role="doc-biblioref">[2]</a></span>; Box et al.&nbsp;(2016, Ch. 1–2) <span class="citation" data-cites="box2016time"><a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>; Nielsen (2019, Ch. 1–2) <span class="citation" data-cites="nielsen2019practical"><a href="../references.html#ref-nielsen2019practical" role="doc-biblioref">[4]</a></span>.</li>
+</ul>
+</div>
+</div>
+<hr>
+<section id="opening-two-signals-one-mathematical-backbone" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="opening-two-signals-one-mathematical-backbone"><span class="header-section-number">1.1</span> Opening: Two Signals, One Mathematical Backbone</h2>
+<p>Imagine two completely different rooms on the same Tuesday morning:</p>
+<ol type="1">
+<li><strong>The Neurology Lab</strong>: A clinician places electrodes on a patient’s scalp to record an <em>electroencephalogram (EEG)</em>. Every 4 milliseconds (<span class="math inline">\(250\text{ Hz}\)</span>), the amplifier logs a voltage in microvolts (<span class="math inline">\(\mu\text{V}\)</span>). When the patient closes their eyes and relaxes, the trace settles into a smooth <span class="math inline">\(10\text{ Hz}\)</span> ripple—the <em>alpha rhythm</em>. Seconds before an epileptic seizure, that rhythm changes character.</li>
+<li><strong>The Trading Desk</strong>: A quantitative analyst watches the closing prices of an equity index—say, the NIFTY 50 or S&amp;P 500—alongside trading volume and interest rates. Tomorrow’s portfolio risk depends on whether today’s sudden <span class="math inline">\(3\%\)</span> drop is an isolated shock or the start of a turbulent volatility cluster.</li>
+</ol>
+<p>On the surface, brainwaves and stock prices have nothing in common. Underneath, both are <strong>ordered sequences indexed by time</strong>, and both violate the #1 assumption of introductory statistics:</p>
+<blockquote class="blockquote">
+<p><strong>The <span class="math inline">\(i.i.d.\)</span> Trap</strong>: Standard statistics assumes rows in a dataset are <em>independent and identically distributed</em> (<span class="math inline">\(i.i.d.\)</span>). If you shuffle the rows of a housing-price table, nothing breaks. If you shuffle the rows of an EEG recording or a stock chart, you destroy the physics of the problem—causality, momentum, cycles, and memory <span class="citation" data-cites="nielsen2019practical"><a href="../references.html#ref-nielsen2019practical" role="doc-biblioref">[4]</a></span>.</p>
+</blockquote>
+<p>To analyze the time series data rigorously, we need a shared mathematical backbone. Each section below introduces the key definitions, first-principles derivations, worked sample problems, and key takeaways you need before entering Unit 1.</p>
+</section>
+<section id="probability-moment-algebra-from-scratch" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="probability-moment-algebra-from-scratch"><span class="header-section-number">1.2</span> Probability &amp; Moment Algebra From Scratch</h2>
+<p>Almost every proof in Units 1–4 relies on four algebraic rules for random variables. Mastering them now makes every later derivation transparent <span class="citation" data-cites="cryer2008time"><a href="../references.html#ref-cryer2008time" role="doc-biblioref">[1]</a></span>.</p>
+<section id="key-definitions-important-terms" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="key-definitions-important-terms"><span class="header-section-number">1.2.1</span> Key Definitions &amp; Important Terms</h3>
+<ul>
+<li><strong>Random Variable (<span class="math inline">\(X\)</span>)</strong>: A numerical outcome of a random phenomenon (e.g., tomorrow’s return or the EEG voltage at <span class="math inline">\(t = 1.2\text{ s}\)</span>).</li>
+<li><strong>Expectation (<span class="math inline">\(\mathbb{E}[X]\)</span> or <span class="math inline">\(\mu_X\)</span>)</strong>: The probability-weighted average (center of mass) of <span class="math inline">\(X\)</span>: <span class="math inline">\(\mathbb{E}[X] = \sum_x x \, p(x)\)</span> (discrete) or <span class="math inline">\(\int_{-\infty}^\infty x f(x)\,dx\)</span> (continuous).</li>
+<li><strong>Variance (<span class="math inline">\(\mathrm{Var}(X)\)</span> or <span class="math inline">\(\sigma_X^2\)</span>)</strong>: The expected squared deviation from the mean, measuring spread around <span class="math inline">\(\mu_X\)</span>.</li>
+<li><strong>Covariance (<span class="math inline">\(\mathrm{Cov}(X, Y)\)</span>)</strong>: A measure of the <em>linear</em> co-movement between two random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>.</li>
+<li><strong>Pearson Correlation (<span class="math inline">\(\rho(X, Y)\)</span>)</strong>: A unitless, standardized version of covariance bounded in <span class="math inline">\([-1, 1]\)</span>.</li>
+</ul>
+</section>
+<section id="first-principles-derivations-of-moment-identities" class="level3" data-number="1.2.2">
+<h3 data-number="1.2.2" class="anchored" data-anchor-id="first-principles-derivations-of-moment-identities"><span class="header-section-number">1.2.2</span> First-Principles Derivations of Moment Identities</h3>
+<p>Let <span class="math inline">\(X, Y\)</span> be random variables with finite second moments (<span class="math inline">\(\mathbb{E}[X^2] &lt; \infty, \mathbb{E}[Y^2] &lt; \infty\)</span>), and let <span class="math inline">\(a, b, c \in \mathbb{R}\)</span> be constants.</p>
+<section id="theorem-0.1-linearity-of-expectation-variance-scaling" class="level4" data-number="1.2.2.1">
+<h4 data-number="1.2.2.1" class="anchored" data-anchor-id="theorem-0.1-linearity-of-expectation-variance-scaling"><span class="header-section-number">1.2.2.1</span> Theorem 0.1: Linearity of Expectation &amp; Variance Scaling</h4>
+<ol type="1">
+<li><span class="math inline">\(\mathbb{E}[aX + bY + c] = a\mathbb{E}[X] + b\mathbb{E}[Y] + c\)</span> (holds <strong>even when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are dependent</strong>).</li>
+<li><span class="math inline">\(\mathrm{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2\)</span>.</li>
+<li><span class="math inline">\(\mathrm{Var}(aX + c) = a^2 \mathrm{Var}(X)\)</span>.</li>
+</ol>
+<p><strong>Derivation from First Principles</strong>: By definition, <span class="math inline">\(\mathrm{Var}(X) = \mathbb{E}[(X - \mu_X)^2]\)</span>. Expanding the square inside the expectation and applying linearity: <span class="math display">\[\begin{aligned}
+\mathrm{Var}(X) &amp;= \mathbb{E}[X^2 - 2\mu_X X + \mu_X^2] \\
+&amp;= \mathbb{E}[X^2] - 2\mu_X \mathbb{E}[X] + \mu_X^2 = \mathbb{E}[X^2] - 2\mu_X^2 + \mu_X^2 = \mathbb{E}[X^2] - \mu_X^2
+\end{aligned} \tag{0.1}\]</span> For <span class="math inline">\(W = aX + c\)</span>, its mean is <span class="math inline">\(\mu_W = \mathbb{E}[aX + c] = a\mu_X + c\)</span>. Therefore: <span class="math display">\[\mathrm{Var}(aX + c) = \mathbb{E}\big[((aX + c) - (a\mu_X + c))^2\big] = \mathbb{E}\big[a^2(X - \mu_X)^2\big] = a^2 \mathrm{Var}(X) \tag{0.2}\]</span> Adding a constant <span class="math inline">\(c\)</span> shifts the location but leaves the spread untouched.</p>
+</section>
+<section id="theorem-0.2-bilinearity-of-covariance-sum-of-variances-identity" class="level4" data-number="1.2.2.2">
+<h4 data-number="1.2.2.2" class="anchored" data-anchor-id="theorem-0.2-bilinearity-of-covariance-sum-of-variances-identity"><span class="header-section-number">1.2.2.2</span> Theorem 0.2: Bilinearity of Covariance &amp; Sum-of-Variances Identity</h4>
+<p>For any random variables <span class="math inline">\(X_1, \dots, X_m\)</span> and <span class="math inline">\(Y_1, \dots, Y_n\)</span>: <span class="math display">\[\mathrm{Cov}\left(\sum_{i=1}^m a_i X_i, \, \sum_{j=1}^n b_j Y_j\right) = \sum_{i=1}^m \sum_{j=1}^n a_i b_j \, \mathrm{Cov}(X_i, Y_j) \tag{0.3}\]</span> In particular, for two variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>: <span class="math display">\[\mathrm{Var}(X + Y) = \mathrm{Var}(X) + \mathrm{Var}(Y) + 2\,\mathrm{Cov}(X, Y) \tag{0.4}\]</span></p>
+<p><strong>Derivation from First Principles</strong>: Let <span class="math inline">\(\tilde{X}_i = X_i - \mathbb{E}[X_i]\)</span> and <span class="math inline">\(\tilde{Y}_j = Y_j - \mathbb{E}[Y_j]\)</span> be the centered variables. By linearity of expectation, <span class="math inline">\(\sum a_i X_i - \mathbb{E}[\sum a_i X_i] = \sum a_i \tilde{X}_i\)</span>. Thus: <span class="math display">\[\mathrm{Cov}\left(\sum_{i=1}^m a_i X_i, \, \sum_{j=1}^n b_j Y_j\right) = \mathbb{E}\left[\left(\sum_{i=1}^m a_i \tilde{X}_i\right)\left(\sum_{j=1}^n b_j \tilde{Y}_j\right)\right] = \sum_{i=1}^m \sum_{j=1}^n a_i b_j \, \mathbb{E}[\tilde{X}_i \tilde{Y}_j] = \sum_{i=1}^m \sum_{j=1}^n a_i b_j \, \mathrm{Cov}(X_i, Y_j)\]</span> Setting <span class="math inline">\(m = n = 2\)</span>, <span class="math inline">\(Y_i = X_i\)</span>, and <span class="math inline">\(a_1 = a_2 = 1\)</span> gives <span class="math inline">\(\mathrm{Var}(X_1 + X_2) = \mathrm{Cov}(X_1+X_2, X_1+X_2) = \mathrm{Var}(X_1) + \mathrm{Var}(X_2) + 2\,\mathrm{Cov}(X_1, X_2)\)</span>.</p>
+</section>
+</section>
+<section id="sample-problem-0.1-moment-algebra" class="level3" data-number="1.2.3">
+<h3 data-number="1.2.3" class="anchored" data-anchor-id="sample-problem-0.1-moment-algebra"><span class="header-section-number">1.2.3</span> Sample Problem 0.1 (Moment Algebra)</h3>
+<p><strong>Statement</strong>: Let <span class="math inline">\(Z_1, Z_2, Z_3\)</span> be uncorrelated white noise shocks with mean <span class="math inline">\(0\)</span> and variance <span class="math inline">\(\sigma^2 = 4\)</span>. Define <span class="math inline">\(X_2 = Z_2 + 0.5 Z_1\)</span> and <span class="math inline">\(X_3 = Z_3 + 0.5 Z_2\)</span>. Compute <span class="math inline">\(\mathbb{E}[X_2]\)</span>, <span class="math inline">\(\mathrm{Var}(X_2)\)</span>, <span class="math inline">\(\mathrm{Cov}(X_2, X_3)\)</span>, and <span class="math inline">\(\rho(X_2, X_3)\)</span>.</p>
+<p><strong>Solution</strong>: 1. <em>Mean</em>: <span class="math inline">\(\mathbb{E}[X_2] = \mathbb{E}[Z_2] + 0.5\,\mathbb{E}[Z_1] = 0\)</span>. 2. <em>Variance</em>: Since <span class="math inline">\(\mathrm{Cov}(Z_1, Z_2) = 0\)</span>, <span class="math inline">\(\mathrm{Var}(X_2) = \mathrm{Var}(Z_2) + (0.5)^2 \mathrm{Var}(Z_1) = 4 + 0.25(4) = 5\)</span>. By symmetry, <span class="math inline">\(\mathrm{Var}(X_3) = 5\)</span>. 3. <em>Covariance</em>: By bilinearity (Eq. 0.3): <span class="math display">\[\mathrm{Cov}(X_2, X_3) = \mathrm{Cov}(Z_2 + 0.5 Z_1, Z_3 + 0.5 Z_2) = 0 + 0.5\,\mathrm{Cov}(Z_2, Z_2) + 0 + 0 = 0.5(4) = 2\]</span> 4. <em>Correlation</em>: <span class="math inline">\(\rho(X_2, X_3) = \frac{\mathrm{Cov}(X_2, X_3)}{\sqrt{\mathrm{Var}(X_2)\mathrm{Var}(X_3)}} = \frac{2}{\sqrt{5 \cdot 5}} = 0.40\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway: Section 0.2
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Covariance is <strong>bilinear</strong>: you can pull constants out and expand sums just like ordinary polynomial multiplication. When random variables share a common shock (<span class="math inline">\(Z_2\)</span>), they become correlated—and <span class="math inline">\(\mathrm{Var}(X+Y)\)</span> gains the cross-term <span class="math inline">\(2\,\mathrm{Cov}(X,Y)\)</span>.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="white-noise-the-base-of-time-series" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="white-noise-the-base-of-time-series"><span class="header-section-number">1.3</span> White Noise: The base of Time Series</h2>
+<p>Every time series model in this course is built by passing pure, unpredictable randomness through a mathematical filter <span class="citation" data-cites="shumway2011time"><a href="../references.html#ref-shumway2011time" role="doc-biblioref">[2]</a></span>. We call that pure randomness <strong>white noise</strong>.</p>
+<section id="key-definitions-important-terms-1" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="key-definitions-important-terms-1"><span class="header-section-number">1.3.1</span> Key Definitions &amp; Important Terms</h3>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definition 0.1: White Noise Process
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A sequence <span class="math inline">\(\{Z_t\}_{t \in \mathbb{Z}}\)</span> is <strong>white noise</strong>, denoted <span class="math inline">\(Z_t \sim WN(0, \sigma^2)\)</span>, if:</p>
+<ol type="1">
+<li><span class="math inline">\(\mathbb{E}[Z_t] = 0\)</span> for all <span class="math inline">\(t\)</span>,</li>
+<li><span class="math inline">\(\mathrm{Var}(Z_t) = \sigma^2 &lt; \infty\)</span> for all <span class="math inline">\(t\)</span>, and</li>
+<li><span class="math inline">\(\mathrm{Cov}(Z_t, Z_s) = 0\)</span> whenever <span class="math inline">\(t \neq s\)</span>.</li>
+</ol>
+<p>If the <span class="math inline">\(Z_t\)</span> are also independent and Normally distributed, we write <span class="math inline">\(Z_t \overset{i.i.d.}{\sim} \mathcal{N}(0, \sigma^2)\)</span> (Gaussian white noise).</p>
+</div>
+</div>
+<ul>
+<li><strong>Innovation / Shock (<span class="math inline">\(Z_t\)</span>)</strong>: The genuinely new, unpredictable information arriving at time <span class="math inline">\(t\)</span> (e.g., an unexpected RBI rate decision or thermal electrode noise).</li>
+</ul>
+</section>
+<section id="sample-problem-0.2-checking-white-noise-properties" class="level3" data-number="1.3.2">
+<h3 data-number="1.3.2" class="anchored" data-anchor-id="sample-problem-0.2-checking-white-noise-properties"><span class="header-section-number">1.3.2</span> Sample Problem 0.2 (Checking White Noise Properties)</h3>
+<p><strong>Statement</strong>: Let <span class="math inline">\(Z_t \sim WN(0, \sigma^2)\)</span>. Suppose <span class="math inline">\(Y_t = Z_t - Z_{t-1}\)</span>. Is <span class="math inline">\(\{Y_t\}\)</span> white noise?</p>
+<p><strong>Solution</strong>: Check condition 3: <span class="math inline">\(\mathrm{Cov}(Y_t, Y_{t-1}) = \mathrm{Cov}(Z_t - Z_{t-1}, Z_{t-1} - Z_{t-2}) = -\mathrm{Var}(Z_{t-1}) = -\sigma^2 \neq 0\)</span>. Because lag-1 covariance is non-zero, <span class="math inline">\(\{Y_t\}\)</span> is <strong>not</strong> white noise (differencing white noise creates negative correlation).</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway: Section 0.3
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>White noise has zero mean, constant variance, and zero correlation across distinct time points. It is the unpredictable “raw fuel” that drives every AR, MA, ARIMA, and State-Space model.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="difference-equations-the-backward-shift-operator-b" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="difference-equations-the-backward-shift-operator-b"><span class="header-section-number">1.4</span> Difference Equations &amp; The Backward Shift Operator <span class="math inline">\(B\)</span></h2>
+<p>In calculus, differential equations (<span class="math inline">\(\frac{dx}{dt} = -\lambda x\)</span>) govern continuous time. In digital EEG amplifiers and daily stock closes, time arrives in discrete ticks <span class="math inline">\(t = 0, 1, 2, \dots\)</span>, so <strong>difference equations</strong> take center stage <span class="citation" data-cites="box2016time"><a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>.</p>
+<section id="key-definitions-important-terms-2" class="level3" data-number="1.4.1">
+<h3 data-number="1.4.1" class="anchored" data-anchor-id="key-definitions-important-terms-2"><span class="header-section-number">1.4.1</span> Key Definitions &amp; Important Terms</h3>
+<ul>
+<li><strong>Backward Shift (Lag) Operator (<span class="math inline">\(B\)</span>)</strong>: Shifts a series one step back in time: <span class="math inline">\(B X_t = X_{t-1}\)</span>, and in general <span class="math inline">\(B^k X_t = X_{t-k}\)</span>.</li>
+<li><strong>First-Difference Operator (<span class="math inline">\(\nabla\)</span>)</strong>: Computes the step-to-step change: <span class="math inline">\(\nabla X_t = (1 - B) X_t = X_t - X_{t-1}\)</span>.</li>
+<li><strong>Second-Difference Operator (<span class="math inline">\(\nabla^2\)</span>)</strong>: <span class="math inline">\(\nabla^2 X_t = (1 - B)^2 X_t = (1 - 2B + B^2) X_t = X_t - 2X_{t-1} + X_{t-2}\)</span>.</li>
+</ul>
+</section>
+<section id="first-principles-derivation-geometric-inversion-of-1---phi-b" class="level3" data-number="1.4.2">
+<h3 data-number="1.4.2" class="anchored" data-anchor-id="first-principles-derivation-geometric-inversion-of-1---phi-b"><span class="header-section-number">1.4.2</span> First-Principles Derivation: Geometric Inversion of <span class="math inline">\((1 - \phi B)\)</span></h3>
+<p>Consider the first-order linear difference equation <span class="math inline">\(X_t = \phi X_{t-1} + Z_t\)</span> with <span class="math inline">\(|\phi| &lt; 1\)</span>. Writing <span class="math inline">\(X_{t-1} = B X_t\)</span>: <span class="math display">\[(1 - \phi B) X_t = Z_t \tag{0.5}\]</span> How do we solve for <span class="math inline">\(X_t\)</span> in terms of the shocks <span class="math inline">\(Z_t\)</span>? By recursive substitution: <span class="math display">\[\begin{aligned}
+X_t &amp;= \phi X_{t-1} + Z_t = \phi(\phi X_{t-2} + Z_{t-1}) + Z_t \\
+&amp;= Z_t + \phi Z_{t-1} + \phi^2 Z_{t-2} + \dots + \phi^{k-1} Z_{t-k+1} + \phi^k X_{t-k}
+\end{aligned} \tag{0.6}\]</span> Because <span class="math inline">\(|\phi| &lt; 1\)</span> and <span class="math inline">\(\mathrm{Var}(X_{t-k})\)</span> is bounded, <span class="math inline">\(\mathbb{E}[(\phi^k X_{t-k})^2] = \phi^{2k}\mathrm{Var}(X_{t-k}) \to 0\)</span> as <span class="math inline">\(k \to \infty\)</span>. Thus: <span class="math display">\[X_t = \frac{1}{1 - \phi B} Z_t = \sum_{j=0}^\infty \phi^j B^j Z_t = \sum_{j=0}^\infty \phi^j Z_{t-j} \tag{0.7}\]</span> This proves that <span class="math inline">\((1 - \phi B)^{-1}\)</span> obeys the exact geometric series formula <span class="math inline">\(\frac{1}{1 - r} = \sum_{j=0}^\infty r^j\)</span> whenever <span class="math inline">\(|\phi| &lt; 1\)</span>.</p>
+</section>
+<section id="sample-problem-0.3-lag-operator-algebra" class="level3" data-number="1.4.3">
+<h3 data-number="1.4.3" class="anchored" data-anchor-id="sample-problem-0.3-lag-operator-algebra"><span class="header-section-number">1.4.3</span> Sample Problem 0.3 (Lag Operator Algebra)</h3>
+<p><strong>Statement</strong>: Rewrite <span class="math inline">\(X_t = 0.5 X_{t-1} + Z_t - 0.2 Z_{t-1}\)</span> using <span class="math inline">\(B\)</span>, and expand <span class="math inline">\(X_t\)</span> in terms of <span class="math inline">\(Z_t, Z_{t-1}, Z_{t-2}\)</span>.</p>
+<p><strong>Solution</strong>: 1. <span class="math inline">\((1 - 0.5 B) X_t = (1 - 0.2 B) Z_t\)</span>. 2. Inverting <span class="math inline">\((1 - 0.5 B)\)</span>: <span class="math display">\[X_t = (1 + 0.5 B + 0.25 B^2 + \dots)(1 - 0.2 B) Z_t = \big[1 + (0.5 - 0.2)B + (0.25 - 0.10)B^2 + \dots\big] Z_t\]</span> Hence <span class="math inline">\(X_t = Z_t + 0.30 Z_{t-1} + 0.15 Z_{t-2} + \dots\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway: Section 0.4
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The lag operator <span class="math inline">\(B\)</span> turns messy subscript recursions into clean polynomial algebra. Whenever <span class="math inline">\(|\phi| &lt; 1\)</span>, <span class="math inline">\((1 - \phi B)^{-1}\)</span> expands into a decaying infinite sum of past shocks.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="complex-numbers-the-unit-circle-why-oscillations-happen" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="complex-numbers-the-unit-circle-why-oscillations-happen"><span class="header-section-number">1.5</span> Complex Numbers &amp; The Unit Circle (Why Oscillations Happen)</h2>
+<p>When a second-order difference equation <span class="math inline">\(X_t - \phi_1 X_{t-1} - \phi_2 X_{t-2} = Z_t\)</span> has a negative discriminant, its characteristic polynomial <span class="math inline">\(\Phi(z) = 1 - \phi_1 z - \phi_2 z^2 = 0\)</span> produces <em>complex conjugate roots</em>. In time series, complex roots are not abstract—they are the mathematical signature of <em>cycles</em> (like <span class="math inline">\(10\text{ Hz}\)</span> EEG alpha waves or business cycles) <span class="citation" data-cites="cryer2008time box2016time"><a href="../references.html#ref-cryer2008time" role="doc-biblioref">[1]</a>, <a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>.</p>
+<section id="key-definitions-important-terms-3" class="level3" data-number="1.5.1">
+<h3 data-number="1.5.1" class="anchored" data-anchor-id="key-definitions-important-terms-3"><span class="header-section-number">1.5.1</span> Key Definitions &amp; Important Terms</h3>
+<ul>
+<li><strong>Complex Number (<span class="math inline">\(z = a + bi\)</span>)</strong>: A point in the 2D complex plane with real part <span class="math inline">\(a\)</span>, imaginary part <span class="math inline">\(b\)</span>, modulus <span class="math inline">\(r = |z| = \sqrt{a^2 + b^2}\)</span>, and phase angle <span class="math inline">\(\theta = \mathrm{atan2}(b, a)\)</span>.</li>
+<li><strong>Euler’s Formula</strong>: <span class="math inline">\(e^{i\theta} = \cos\theta + i\sin\theta\)</span>, linking complex exponentials directly to sinusoidal waves.</li>
+<li><strong>Unit Circle</strong>: The circle <span class="math inline">\(|z| = 1\)</span> in the complex plane separating stable decaying processes (<span class="math inline">\(|z| &gt; 1\)</span>) from exploding processes (<span class="math inline">\(|z| &lt; 1\)</span>).</li>
+</ul>
+</section>
+<section id="first-principles-derivation-root-modulus-stability-and-oscillation-frequency" class="level3" data-number="1.5.2">
+<h3 data-number="1.5.2" class="anchored" data-anchor-id="first-principles-derivation-root-modulus-stability-and-oscillation-frequency"><span class="header-section-number">1.5.2</span> First-Principles Derivation: Root Modulus, Stability, and Oscillation Frequency</h3>
+<p>Suppose the characteristic polynomial <span class="math inline">\(\Phi(z) = 1 - \phi_1 z - \phi_2 z^2 = 0\)</span> has complex conjugate roots <span class="math inline">\(z_1, z_2 = r e^{\pm i\theta}\)</span>. Because <span class="math inline">\(\Phi(z) = (1 - z/z_1)(1 - z/z_2)\)</span>: 1. Comparing coefficients of <span class="math inline">\(z^2\)</span>: <span class="math inline">\(\frac{1}{z_1 z_2} = -\phi_2 \implies \frac{1}{r^2} = -\phi_2 \implies r = |z_1| = \frac{1}{\sqrt{-\phi_2}}\)</span>. Thus, stability (<span class="math inline">\(|z| &gt; 1\)</span>) requires <span class="math inline">\(-\phi_2 &lt; 1 \iff \phi_2 &gt; -1\)</span>. 2. Comparing coefficients of <span class="math inline">\(z\)</span>: <span class="math inline">\(\frac{1}{z_1} + \frac{1}{z_2} = \phi_1 \implies \frac{2\cos\theta}{r} = \phi_1\)</span>. Substituting <span class="math inline">\(r = 1/\sqrt{-\phi_2}\)</span>: <span class="math display">\[\cos\theta = \frac{\phi_1}{2\sqrt{-\phi_2}} \implies \theta = \arccos\left(\frac{\phi_1}{2\sqrt{-\phi_2}}\right) \tag{0.8}\]</span> Since each discrete time step advances the phase by <span class="math inline">\(\theta\)</span> radians, a full <span class="math inline">\(2\pi\)</span> cycle takes <span class="math inline">\(T = \frac{2\pi}{\theta}\)</span> samples. Given sampling rate <span class="math inline">\(f_s\)</span> (Hz), the physical frequency is: <span class="math display">\[f = \frac{f_s \, \theta}{2\pi}\text{ Hz} \tag{0.9}\]</span></p>
+</section>
+<section id="sample-problem-0.4-unit-circle-stability-oscillation-period" class="level3" data-number="1.5.3">
+<h3 data-number="1.5.3" class="anchored" data-anchor-id="sample-problem-0.4-unit-circle-stability-oscillation-period"><span class="header-section-number">1.5.3</span> Sample Problem 0.4 (Unit Circle Stability &amp; Oscillation Period)</h3>
+<p><strong>Statement</strong>: Find the roots of <span class="math inline">\(\Phi(z) = 1 - 1.2 z + 0.5 z^2 = 0\)</span>, verify whether <span class="math inline">\(|z| &gt; 1\)</span>, and compute the oscillation period <span class="math inline">\(T\)</span>.</p>
+<p><strong>Solution</strong>: Solving <span class="math inline">\(0.5 z^2 - 1.2 z + 1 = 0\)</span>: <span class="math display">\[z = \frac{1.2 \pm \sqrt{1.44 - 2.00}}{1.0} = 1.2 \pm 0.7483\,i\]</span> Modulus: <span class="math inline">\(|z| = \sqrt{1.2^2 + 0.7483^2} = \sqrt{2.0} \approx 1.414 &gt; 1\)</span> (strictly outside the unit circle <span class="math inline">\(\implies\)</span> <strong>stable</strong>). Angle: <span class="math inline">\(\theta = \arccos\left(\frac{1.2}{2\sqrt{0.5}}\right) = \arccos(0.8485) \approx 0.5576\text{ rad}\)</span>, giving period <span class="math inline">\(T = \frac{2\pi}{0.5576} \approx 11.27\text{ steps}\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway: Section 0.5
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <strong>modulus</strong> <span class="math inline">\(|z|\)</span> of characteristic roots governs stability (<span class="math inline">\(|z| &gt; 1\)</span> means shocks decay), while the <strong>angle</strong> <span class="math inline">\(\theta\)</span> governs oscillation period (<span class="math inline">\(T = 2\pi/\theta\)</span>).</p>
+</div>
+</div>
+</section>
+</section>
+<section id="financial-returns-vs.-raw-prices-essential-transformation" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="financial-returns-vs.-raw-prices-essential-transformation"><span class="header-section-number">1.6</span> Financial Returns vs.&nbsp;Raw Prices (Essential Transformation)</h2>
+<p>Raw stock prices <span class="math inline">\(P_t\)</span> drift upward over decades and have expanding variance, making them non-stationary <span class="citation" data-cites="nielsen2019practical"><a href="../references.html#ref-nielsen2019practical" role="doc-biblioref">[4]</a></span>. Analysts therefore convert prices into returns.</p>
+<section id="key-definitions-important-terms-4" class="level3" data-number="1.6.1">
+<h3 data-number="1.6.1" class="anchored" data-anchor-id="key-definitions-important-terms-4"><span class="header-section-number">1.6.1</span> Key Definitions &amp; Important Terms</h3>
+<ul>
+<li><strong>Simple Return (<span class="math inline">\(R_t\)</span>)</strong>: <span class="math inline">\(R_t = \frac{P_t - P_{t-1}}{P_{t-1}}\)</span>. Additive across <em>assets</em> in a portfolio, but not across <em>time</em>.</li>
+<li><strong>Log Return (<span class="math inline">\(r_t\)</span>)</strong>: <span class="math inline">\(r_t = \ln\left(\frac{P_t}{P_{t-1}}\right) = \ln(P_t) - \ln(P_{t-1}) = \nabla \ln(P_t)\)</span>. Additive across <em>time</em>!</li>
+</ul>
+</section>
+<section id="first-principles-proof-time-additivity-small-return-equivalence" class="level3" data-number="1.6.2">
+<h3 data-number="1.6.2" class="anchored" data-anchor-id="first-principles-proof-time-additivity-small-return-equivalence"><span class="header-section-number">1.6.2</span> First-Principles Proof: Time-Additivity &amp; Small-Return Equivalence</h3>
+<p>For a <span class="math inline">\(k\)</span>-day horizon from <span class="math inline">\(t-k\)</span> to <span class="math inline">\(t\)</span>: <span class="math display">\[r_t + r_{t-1} + \dots + r_{t-k+1} = \sum_{j=0}^{k-1} \big(\ln P_{t-j} - \ln P_{t-j-1}\big) = \ln P_t - \ln P_{t-k} = \ln\left(\frac{P_t}{P_{t-k}}\right) \tag{0.10}\]</span> All intermediate prices telescope out! Moreover, since <span class="math inline">\(P_t / P_{t-1} = 1 + R_t\)</span>, a first-order Taylor expansion <span class="math inline">\(\ln(1 + R_t) = R_t - \frac{R_t^2}{2} + \dots\)</span> shows <span class="math inline">\(r_t \approx R_t\)</span> when <span class="math inline">\(|R_t| \ll 1\)</span>.</p>
+</section>
+<section id="sample-problem-0.5-simple-vs.-log-returns" class="level3" data-number="1.6.3">
+<h3 data-number="1.6.3" class="anchored" data-anchor-id="sample-problem-0.5-simple-vs.-log-returns"><span class="header-section-number">1.6.3</span> Sample Problem 0.5 (Simple vs.&nbsp;Log Returns)</h3>
+<p><strong>Statement</strong>: A stock closes at <span class="math inline">\(P_0 = 100\)</span>, <span class="math inline">\(P_1 = 105\)</span>, <span class="math inline">\(P_2 = 99.75\)</span>. Compute <span class="math inline">\(R_1, R_2\)</span> and <span class="math inline">\(r_1, r_2\)</span>, and verify time-additivity.</p>
+<p><strong>Solution</strong>: <span class="math inline">\(R_1 = +0.05\)</span>, <span class="math inline">\(R_2 = -0.05\)</span>, so <span class="math inline">\(R_1 + R_2 = 0\)</span> (misleading, since <span class="math inline">\(P_2 &lt; P_0\)</span>). By contrast, <span class="math inline">\(r_1 = \ln(1.05) = +0.04879\)</span>, <span class="math inline">\(r_2 = \ln(0.95) = -0.05129\)</span>, and <span class="math inline">\(r_1 + r_2 = -0.00250 = \ln(99.75/100)\)</span>, matching the true <span class="math inline">\(-0.25\%\)</span> cumulative drop.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway: Section 0.6
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Always model <strong>log returns</strong> <span class="math inline">\(r_t = \nabla \ln(P_t)\)</span> rather than raw price levels <span class="math inline">\(P_t\)</span> when analyzing single-asset time series dynamics; log returns telescope cleanly across multi-day horizons.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="bootcamp-python-lab-time-indexing-lags-and-returns" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="bootcamp-python-lab-time-indexing-lags-and-returns"><span class="header-section-number">1.7</span> Bootcamp Python Lab: Time-Indexing, Lags, and Returns</h2>
+<div id="c3dc4c86" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co"># 1. Create a time-indexed DataFrame (preserve chronological order!)</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>dates <span class="op">=</span> pd.date_range(start<span class="op">=</span><span class="st">"2025-01-01"</span>, periods<span class="op">=</span><span class="dv">100</span>, freq<span class="op">=</span><span class="st">"B"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7"></a>np.random.seed(<span class="dv">7</span>)</span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co"># Simulate a Random Walk Stock Price: P_t = P_0 * exp(sum of log returns)</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>daily_log_ret <span class="op">=</span> np.random.normal(loc<span class="op">=</span><span class="fl">0.0005</span>, scale<span class="op">=</span><span class="fl">0.015</span>, size<span class="op">=</span><span class="bu">len</span>(dates))</span>
+<span id="cb1-11"><a href="#cb1-11"></a>prices <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> np.exp(np.cumsum(daily_log_ret))</span>
+<span id="cb1-12"><a href="#cb1-12"></a></span>
+<span id="cb1-13"><a href="#cb1-13"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">"Close"</span>: prices}, index<span class="op">=</span>dates)</span>
+<span id="cb1-14"><a href="#cb1-14"></a>df[<span class="st">"Lag_1"</span>] <span class="op">=</span> df[<span class="st">"Close"</span>].shift(<span class="dv">1</span>)</span>
+<span id="cb1-15"><a href="#cb1-15"></a>df[<span class="st">"Diff_1"</span>] <span class="op">=</span> df[<span class="st">"Close"</span>].diff(<span class="dv">1</span>)</span>
+<span id="cb1-16"><a href="#cb1-16"></a>df[<span class="st">"Log_Return"</span>] <span class="op">=</span> np.log(df[<span class="st">"Close"</span>] <span class="op">/</span> df[<span class="st">"Close"</span>].shift(<span class="dv">1</span>))</span>
+<span id="cb1-17"><a href="#cb1-17"></a></span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="bu">print</span>(df.head(<span class="dv">5</span>))</span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Mean Daily Log Return: </span><span class="sc">{</span>df[<span class="st">'Log_Return'</span>]<span class="sc">.</span>mean()<span class="sc">:.5f}</span><span class="ss">"</span>)</span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="bu">print</span>(<span class="ss">f"Daily Volatility (Std): </span><span class="sc">{</span>df[<span class="st">'Log_Return'</span>]<span class="sc">.</span>std()<span class="sc">:.5f}</span><span class="ss">"</span>)</span>
+<span id="cb1-21"><a href="#cb1-21"></a></span>
+<span id="cb1-22"><a href="#cb1-22"></a>fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>))</span>
+<span id="cb1-23"><a href="#cb1-23"></a>ax1.plot(df.index, df[<span class="st">"Close"</span>], color<span class="op">=</span><span class="st">"#1e3a8a"</span>, lw<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb1-24"><a href="#cb1-24"></a>ax1.set_title(<span class="st">"Raw Price Trajectory (Trending / Non-Stationary)"</span>)</span>
+<span id="cb1-25"><a href="#cb1-25"></a>ax1.set_ylabel(<span class="st">"Price"</span>)</span>
+<span id="cb1-26"><a href="#cb1-26"></a>ax1.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb1-27"><a href="#cb1-27"></a></span>
+<span id="cb1-28"><a href="#cb1-28"></a>ax2.plot(df.index, df[<span class="st">"Log_Return"</span>], color<span class="op">=</span><span class="st">"#c2410c"</span>, lw<span class="op">=</span><span class="fl">1.0</span>)</span>
+<span id="cb1-29"><a href="#cb1-29"></a>ax2.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"black"</span>, ls<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb1-30"><a href="#cb1-30"></a>ax2.set_title(<span class="st">"Log Returns (Centered Around Constant Mean)"</span>)</span>
+<span id="cb1-31"><a href="#cb1-31"></a>ax2.set_ylabel(<span class="st">"Log Return"</span>)</span>
+<span id="cb1-32"><a href="#cb1-32"></a>ax2.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb1-33"><a href="#cb1-33"></a>plt.tight_layout()</span>
+<span id="cb1-34"><a href="#cb1-34"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Close       Lag_1    Diff_1  Log_Return
+2025-01-01  102.619510         NaN       NaN         NaN
+2025-01-02  101.955762  102.619510 -0.663748   -0.006489
+2025-01-03  102.056983  101.955762  0.101221    0.000992
+2025-01-06  102.734096  102.056983  0.677113    0.006613
+2025-01-07  101.576297  102.734096 -1.157799   -0.011334
+
+Mean Daily Log Return: 0.00043
+Daily Volatility (Std): 0.01522</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="00_bootcamp_foundations_files/figure-html/cell-2-output-2.png" width="1142" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="summary-of-concepts-chapter-0" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="summary-of-concepts-chapter-0"><span class="header-section-number">1.8</span> Summary of Concepts (Chapter 0)</h2>
+<ul>
+<li><strong>Time-Order Dependence</strong>: Unlike tabular <span class="math inline">\(i.i.d.\)</span> data, temporal observations inherit past states; shuffling destroys causality and memory.</li>
+<li><strong>Moment Algebra</strong>: Linearity of expectation (<span class="math inline">\(\mathbb{E}[aX+bY]=a\mathbb{E}[X]+b\mathbb{E}[Y]\)</span>) and bilinearity of covariance (<span class="math inline">\(\mathrm{Var}(X+Y)=\mathrm{Var}(X)+\mathrm{Var}(Y)+2\,\mathrm{Cov}(X,Y)\)</span>) form the algebraic engine for all Unit 1–4 proofs.</li>
+<li><strong>White Noise (<span class="math inline">\(WN(0,\sigma^2)\)</span>)</strong>: Zero-mean, constant-variance, uncorrelated innovations serve as the building block of stochastic models.</li>
+<li><strong>Lag Operator (<span class="math inline">\(B\)</span>)</strong>: Converts recursive difference equations into polynomial algebra; <span class="math inline">\((1-\phi B)^{-1}\)</span> converges to a decaying shock sum iff <span class="math inline">\(|\phi|&lt;1\)</span>.</li>
+<li><strong>Unit Circle Geometry</strong>: Roots outside <span class="math inline">\(|z|&gt;1\)</span> guarantee stability; complex conjugate roots produce damped oscillations with frequency <span class="math inline">\(f = \frac{f_s\theta}{2\pi}\)</span>.</li>
+<li><strong>Log Returns</strong>: <span class="math inline">\(\nabla \ln(P_t)\)</span> stabilizes growing price levels and telescopes additively across multi-day horizons.</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Prescribed Textbook Cross-Walk (Chapter 0)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Topic</th>
+<th style="text-align: left;">Cryer &amp; Chan (2008)</th>
+<th style="text-align: left;">Shumway &amp; Stoffer (2011)</th>
+<th style="text-align: left;">Box et al.&nbsp;(2016)</th>
+<th style="text-align: left;">Nielsen (2019)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Expectation, Covariance, White Noise</td>
+<td style="text-align: left;">Ch. 1, Appendix</td>
+<td style="text-align: left;">Ch. 1.1–1.3, Appendix A</td>
+<td style="text-align: left;">Ch. 2.1</td>
+<td style="text-align: left;">Ch. 1–2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Backward Shift &amp; Difference Operators</td>
+<td style="text-align: left;">Ch. 3.1, 4.1</td>
+<td style="text-align: left;">Ch. 3.1</td>
+<td style="text-align: left;">Ch. 3.1, 4.1</td>
+<td style="text-align: left;">Ch. 2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Financial Returns &amp; Time Indexing</td>
+<td style="text-align: left;">Ch. 1.2, 12.1</td>
+<td style="text-align: left;">Ch. 1.1</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Ch. 2, Ch. 4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<!-- -->
+
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-cryer2008time" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">J. D. Cryer and K.-S. Chan, <em>Time series analysis: With applications in r</em>, 2nd ed. New York, NY: Springer, 2008. doi: <a href="https://doi.org/10.1007/978-0-387-75959-3">10.1007/978-0-387-75959-3</a>.</div>
+</div>
+<div id="ref-shumway2011time" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">R. H. Shumway and D. S. Stoffer, <em>Time series analysis and its applications: With r examples</em>, 3rd ed. New York, NY: Springer, 2011. doi: <a href="https://doi.org/10.1007/978-1-4419-7865-3">10.1007/978-1-4419-7865-3</a>.</div>
+</div>
+<div id="ref-box2016time" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">G. E. P. Box, G. M. Jenkins, G. C. Reinsel, and G. M. Ljung, <em>Time series analysis: Forecasting and control</em>, 5th ed. Hoboken, NJ: John Wiley &amp; Sons, 2016.</div>
+</div>
+<div id="ref-nielsen2019practical" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">A. Nielsen, <em>Practical time series analysis: Prediction with statistics and machine learning</em>, 1st ed. Sebastopol, CA: O’Reilly Media, 2019.</div>
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/amrita\.edu\/course\/22aie463-time-series-analysis");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../index.html" class="pagination-link" aria-label="Course Overview &amp; Syllabus Mapping">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Course Overview &amp; Syllabus Mapping</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/01_unit1_linear_models.html" class="pagination-link" aria-label="Unit 1: Linear Time Series, Stationarity, Ergodicity, and Classical Processes">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Unit 1: Linear Time Series, Stationarity, Ergodicity, and Classical Processes</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu"># Chapter 0: Zero-Prerequisite Foundations Bootcamp {#sec-chapter0}</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="fu">### Who This Chapter Is For</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>If you have **never studied time series analysis before**, start here. Before we touch autoregressive equations, Kalman filters, or deep sequence networks, this chapter builds every mathematical and computational tool you will use across Units 1–4—from expectation algebra and difference equations to complex roots on the unit circle and Python time-indexing.</span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="ss">- </span>**Prescribed Text Bridges**: Cryer &amp; Chan (2008, Ch. 1–2) <span class="co">[</span><span class="ot">@cryer2008time</span><span class="co">]</span>; Shumway &amp; Stoffer (2011, Ch. 1 &amp; Appendix A) <span class="co">[</span><span class="ot">@shumway2011time</span><span class="co">]</span>; Box et al. (2016, Ch. 1–2) <span class="co">[</span><span class="ot">@box2016time</span><span class="co">]</span>; Nielsen (2019, Ch. 1–2) <span class="co">[</span><span class="ot">@nielsen2019practical</span><span class="co">]</span>.</span>
+<span id="cb3-8"><a href="#cb3-8"></a>:::</span>
+<span id="cb3-9"><a href="#cb3-9"></a></span>
+<span id="cb3-10"><a href="#cb3-10"></a>---</span>
+<span id="cb3-11"><a href="#cb3-11"></a></span>
+<span id="cb3-12"><a href="#cb3-12"></a><span class="fu">## Opening: Two Signals, One Mathematical Backbone</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a></span>
+<span id="cb3-14"><a href="#cb3-14"></a>Imagine two completely different rooms on the same Tuesday morning:</span>
+<span id="cb3-15"><a href="#cb3-15"></a></span>
+<span id="cb3-16"><a href="#cb3-16"></a><span class="ss">1. </span>**The Neurology Lab**: A clinician places electrodes on a patient's scalp to record an *electroencephalogram (EEG)*. Every 4 milliseconds ($250\text{ Hz}$), the amplifier logs a voltage in microvolts ($\mu\text{V}$). When the patient closes their eyes and relaxes, the trace settles into a smooth $10\text{ Hz}$ ripple—the *alpha rhythm*. Seconds before an epileptic seizure, that rhythm changes character.</span>
+<span id="cb3-17"><a href="#cb3-17"></a><span class="ss">2. </span>**The Trading Desk**: A quantitative analyst watches the closing prices of an equity index—say, the NIFTY 50 or S&amp;P 500—alongside trading volume and interest rates. Tomorrow's portfolio risk depends on whether today's sudden $3\%$ drop is an isolated shock or the start of a turbulent volatility cluster.</span>
+<span id="cb3-18"><a href="#cb3-18"></a></span>
+<span id="cb3-19"><a href="#cb3-19"></a>On the surface, brainwaves and stock prices have nothing in common. Underneath, both are **ordered sequences indexed by time**, and both violate the #1 assumption of introductory statistics:</span>
+<span id="cb3-20"><a href="#cb3-20"></a></span>
+<span id="cb3-21"><a href="#cb3-21"></a><span class="at">&gt; **The $i.i.d.$ Trap**: Standard statistics assumes rows in a dataset are *independent and identically distributed* ($i.i.d.$). If you shuffle the rows of a housing-price table, nothing breaks. If you shuffle the rows of an EEG recording or a stock chart, you destroy the physics of the problem—causality, momentum, cycles, and memory </span><span class="co">[</span><span class="ot">@nielsen2019practical</span><span class="co">]</span><span class="at">.</span></span>
+<span id="cb3-22"><a href="#cb3-22"></a></span>
+<span id="cb3-23"><a href="#cb3-23"></a>To analyze the time series data rigorously, we need a shared mathematical backbone. Each section below introduces the key definitions, first-principles derivations, worked sample problems, and key takeaways you need before entering Unit 1.</span>
+<span id="cb3-24"><a href="#cb3-24"></a></span>
+<span id="cb3-25"><a href="#cb3-25"></a></span>
+<span id="cb3-26"><a href="#cb3-26"></a><span class="fu">## Probability &amp; Moment Algebra From Scratch</span></span>
+<span id="cb3-27"><a href="#cb3-27"></a></span>
+<span id="cb3-28"><a href="#cb3-28"></a>Almost every proof in Units 1–4 relies on four algebraic rules for random variables. Mastering them now makes every later derivation transparent <span class="co">[</span><span class="ot">@cryer2008time</span><span class="co">]</span>.</span>
+<span id="cb3-29"><a href="#cb3-29"></a></span>
+<span id="cb3-30"><a href="#cb3-30"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-31"><a href="#cb3-31"></a></span>
+<span id="cb3-32"><a href="#cb3-32"></a><span class="ss">* </span>**Random Variable ($X$)**: A numerical outcome of a random phenomenon (e.g., tomorrow's return or the EEG voltage at $t = 1.2\text{ s}$).</span>
+<span id="cb3-33"><a href="#cb3-33"></a><span class="ss">* </span>**Expectation ($\mathbb{E}[X]$ or $\mu_X$)**: The probability-weighted average (center of mass) of $X$: $\mathbb{E}<span class="co">[</span><span class="ot">X</span><span class="co">]</span> = \sum_x x \, p(x)$ (discrete) or $\int_{-\infty}^\infty x f(x)\,dx$ (continuous).</span>
+<span id="cb3-34"><a href="#cb3-34"></a><span class="ss">* </span>**Variance ($\mathrm{Var}(X)$ or $\sigma_X^2$)**: The expected squared deviation from the mean, measuring spread around $\mu_X$.</span>
+<span id="cb3-35"><a href="#cb3-35"></a><span class="ss">* </span>**Covariance ($\mathrm{Cov}(X, Y)$)**: A measure of the *linear* co-movement between two random variables $X$ and $Y$.</span>
+<span id="cb3-36"><a href="#cb3-36"></a><span class="ss">* </span>**Pearson Correlation ($\rho(X, Y)$)**: A unitless, standardized version of covariance bounded in $<span class="co">[</span><span class="ot">-1, 1</span><span class="co">]</span>$.</span>
+<span id="cb3-37"><a href="#cb3-37"></a></span>
+<span id="cb3-38"><a href="#cb3-38"></a><span class="fu">### First-Principles Derivations of Moment Identities</span></span>
+<span id="cb3-39"><a href="#cb3-39"></a></span>
+<span id="cb3-40"><a href="#cb3-40"></a>Let $X, Y$ be random variables with finite second moments ($\mathbb{E}<span class="co">[</span><span class="ot">X^2</span><span class="co">]</span> &lt; \infty, \mathbb{E}<span class="co">[</span><span class="ot">Y^2</span><span class="co">]</span> &lt; \infty$), and let $a, b, c \in \mathbb{R}$ be constants.</span>
+<span id="cb3-41"><a href="#cb3-41"></a></span>
+<span id="cb3-42"><a href="#cb3-42"></a><span class="fu">#### Theorem 0.1: Linearity of Expectation &amp; Variance Scaling</span></span>
+<span id="cb3-43"><a href="#cb3-43"></a></span>
+<span id="cb3-44"><a href="#cb3-44"></a><span class="ss">1. </span>$\mathbb{E}<span class="co">[</span><span class="ot">aX + bY + c</span><span class="co">]</span> = a\mathbb{E}<span class="co">[</span><span class="ot">X</span><span class="co">]</span> + b\mathbb{E}<span class="co">[</span><span class="ot">Y</span><span class="co">]</span> + c$ (holds **even when $X$ and $Y$ are dependent**).</span>
+<span id="cb3-45"><a href="#cb3-45"></a><span class="ss">2. </span>$\mathrm{Var}(X) = \mathbb{E}<span class="co">[</span><span class="ot">X^2</span><span class="co">]</span> - (\mathbb{E}<span class="co">[</span><span class="ot">X</span><span class="co">]</span>)^2$.</span>
+<span id="cb3-46"><a href="#cb3-46"></a><span class="ss">3. </span>$\mathrm{Var}(aX + c) = a^2 \mathrm{Var}(X)$.</span>
+<span id="cb3-47"><a href="#cb3-47"></a></span>
+<span id="cb3-48"><a href="#cb3-48"></a>**Derivation from First Principles**:</span>
+<span id="cb3-49"><a href="#cb3-49"></a>By definition, $\mathrm{Var}(X) = \mathbb{E}<span class="co">[</span><span class="ot">(X - \mu_X)^2</span><span class="co">]</span>$. Expanding the square inside the expectation and applying linearity:</span>
+<span id="cb3-50"><a href="#cb3-50"></a>$$\begin{aligned}</span>
+<span id="cb3-51"><a href="#cb3-51"></a>\mathrm{Var}(X) &amp;= \mathbb{E}<span class="co">[</span><span class="ot">X^2 - 2\mu_X X + \mu_X^2</span><span class="co">]</span> <span class="sc">\\</span></span>
+<span id="cb3-52"><a href="#cb3-52"></a>&amp;= \mathbb{E}<span class="co">[</span><span class="ot">X^2</span><span class="co">]</span> - 2\mu_X \mathbb{E}<span class="co">[</span><span class="ot">X</span><span class="co">]</span> + \mu_X^2 = \mathbb{E}<span class="co">[</span><span class="ot">X^2</span><span class="co">]</span> - 2\mu_X^2 + \mu_X^2 = \mathbb{E}<span class="co">[</span><span class="ot">X^2</span><span class="co">]</span> - \mu_X^2</span>
+<span id="cb3-53"><a href="#cb3-53"></a>\end{aligned} \tag{0.1}$$</span>
+<span id="cb3-54"><a href="#cb3-54"></a>For $W = aX + c$, its mean is $\mu_W = \mathbb{E}<span class="co">[</span><span class="ot">aX + c</span><span class="co">]</span> = a\mu_X + c$. Therefore:</span>
+<span id="cb3-55"><a href="#cb3-55"></a>$$\mathrm{Var}(aX + c) = \mathbb{E}\big<span class="co">[</span><span class="ot">((aX + c) - (a\mu_X + c))^2\big</span><span class="co">]</span> = \mathbb{E}\big<span class="co">[</span><span class="ot">a^2(X - \mu_X)^2\big</span><span class="co">]</span> = a^2 \mathrm{Var}(X) \tag{0.2}$$</span>
+<span id="cb3-56"><a href="#cb3-56"></a>Adding a constant $c$ shifts the location but leaves the spread untouched.</span>
+<span id="cb3-57"><a href="#cb3-57"></a></span>
+<span id="cb3-58"><a href="#cb3-58"></a><span class="fu">#### Theorem 0.2: Bilinearity of Covariance &amp; Sum-of-Variances Identity</span></span>
+<span id="cb3-59"><a href="#cb3-59"></a>For any random variables $X_1, \dots, X_m$ and $Y_1, \dots, Y_n$:</span>
+<span id="cb3-60"><a href="#cb3-60"></a>$$\mathrm{Cov}\left(\sum_{i=1}^m a_i X_i, \, \sum_{j=1}^n b_j Y_j\right) = \sum_{i=1}^m \sum_{j=1}^n a_i b_j \, \mathrm{Cov}(X_i, Y_j) \tag{0.3}$$</span>
+<span id="cb3-61"><a href="#cb3-61"></a>In particular, for two variables $X$ and $Y$:</span>
+<span id="cb3-62"><a href="#cb3-62"></a>$$\mathrm{Var}(X + Y) = \mathrm{Var}(X) + \mathrm{Var}(Y) + 2\,\mathrm{Cov}(X, Y) \tag{0.4}$$</span>
+<span id="cb3-63"><a href="#cb3-63"></a></span>
+<span id="cb3-64"><a href="#cb3-64"></a>**Derivation from First Principles**:</span>
+<span id="cb3-65"><a href="#cb3-65"></a>Let $\tilde{X}_i = X_i - \mathbb{E}<span class="co">[</span><span class="ot">X_i</span><span class="co">]</span>$ and $\tilde{Y}_j = Y_j - \mathbb{E}<span class="co">[</span><span class="ot">Y_j</span><span class="co">]</span>$ be the centered variables. By linearity of expectation, $\sum a_i X_i - \mathbb{E}<span class="co">[</span><span class="ot">\sum a_i X_i</span><span class="co">]</span> = \sum a_i \tilde{X}_i$. Thus:</span>
+<span id="cb3-66"><a href="#cb3-66"></a>$$\mathrm{Cov}\left(\sum_{i=1}^m a_i X_i, \, \sum_{j=1}^n b_j Y_j\right) = \mathbb{E}\left<span class="co">[</span><span class="ot">\left(\sum_{i=1}^m a_i \tilde{X}_i\right)\left(\sum_{j=1}^n b_j \tilde{Y}_j\right)\right</span><span class="co">]</span> = \sum_{i=1}^m \sum_{j=1}^n a_i b_j \, \mathbb{E}<span class="co">[</span><span class="ot">\tilde{X}_i \tilde{Y}_j</span><span class="co">]</span> = \sum_{i=1}^m \sum_{j=1}^n a_i b_j \, \mathrm{Cov}(X_i, Y_j)$$</span>
+<span id="cb3-67"><a href="#cb3-67"></a>Setting $m = n = 2$, $Y_i = X_i$, and $a_1 = a_2 = 1$ gives $\mathrm{Var}(X_1 + X_2) = \mathrm{Cov}(X_1+X_2, X_1+X_2) = \mathrm{Var}(X_1) + \mathrm{Var}(X_2) + 2\,\mathrm{Cov}(X_1, X_2)$.</span>
+<span id="cb3-68"><a href="#cb3-68"></a></span>
+<span id="cb3-69"><a href="#cb3-69"></a><span class="fu">### Sample Problem 0.1 (Moment Algebra)</span></span>
+<span id="cb3-70"><a href="#cb3-70"></a>**Statement**: Let $Z_1, Z_2, Z_3$ be uncorrelated white noise shocks with mean $0$ and variance $\sigma^2 = 4$. Define $X_2 = Z_2 + 0.5 Z_1$ and $X_3 = Z_3 + 0.5 Z_2$. Compute $\mathbb{E}<span class="co">[</span><span class="ot">X_2</span><span class="co">]</span>$, $\mathrm{Var}(X_2)$, $\mathrm{Cov}(X_2, X_3)$, and $\rho(X_2, X_3)$.</span>
+<span id="cb3-71"><a href="#cb3-71"></a></span>
+<span id="cb3-72"><a href="#cb3-72"></a>**Solution**:</span>
+<span id="cb3-73"><a href="#cb3-73"></a><span class="ss">1. </span>*Mean*: $\mathbb{E}<span class="co">[</span><span class="ot">X_2</span><span class="co">]</span> = \mathbb{E}<span class="co">[</span><span class="ot">Z_2</span><span class="co">]</span> + 0.5\,\mathbb{E}<span class="co">[</span><span class="ot">Z_1</span><span class="co">]</span> = 0$.</span>
+<span id="cb3-74"><a href="#cb3-74"></a><span class="ss">2. </span>*Variance*: Since $\mathrm{Cov}(Z_1, Z_2) = 0$, $\mathrm{Var}(X_2) = \mathrm{Var}(Z_2) + (0.5)^2 \mathrm{Var}(Z_1) = 4 + 0.25(4) = 5$. By symmetry, $\mathrm{Var}(X_3) = 5$.</span>
+<span id="cb3-75"><a href="#cb3-75"></a><span class="ss">3. </span>*Covariance*: By bilinearity (Eq. 0.3):</span>
+<span id="cb3-76"><a href="#cb3-76"></a>   $$\mathrm{Cov}(X_2, X_3) = \mathrm{Cov}(Z_2 + 0.5 Z_1, Z_3 + 0.5 Z_2) = 0 + 0.5\,\mathrm{Cov}(Z_2, Z_2) + 0 + 0 = 0.5(4) = 2$$</span>
+<span id="cb3-77"><a href="#cb3-77"></a><span class="ss">4. </span>*Correlation*: $\rho(X_2, X_3) = \frac{\mathrm{Cov}(X_2, X_3)}{\sqrt{\mathrm{Var}(X_2)\mathrm{Var}(X_3)}} = \frac{2}{\sqrt{5 \cdot 5}} = 0.40$.</span>
+<span id="cb3-78"><a href="#cb3-78"></a></span>
+<span id="cb3-79"><a href="#cb3-79"></a>::: {.callout-tip}</span>
+<span id="cb3-80"><a href="#cb3-80"></a><span class="fu">#### Key Takeaway: Section 0.2</span></span>
+<span id="cb3-81"><a href="#cb3-81"></a>Covariance is **bilinear**: you can pull constants out and expand sums just like ordinary polynomial multiplication. When random variables share a common shock ($Z_2$), they become correlated—and $\mathrm{Var}(X+Y)$ gains the cross-term $2\,\mathrm{Cov}(X,Y)$.</span>
+<span id="cb3-82"><a href="#cb3-82"></a>:::</span>
+<span id="cb3-83"><a href="#cb3-83"></a></span>
+<span id="cb3-84"><a href="#cb3-84"></a></span>
+<span id="cb3-85"><a href="#cb3-85"></a></span>
+<span id="cb3-86"><a href="#cb3-86"></a><span class="fu">## White Noise: The base of Time Series</span></span>
+<span id="cb3-87"><a href="#cb3-87"></a></span>
+<span id="cb3-88"><a href="#cb3-88"></a>Every time series model in this course is built by passing pure, unpredictable randomness through a mathematical filter <span class="co">[</span><span class="ot">@shumway2011time</span><span class="co">]</span>. We call that pure randomness **white noise**.</span>
+<span id="cb3-89"><a href="#cb3-89"></a></span>
+<span id="cb3-90"><a href="#cb3-90"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-91"><a href="#cb3-91"></a></span>
+<span id="cb3-92"><a href="#cb3-92"></a>::: {.callout-note icon="false"}</span>
+<span id="cb3-93"><a href="#cb3-93"></a><span class="fu">#### Definition 0.1: White Noise Process</span></span>
+<span id="cb3-94"><a href="#cb3-94"></a>A sequence $<span class="sc">\{</span>Z_t<span class="sc">\}</span>_{t \in \mathbb{Z}}$ is **white noise**, denoted $Z_t \sim WN(0, \sigma^2)$, if:</span>
+<span id="cb3-95"><a href="#cb3-95"></a></span>
+<span id="cb3-96"><a href="#cb3-96"></a><span class="ss">1. </span>$\mathbb{E}<span class="co">[</span><span class="ot">Z_t</span><span class="co">]</span> = 0$ for all $t$,</span>
+<span id="cb3-97"><a href="#cb3-97"></a><span class="ss">2. </span>$\mathrm{Var}(Z_t) = \sigma^2 &lt; \infty$ for all $t$, and</span>
+<span id="cb3-98"><a href="#cb3-98"></a><span class="ss">3. </span>$\mathrm{Cov}(Z_t, Z_s) = 0$ whenever $t \neq s$.</span>
+<span id="cb3-99"><a href="#cb3-99"></a></span>
+<span id="cb3-100"><a href="#cb3-100"></a>If the $Z_t$ are also independent and Normally distributed, we write $Z_t \overset{i.i.d.}{\sim} \mathcal{N}(0, \sigma^2)$ (Gaussian white noise).</span>
+<span id="cb3-101"><a href="#cb3-101"></a>:::</span>
+<span id="cb3-102"><a href="#cb3-102"></a></span>
+<span id="cb3-103"><a href="#cb3-103"></a><span class="ss">* </span>**Innovation / Shock ($Z_t$)**: The genuinely new, unpredictable information arriving at time $t$ (e.g., an unexpected RBI rate decision or thermal electrode noise).</span>
+<span id="cb3-104"><a href="#cb3-104"></a></span>
+<span id="cb3-105"><a href="#cb3-105"></a><span class="fu">### Sample Problem 0.2 (Checking White Noise Properties)</span></span>
+<span id="cb3-106"><a href="#cb3-106"></a>**Statement**: Let $Z_t \sim WN(0, \sigma^2)$. Suppose $Y_t = Z_t - Z_{t-1}$. Is $<span class="sc">\{</span>Y_t<span class="sc">\}</span>$ white noise?</span>
+<span id="cb3-107"><a href="#cb3-107"></a></span>
+<span id="cb3-108"><a href="#cb3-108"></a>**Solution**:</span>
+<span id="cb3-109"><a href="#cb3-109"></a>Check condition 3: $\mathrm{Cov}(Y_t, Y_{t-1}) = \mathrm{Cov}(Z_t - Z_{t-1}, Z_{t-1} - Z_{t-2}) = -\mathrm{Var}(Z_{t-1}) = -\sigma^2 \neq 0$. Because lag-1 covariance is non-zero, $<span class="sc">\{</span>Y_t<span class="sc">\}</span>$ is **not** white noise (differencing white noise creates negative correlation).</span>
+<span id="cb3-110"><a href="#cb3-110"></a></span>
+<span id="cb3-111"><a href="#cb3-111"></a>::: {.callout-tip}</span>
+<span id="cb3-112"><a href="#cb3-112"></a><span class="fu">#### Key Takeaway: Section 0.3</span></span>
+<span id="cb3-113"><a href="#cb3-113"></a>White noise has zero mean, constant variance, and zero correlation across distinct time points. It is the unpredictable "raw fuel" that drives every AR, MA, ARIMA, and State-Space model.</span>
+<span id="cb3-114"><a href="#cb3-114"></a>:::</span>
+<span id="cb3-115"><a href="#cb3-115"></a></span>
+<span id="cb3-116"><a href="#cb3-116"></a></span>
+<span id="cb3-117"><a href="#cb3-117"></a></span>
+<span id="cb3-118"><a href="#cb3-118"></a><span class="fu">## Difference Equations &amp; The Backward Shift Operator $B$</span></span>
+<span id="cb3-119"><a href="#cb3-119"></a></span>
+<span id="cb3-120"><a href="#cb3-120"></a>In calculus, differential equations ($\frac{dx}{dt} = -\lambda x$) govern continuous time. In digital EEG amplifiers and daily stock closes, time arrives in discrete ticks $t = 0, 1, 2, \dots$, so **difference equations** take center stage <span class="co">[</span><span class="ot">@box2016time</span><span class="co">]</span>.</span>
+<span id="cb3-121"><a href="#cb3-121"></a></span>
+<span id="cb3-122"><a href="#cb3-122"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-123"><a href="#cb3-123"></a></span>
+<span id="cb3-124"><a href="#cb3-124"></a><span class="ss">* </span>**Backward Shift (Lag) Operator ($B$)**: Shifts a series one step back in time: $B X_t = X_{t-1}$, and in general $B^k X_t = X_{t-k}$.</span>
+<span id="cb3-125"><a href="#cb3-125"></a><span class="ss">* </span>**First-Difference Operator ($\nabla$)**: Computes the step-to-step change: $\nabla X_t = (1 - B) X_t = X_t - X_{t-1}$.</span>
+<span id="cb3-126"><a href="#cb3-126"></a><span class="ss">* </span>**Second-Difference Operator ($\nabla^2$)**: $\nabla^2 X_t = (1 - B)^2 X_t = (1 - 2B + B^2) X_t = X_t - 2X_{t-1} + X_{t-2}$.</span>
+<span id="cb3-127"><a href="#cb3-127"></a></span>
+<span id="cb3-128"><a href="#cb3-128"></a><span class="fu">### First-Principles Derivation: Geometric Inversion of $(1 - \phi B)$</span></span>
+<span id="cb3-129"><a href="#cb3-129"></a></span>
+<span id="cb3-130"><a href="#cb3-130"></a>Consider the first-order linear difference equation $X_t = \phi X_{t-1} + Z_t$ with $|\phi| &lt; 1$. Writing $X_{t-1} = B X_t$:</span>
+<span id="cb3-131"><a href="#cb3-131"></a>$$(1 - \phi B) X_t = Z_t \tag{0.5}$$</span>
+<span id="cb3-132"><a href="#cb3-132"></a>How do we solve for $X_t$ in terms of the shocks $Z_t$? By recursive substitution:</span>
+<span id="cb3-133"><a href="#cb3-133"></a>$$\begin{aligned}</span>
+<span id="cb3-134"><a href="#cb3-134"></a>X_t &amp;= \phi X_{t-1} + Z_t = \phi(\phi X_{t-2} + Z_{t-1}) + Z_t <span class="sc">\\</span></span>
+<span id="cb3-135"><a href="#cb3-135"></a>&amp;= Z_t + \phi Z_{t-1} + \phi^2 Z_{t-2} + \dots + \phi^{k-1} Z_{t-k+1} + \phi^k X_{t-k}</span>
+<span id="cb3-136"><a href="#cb3-136"></a>\end{aligned} \tag{0.6}$$</span>
+<span id="cb3-137"><a href="#cb3-137"></a>Because $|\phi| &lt; 1$ and $\mathrm{Var}(X_{t-k})$ is bounded, $\mathbb{E}<span class="co">[</span><span class="ot">(\phi^k X_{t-k})^2</span><span class="co">]</span> = \phi^{2k}\mathrm{Var}(X_{t-k}) \to 0$ as $k \to \infty$. Thus:</span>
+<span id="cb3-138"><a href="#cb3-138"></a>$$X_t = \frac{1}{1 - \phi B} Z_t = \sum_{j=0}^\infty \phi^j B^j Z_t = \sum_{j=0}^\infty \phi^j Z_{t-j} \tag{0.7}$$</span>
+<span id="cb3-139"><a href="#cb3-139"></a>This proves that $(1 - \phi B)^{-1}$ obeys the exact geometric series formula $\frac{1}{1 - r} = \sum_{j=0}^\infty r^j$ whenever $|\phi| &lt; 1$.</span>
+<span id="cb3-140"><a href="#cb3-140"></a></span>
+<span id="cb3-141"><a href="#cb3-141"></a><span class="fu">### Sample Problem 0.3 (Lag Operator Algebra)</span></span>
+<span id="cb3-142"><a href="#cb3-142"></a>**Statement**: Rewrite $X_t = 0.5 X_{t-1} + Z_t - 0.2 Z_{t-1}$ using $B$, and expand $X_t$ in terms of $Z_t, Z_{t-1}, Z_{t-2}$.</span>
+<span id="cb3-143"><a href="#cb3-143"></a></span>
+<span id="cb3-144"><a href="#cb3-144"></a>**Solution**:</span>
+<span id="cb3-145"><a href="#cb3-145"></a><span class="ss">1. </span>$(1 - 0.5 B) X_t = (1 - 0.2 B) Z_t$.</span>
+<span id="cb3-146"><a href="#cb3-146"></a><span class="ss">2. </span>Inverting $(1 - 0.5 B)$:</span>
+<span id="cb3-147"><a href="#cb3-147"></a>   $$X_t = (1 + 0.5 B + 0.25 B^2 + \dots)(1 - 0.2 B) Z_t = \big<span class="co">[</span><span class="ot">1 + (0.5 - 0.2)B + (0.25 - 0.10)B^2 + \dots\big</span><span class="co">]</span> Z_t$$</span>
+<span id="cb3-148"><a href="#cb3-148"></a>   Hence $X_t = Z_t + 0.30 Z_{t-1} + 0.15 Z_{t-2} + \dots$.</span>
+<span id="cb3-149"><a href="#cb3-149"></a></span>
+<span id="cb3-150"><a href="#cb3-150"></a>::: {.callout-tip}</span>
+<span id="cb3-151"><a href="#cb3-151"></a><span class="fu">#### Key Takeaway: Section 0.4</span></span>
+<span id="cb3-152"><a href="#cb3-152"></a>The lag operator $B$ turns messy subscript recursions into clean polynomial algebra. Whenever $|\phi| &lt; 1$, $(1 - \phi B)^{-1}$ expands into a decaying infinite sum of past shocks.</span>
+<span id="cb3-153"><a href="#cb3-153"></a>:::</span>
+<span id="cb3-154"><a href="#cb3-154"></a></span>
+<span id="cb3-155"><a href="#cb3-155"></a></span>
+<span id="cb3-156"><a href="#cb3-156"></a></span>
+<span id="cb3-157"><a href="#cb3-157"></a><span class="fu">## Complex Numbers &amp; The Unit Circle (Why Oscillations Happen)</span></span>
+<span id="cb3-158"><a href="#cb3-158"></a></span>
+<span id="cb3-159"><a href="#cb3-159"></a>When a second-order difference equation $X_t - \phi_1 X_{t-1} - \phi_2 X_{t-2} = Z_t$ has a negative discriminant, its characteristic polynomial $\Phi(z) = 1 - \phi_1 z - \phi_2 z^2 = 0$ produces *complex conjugate roots*. In time series, complex roots are not abstract—they are the mathematical signature of *cycles* (like $10\text{ Hz}$ EEG alpha waves or business cycles) <span class="co">[</span><span class="ot">@cryer2008time; @box2016time</span><span class="co">]</span>.</span>
+<span id="cb3-160"><a href="#cb3-160"></a></span>
+<span id="cb3-161"><a href="#cb3-161"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-162"><a href="#cb3-162"></a></span>
+<span id="cb3-163"><a href="#cb3-163"></a><span class="ss">* </span>**Complex Number ($z = a + bi$)**: A point in the 2D complex plane with real part $a$, imaginary part $b$, modulus $r = |z| = \sqrt{a^2 + b^2}$, and phase angle $\theta = \mathrm{atan2}(b, a)$.</span>
+<span id="cb3-164"><a href="#cb3-164"></a><span class="ss">* </span>**Euler's Formula**: $e^{i\theta} = \cos\theta + i\sin\theta$, linking complex exponentials directly to sinusoidal waves.</span>
+<span id="cb3-165"><a href="#cb3-165"></a><span class="ss">* </span>**Unit Circle**: The circle $|z| = 1$ in the complex plane separating stable decaying processes ($|z| &gt; 1$) from exploding processes ($|z| &lt; 1$).</span>
+<span id="cb3-166"><a href="#cb3-166"></a></span>
+<span id="cb3-167"><a href="#cb3-167"></a><span class="fu">### First-Principles Derivation: Root Modulus, Stability, and Oscillation Frequency</span></span>
+<span id="cb3-168"><a href="#cb3-168"></a></span>
+<span id="cb3-169"><a href="#cb3-169"></a>Suppose the characteristic polynomial $\Phi(z) = 1 - \phi_1 z - \phi_2 z^2 = 0$ has complex conjugate roots $z_1, z_2 = r e^{\pm i\theta}$. Because $\Phi(z) = (1 - z/z_1)(1 - z/z_2)$:</span>
+<span id="cb3-170"><a href="#cb3-170"></a><span class="ss">1. </span>Comparing coefficients of $z^2$: $\frac{1}{z_1 z_2} = -\phi_2 \implies \frac{1}{r^2} = -\phi_2 \implies r = |z_1| = \frac{1}{\sqrt{-\phi_2}}$.</span>
+<span id="cb3-171"><a href="#cb3-171"></a>   Thus, stability ($|z| &gt; 1$) requires $-\phi_2 &lt; 1 \iff \phi_2 &gt; -1$.</span>
+<span id="cb3-172"><a href="#cb3-172"></a><span class="ss">2. </span>Comparing coefficients of $z$: $\frac{1}{z_1} + \frac{1}{z_2} = \phi_1 \implies \frac{2\cos\theta}{r} = \phi_1$. Substituting $r = 1/\sqrt{-\phi_2}$:</span>
+<span id="cb3-173"><a href="#cb3-173"></a>   $$\cos\theta = \frac{\phi_1}{2\sqrt{-\phi_2}} \implies \theta = \arccos\left(\frac{\phi_1}{2\sqrt{-\phi_2}}\right) \tag{0.8}$$</span>
+<span id="cb3-174"><a href="#cb3-174"></a>   Since each discrete time step advances the phase by $\theta$ radians, a full $2\pi$ cycle takes $T = \frac{2\pi}{\theta}$ samples. Given sampling rate $f_s$ (Hz), the physical frequency is:</span>
+<span id="cb3-175"><a href="#cb3-175"></a>   $$f = \frac{f_s \, \theta}{2\pi}\text{ Hz} \tag{0.9}$$</span>
+<span id="cb3-176"><a href="#cb3-176"></a></span>
+<span id="cb3-177"><a href="#cb3-177"></a><span class="fu">### Sample Problem 0.4 (Unit Circle Stability &amp; Oscillation Period)</span></span>
+<span id="cb3-178"><a href="#cb3-178"></a>**Statement**: Find the roots of $\Phi(z) = 1 - 1.2 z + 0.5 z^2 = 0$, verify whether $|z| &gt; 1$, and compute the oscillation period $T$.</span>
+<span id="cb3-179"><a href="#cb3-179"></a></span>
+<span id="cb3-180"><a href="#cb3-180"></a>**Solution**:</span>
+<span id="cb3-181"><a href="#cb3-181"></a>Solving $0.5 z^2 - 1.2 z + 1 = 0$:</span>
+<span id="cb3-182"><a href="#cb3-182"></a>$$z = \frac{1.2 \pm \sqrt{1.44 - 2.00}}{1.0} = 1.2 \pm 0.7483\,i$$</span>
+<span id="cb3-183"><a href="#cb3-183"></a>Modulus: $|z| = \sqrt{1.2^2 + 0.7483^2} = \sqrt{2.0} \approx 1.414 &gt; 1$ (strictly outside the unit circle $\implies$ **stable**).</span>
+<span id="cb3-184"><a href="#cb3-184"></a>Angle: $\theta = \arccos\left(\frac{1.2}{2\sqrt{0.5}}\right) = \arccos(0.8485) \approx 0.5576\text{ rad}$, giving period $T = \frac{2\pi}{0.5576} \approx 11.27\text{ steps}$.</span>
+<span id="cb3-185"><a href="#cb3-185"></a></span>
+<span id="cb3-186"><a href="#cb3-186"></a>::: {.callout-tip}</span>
+<span id="cb3-187"><a href="#cb3-187"></a><span class="fu">#### Key Takeaway: Section 0.5</span></span>
+<span id="cb3-188"><a href="#cb3-188"></a>The **modulus** $|z|$ of characteristic roots governs stability ($|z| &gt; 1$ means shocks decay), while the **angle** $\theta$ governs oscillation period ($T = 2\pi/\theta$).</span>
+<span id="cb3-189"><a href="#cb3-189"></a>:::</span>
+<span id="cb3-190"><a href="#cb3-190"></a></span>
+<span id="cb3-191"><a href="#cb3-191"></a></span>
+<span id="cb3-192"><a href="#cb3-192"></a></span>
+<span id="cb3-193"><a href="#cb3-193"></a><span class="fu">## Financial Returns vs. Raw Prices (Essential Transformation)</span></span>
+<span id="cb3-194"><a href="#cb3-194"></a></span>
+<span id="cb3-195"><a href="#cb3-195"></a>Raw stock prices $P_t$ drift upward over decades and have expanding variance, making them non-stationary <span class="co">[</span><span class="ot">@nielsen2019practical</span><span class="co">]</span>. Analysts therefore convert prices into returns.</span>
+<span id="cb3-196"><a href="#cb3-196"></a></span>
+<span id="cb3-197"><a href="#cb3-197"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-198"><a href="#cb3-198"></a></span>
+<span id="cb3-199"><a href="#cb3-199"></a><span class="ss">* </span>**Simple Return ($R_t$)**: $R_t = \frac{P_t - P_{t-1}}{P_{t-1}}$. Additive across *assets* in a portfolio, but not across *time*.</span>
+<span id="cb3-200"><a href="#cb3-200"></a><span class="ss">* </span>**Log Return ($r_t$)**: $r_t = \ln\left(\frac{P_t}{P_{t-1}}\right) = \ln(P_t) - \ln(P_{t-1}) = \nabla \ln(P_t)$. Additive across *time*!</span>
+<span id="cb3-201"><a href="#cb3-201"></a></span>
+<span id="cb3-202"><a href="#cb3-202"></a><span class="fu">### First-Principles Proof: Time-Additivity &amp; Small-Return Equivalence</span></span>
+<span id="cb3-203"><a href="#cb3-203"></a>For a $k$-day horizon from $t-k$ to $t$:</span>
+<span id="cb3-204"><a href="#cb3-204"></a>$$r_t + r_{t-1} + \dots + r_{t-k+1} = \sum_{j=0}^{k-1} \big(\ln P_{t-j} - \ln P_{t-j-1}\big) = \ln P_t - \ln P_{t-k} = \ln\left(\frac{P_t}{P_{t-k}}\right) \tag{0.10}$$</span>
+<span id="cb3-205"><a href="#cb3-205"></a>All intermediate prices telescope out! Moreover, since $P_t / P_{t-1} = 1 + R_t$, a first-order Taylor expansion $\ln(1 + R_t) = R_t - \frac{R_t^2}{2} + \dots$ shows $r_t \approx R_t$ when $|R_t| \ll 1$.</span>
+<span id="cb3-206"><a href="#cb3-206"></a></span>
+<span id="cb3-207"><a href="#cb3-207"></a><span class="fu">### Sample Problem 0.5 (Simple vs. Log Returns)</span></span>
+<span id="cb3-208"><a href="#cb3-208"></a>**Statement**: A stock closes at $P_0 = 100$, $P_1 = 105$, $P_2 = 99.75$. Compute $R_1, R_2$ and $r_1, r_2$, and verify time-additivity.</span>
+<span id="cb3-209"><a href="#cb3-209"></a></span>
+<span id="cb3-210"><a href="#cb3-210"></a>**Solution**:</span>
+<span id="cb3-211"><a href="#cb3-211"></a>$R_1 = +0.05$, $R_2 = -0.05$, so $R_1 + R_2 = 0$ (misleading, since $P_2 &lt; P_0$). By contrast, $r_1 = \ln(1.05) = +0.04879$, $r_2 = \ln(0.95) = -0.05129$, and $r_1 + r_2 = -0.00250 = \ln(99.75/100)$, matching the true $-0.25\%$ cumulative drop.</span>
+<span id="cb3-212"><a href="#cb3-212"></a></span>
+<span id="cb3-213"><a href="#cb3-213"></a>::: {.callout-tip}</span>
+<span id="cb3-214"><a href="#cb3-214"></a><span class="fu">#### Key Takeaway: Section 0.6</span></span>
+<span id="cb3-215"><a href="#cb3-215"></a>Always model **log returns** $r_t = \nabla \ln(P_t)$ rather than raw price levels $P_t$ when analyzing single-asset time series dynamics; log returns telescope cleanly across multi-day horizons.</span>
+<span id="cb3-216"><a href="#cb3-216"></a>:::</span>
+<span id="cb3-217"><a href="#cb3-217"></a></span>
+<span id="cb3-218"><a href="#cb3-218"></a></span>
+<span id="cb3-219"><a href="#cb3-219"></a></span>
+<span id="cb3-220"><a href="#cb3-220"></a><span class="fu">## Bootcamp Python Lab: Time-Indexing, Lags, and Returns</span></span>
+<span id="cb3-221"><a href="#cb3-221"></a></span>
+<span id="cb3-224"><a href="#cb3-224"></a><span class="in">```{python}</span></span>
+<span id="cb3-225"><a href="#cb3-225"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-226"><a href="#cb3-226"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-227"><a href="#cb3-227"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-228"><a href="#cb3-228"></a></span>
+<span id="cb3-229"><a href="#cb3-229"></a><span class="co"># 1. Create a time-indexed DataFrame (preserve chronological order!)</span></span>
+<span id="cb3-230"><a href="#cb3-230"></a>dates <span class="op">=</span> pd.date_range(start<span class="op">=</span><span class="st">"2025-01-01"</span>, periods<span class="op">=</span><span class="dv">100</span>, freq<span class="op">=</span><span class="st">"B"</span>)</span>
+<span id="cb3-231"><a href="#cb3-231"></a>np.random.seed(<span class="dv">7</span>)</span>
+<span id="cb3-232"><a href="#cb3-232"></a></span>
+<span id="cb3-233"><a href="#cb3-233"></a><span class="co"># Simulate a Random Walk Stock Price: P_t = P_0 * exp(sum of log returns)</span></span>
+<span id="cb3-234"><a href="#cb3-234"></a>daily_log_ret <span class="op">=</span> np.random.normal(loc<span class="op">=</span><span class="fl">0.0005</span>, scale<span class="op">=</span><span class="fl">0.015</span>, size<span class="op">=</span><span class="bu">len</span>(dates))</span>
+<span id="cb3-235"><a href="#cb3-235"></a>prices <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> np.exp(np.cumsum(daily_log_ret))</span>
+<span id="cb3-236"><a href="#cb3-236"></a></span>
+<span id="cb3-237"><a href="#cb3-237"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">"Close"</span>: prices}, index<span class="op">=</span>dates)</span>
+<span id="cb3-238"><a href="#cb3-238"></a>df[<span class="st">"Lag_1"</span>] <span class="op">=</span> df[<span class="st">"Close"</span>].shift(<span class="dv">1</span>)</span>
+<span id="cb3-239"><a href="#cb3-239"></a>df[<span class="st">"Diff_1"</span>] <span class="op">=</span> df[<span class="st">"Close"</span>].diff(<span class="dv">1</span>)</span>
+<span id="cb3-240"><a href="#cb3-240"></a>df[<span class="st">"Log_Return"</span>] <span class="op">=</span> np.log(df[<span class="st">"Close"</span>] <span class="op">/</span> df[<span class="st">"Close"</span>].shift(<span class="dv">1</span>))</span>
+<span id="cb3-241"><a href="#cb3-241"></a></span>
+<span id="cb3-242"><a href="#cb3-242"></a><span class="bu">print</span>(df.head(<span class="dv">5</span>))</span>
+<span id="cb3-243"><a href="#cb3-243"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Mean Daily Log Return: </span><span class="sc">{</span>df[<span class="st">'Log_Return'</span>]<span class="sc">.</span>mean()<span class="sc">:.5f}</span><span class="ss">"</span>)</span>
+<span id="cb3-244"><a href="#cb3-244"></a><span class="bu">print</span>(<span class="ss">f"Daily Volatility (Std): </span><span class="sc">{</span>df[<span class="st">'Log_Return'</span>]<span class="sc">.</span>std()<span class="sc">:.5f}</span><span class="ss">"</span>)</span>
+<span id="cb3-245"><a href="#cb3-245"></a></span>
+<span id="cb3-246"><a href="#cb3-246"></a>fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>))</span>
+<span id="cb3-247"><a href="#cb3-247"></a>ax1.plot(df.index, df[<span class="st">"Close"</span>], color<span class="op">=</span><span class="st">"#1e3a8a"</span>, lw<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb3-248"><a href="#cb3-248"></a>ax1.set_title(<span class="st">"Raw Price Trajectory (Trending / Non-Stationary)"</span>)</span>
+<span id="cb3-249"><a href="#cb3-249"></a>ax1.set_ylabel(<span class="st">"Price"</span>)</span>
+<span id="cb3-250"><a href="#cb3-250"></a>ax1.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb3-251"><a href="#cb3-251"></a></span>
+<span id="cb3-252"><a href="#cb3-252"></a>ax2.plot(df.index, df[<span class="st">"Log_Return"</span>], color<span class="op">=</span><span class="st">"#c2410c"</span>, lw<span class="op">=</span><span class="fl">1.0</span>)</span>
+<span id="cb3-253"><a href="#cb3-253"></a>ax2.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"black"</span>, ls<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb3-254"><a href="#cb3-254"></a>ax2.set_title(<span class="st">"Log Returns (Centered Around Constant Mean)"</span>)</span>
+<span id="cb3-255"><a href="#cb3-255"></a>ax2.set_ylabel(<span class="st">"Log Return"</span>)</span>
+<span id="cb3-256"><a href="#cb3-256"></a>ax2.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb3-257"><a href="#cb3-257"></a>plt.tight_layout()</span>
+<span id="cb3-258"><a href="#cb3-258"></a>plt.show()</span>
+<span id="cb3-259"><a href="#cb3-259"></a><span class="in">```</span></span>
+<span id="cb3-260"><a href="#cb3-260"></a></span>
+<span id="cb3-261"><a href="#cb3-261"></a></span>
+<span id="cb3-262"><a href="#cb3-262"></a></span>
+<span id="cb3-263"><a href="#cb3-263"></a><span class="fu">## Summary of Concepts (Chapter 0)</span></span>
+<span id="cb3-264"><a href="#cb3-264"></a></span>
+<span id="cb3-265"><a href="#cb3-265"></a><span class="ss">* </span>**Time-Order Dependence**: Unlike tabular $i.i.d.$ data, temporal observations inherit past states; shuffling destroys causality and memory.</span>
+<span id="cb3-266"><a href="#cb3-266"></a><span class="ss">* </span>**Moment Algebra**: Linearity of expectation ($\mathbb{E}<span class="co">[</span><span class="ot">aX+bY</span><span class="co">]</span>=a\mathbb{E}<span class="co">[</span><span class="ot">X</span><span class="co">]</span>+b\mathbb{E}<span class="co">[</span><span class="ot">Y</span><span class="co">]</span>$) and bilinearity of covariance ($\mathrm{Var}(X+Y)=\mathrm{Var}(X)+\mathrm{Var}(Y)+2\,\mathrm{Cov}(X,Y)$) form the algebraic engine for all Unit 1–4 proofs.</span>
+<span id="cb3-267"><a href="#cb3-267"></a><span class="ss">* </span>**White Noise ($WN(0,\sigma^2)$)**: Zero-mean, constant-variance, uncorrelated innovations serve as the building block of stochastic models.</span>
+<span id="cb3-268"><a href="#cb3-268"></a><span class="ss">* </span>**Lag Operator ($B$)**: Converts recursive difference equations into polynomial algebra; $(1-\phi B)^{-1}$ converges to a decaying shock sum iff $|\phi|&lt;1$.</span>
+<span id="cb3-269"><a href="#cb3-269"></a><span class="ss">* </span>**Unit Circle Geometry**: Roots outside $|z|&gt;1$ guarantee stability; complex conjugate roots produce damped oscillations with frequency $f = \frac{f_s\theta}{2\pi}$.</span>
+<span id="cb3-270"><a href="#cb3-270"></a><span class="ss">* </span>**Log Returns**: $\nabla \ln(P_t)$ stabilizes growing price levels and telescopes additively across multi-day horizons.</span>
+<span id="cb3-271"><a href="#cb3-271"></a></span>
+<span id="cb3-272"><a href="#cb3-272"></a>::: {.callout-tip}</span>
+<span id="cb3-273"><a href="#cb3-273"></a><span class="fu">### Prescribed Textbook Cross-Walk (Chapter 0)</span></span>
+<span id="cb3-274"><a href="#cb3-274"></a><span class="pp">|</span> Topic <span class="pp">|</span> Cryer &amp; Chan (2008) <span class="pp">|</span> Shumway &amp; Stoffer (2011) <span class="pp">|</span> Box et al. (2016) <span class="pp">|</span> Nielsen (2019) <span class="pp">|</span></span>
+<span id="cb3-275"><a href="#cb3-275"></a><span class="pp">|:---|:---|:---|:---|:---|</span></span>
+<span id="cb3-276"><a href="#cb3-276"></a><span class="pp">|</span> Expectation, Covariance, White Noise <span class="pp">|</span> Ch. 1, Appendix <span class="pp">|</span> Ch. 1.1–1.3, Appendix A <span class="pp">|</span> Ch. 2.1 <span class="pp">|</span> Ch. 1–2 <span class="pp">|</span></span>
+<span id="cb3-277"><a href="#cb3-277"></a><span class="pp">|</span> Backward Shift &amp; Difference Operators <span class="pp">|</span> Ch. 3.1, 4.1 <span class="pp">|</span> Ch. 3.1 <span class="pp">|</span> Ch. 3.1, 4.1 <span class="pp">|</span> Ch. 2 <span class="pp">|</span></span>
+<span id="cb3-278"><a href="#cb3-278"></a><span class="pp">|</span> Financial Returns &amp; Time Indexing <span class="pp">|</span> Ch. 1.2, 12.1 <span class="pp">|</span> Ch. 1.1 <span class="pp">|</span> — <span class="pp">|</span> Ch. 2, Ch. 4 <span class="pp">|</span></span>
+<span id="cb3-279"><a href="#cb3-279"></a>:::</span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

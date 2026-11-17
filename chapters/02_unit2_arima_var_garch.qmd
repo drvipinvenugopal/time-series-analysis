@@ -1,0 +1,273 @@
+# Unit 2: ARMA, ARIMA, SARIMA, VAR, and Conditional Heteroscedastic Models {#sec-unit2}
+
+::: {.callout-note appearance="simple"}
+### Unit 2 Curriculum Checklist
+- **ARMA($p,q$)**: Mixed autoregressive-moving average processes, common-factor cancellation, $\psi$-weight expansions.
+- **ARIMA($p,d,q$) & SARIMA**: Stochastic vs. deterministic trends, differencing operators, over-differencing hazards, multiplicative seasonal operators.
+- **Multivariate Systems (VAR($p$))**: Vector autoregression, companion matrix stability, Granger causality, impulse response functions (IRF).
+- **Conditional Heteroscedasticity**: Volatility clustering, leptokurtosis, ARCH($q$) and GARCH($p,q$) first-principles derivations, Value-at-Risk (VaR) & portfolio risk.
+- **Prescribed Text References**: Cryer & Chan (2008, Ch. 4–6, 12) [@cryer2008time]; Shumway & Stoffer (2011, Ch. 3, 5) [@shumway2011time]; Box et al. (2016, Ch. 4–6, 8–9) [@box2016time]; Nielsen (2019, Ch. 3–5) [@nielsen2019practical]; Engle (1982) [@engle1982autoregressive]; Bollerslev (1986) [@bollerslev1986generalized].
+:::
+
+
+## The Box-Jenkins Revolution and Volatility Clusters
+
+In 1970, George Box and Gwilym Jenkins transformed forecasting from ad-hoc smoothing heuristics into a disciplined three-stage scientific loop: **Identification $\to$ Estimation $\to$ Diagnostic Checking** [@box2016time]. By combining difference operators $\nabla^d = (1-B)^d$ with mixed ARMA polynomials, their ARIMA framework could tame drifting economic indices, industrial sensors, and seasonal demand with just a handful of parameters.
+
+Yet even as ARIMA conquered mean forecasting, a blind spot remained: **constant variance (homoscedasticity)**. In financial markets, daily stock returns are nearly uncorrelated in their *direction* ($\rho(h) \approx 0$), yet large price swings—positive or negative—arrive in tight clusters, followed by calm stretches. In 1982, Robert Engle solved this puzzle by letting the *conditional variance* $\sigma_t^2$ evolve autoregressively as a function of past squared shocks (**ARCH**) [@engle1982autoregressive], and Tim Bollerslev (1986) generalized it into **GARCH** [@bollerslev1986generalized]—forming the backbone of modern Value-at-Risk and portfolio risk management.
+
+
+
+## Mixed ARMA($p,q$) Models
+
+When a pure AR($p$) or pure MA($q$) model requires too many parameters to capture both persistent feedback and finite shock memory, combining them yields a parsimonious **ARMA($p,q$)** model [@box2016time; @cryer2008time].
+
+### Key Definitions & Important Terms
+
+::: {.callout-note icon="false"}
+#### Definition 2.1: ARMA($p,q$) Process
+A weakly stationary process $\{X_t\}$ is **ARMA($p,q$)** if it satisfies:
+$$\Phi(B) X_t = \Theta(B) Z_t, \qquad Z_t \sim WN(0, \sigma^2) \tag{2.1}$$
+where $\Phi(B) = 1 - \sum_{i=1}^p \phi_i B^i$ and $\Theta(B) = 1 + \sum_{j=1}^q \theta_j B^j$.
+:::
+
+* **Parameter Redundancy**: When $\Phi(z)$ and $\Theta(z)$ share a common factor $(1 - c z)$, that factor cancels out, leaving a lower-order model with non-identifiable parameters.
+* **Causality & Invertibility**: Requires no common roots between $\Phi(z)$ and $\Theta(z)$, and all roots of both polynomials to lie strictly outside the unit circle ($|z| > 1$).
+
+### First-Principles Derivation: $\psi$-Weights of ARMA(1,1)
+
+Consider $(1 - \phi B) X_t = (1 + \theta B) Z_t$ with $|\phi| < 1$. Writing $X_t = \Psi(B) Z_t = \sum_{j=0}^\infty \psi_j Z_{t-j}$, we equate coefficients in $\Phi(B)\Psi(B) = \Theta(B)$:
+$$(1 - \phi B)(\psi_0 + \psi_1 B + \psi_2 B^2 + \dots) = 1 + \theta B \tag{2.2}$$
+
+- $B^0$: $\psi_0 = 1$.
+- $B^1$: $\psi_1 - \phi\psi_0 = \theta \implies \psi_1 = \phi + \theta$.
+- $B^j$ ($j \ge 2$): $\psi_j - \phi\psi_{j-1} = 0 \implies \psi_j = \phi^{j-1}(\phi + \theta)$.
+
+### Sample Problem 2.1 (ARMA(1,1) $\psi$-Weights & Variance)
+**Statement**: For $X_t - 0.4 X_{t-1} = Z_t + 0.8 Z_{t-1}$ with $Z_t \sim WN(0, 2.0)$, verify causality/invertibility, find $\psi_0, \psi_1, \psi_2$, and compute $\gamma(0)$.
+
+**Solution**:
+Roots: $z_\Phi = 2.5$ and $z_\Theta = -1.25$ (both $|z| > 1$, no common root $\implies$ causal & invertible).
+$\psi_0 = 1$, $\psi_1 = 0.4 + 0.8 = 1.2$, $\psi_2 = 0.4(1.2) = 0.48$.
+Using $\gamma(0) = \sigma^2 \sum_{j=0}^\infty \psi_j^2$:
+$$\gamma(0) = 2.0 \left(1 + \frac{(1.2)^2}{1 - 0.4^2}\right) = 2.0 \left(1 + \frac{1.44}{0.84}\right) = 2.0(1 + 1.7143) \approx 5.4286$$
+
+::: {.callout-tip}
+#### Key Takeaway:
+ARMA($p,q$) models achieve parsimony by blending AR feedback and MA shock memory. Always check that $\Phi(z)$ and $\Theta(z)$ share no common roots before estimation.
+:::
+
+
+
+## Non-Stationarity, Differencing, and ARIMA / SARIMA
+
+Most raw asset prices, EEG baseline drifts, and macroeconomic series wander without a fixed mean. Differencing removes stochastic trends [@box2016time; @shumway2011time].
+
+### Key Definitions & Important Terms
+
+* **Deterministic Trend**: $X_t = \beta_0 + \beta_1 t + Y_t$ (stationary fluctuations around a fixed line; shocks are temporary).
+* **Stochastic Trend (Unit Root)**: $X_t = c + X_{t-1} + Z_t$ (shocks accumulate permanently; $\mathrm{Var}(X_t | X_0) = t\sigma^2$).
+* **ARIMA($p,d,q$)**: $\Phi(B)(1 - B)^d X_t = \Theta(B) Z_t$, meaning $W_t = \nabla^d X_t$ is a stationary ARMA($p,q$) process.
+* **Seasonal ARIMA ($\mathrm{SARIMA}(p,d,q)\times(P,D,Q)_s$)**:
+  $$\Phi_p(B)\tilde{\Phi}_P(B^s)\nabla^d \nabla_s^D X_t = \Theta_q(B)\tilde{\Theta}_Q(B^s) Z_t \tag{2.3}$$
+  where $\nabla_s X_t = (1 - B^s) X_t = X_t - X_{t-s}$ removes repeating cycles of period $s$.
+
+### First-Principles Result: The Hazard of Over-Differencing
+
+Suppose $X_t = \beta_0 + \beta_1 t + Z_t$ is already trend-stationary. Applying $\nabla = 1 - B$ gives:
+$$\nabla X_t = \beta_1 + Z_t - Z_{t-1} = \beta_1 + (1 - B)Z_t \tag{2.4}$$
+Differencing turned pure white noise into a **non-invertible MA(1)** process with $\theta = -1$ (root $z = 1$ on the unit circle) and doubled the innovation variance from $\sigma^2$ to $2\sigma^2$.
+
+### Sample Problem 2.2 (Expanding the Box-Jenkins Airline Model)
+**Statement**: Expand the canonical $\mathrm{SARIMA}(0,1,1)\times(0,1,1)_{12}$ equation $(1-B)(1-B^{12})X_t = (1 + \theta B)(1 + \tilde{\Theta} B^{12})Z_t$ into a one-step forecast formula for $\hat{X}_{t+1|t}$.
+
+**Solution**:
+Expanding LHS: $X_t - X_{t-1} - X_{t-12} + X_{t-13}$.
+Expanding RHS: $Z_t + \theta Z_{t-1} + \tilde{\Theta} Z_{t-12} + \theta\tilde{\Theta} Z_{t-13}$.
+Shifting $t \to t+1$ and taking $\mathbb{E}[\cdot | \mathcal{F}_t]$ (noting $\mathbb{E}[Z_{t+1}|\mathcal{F}_t] = 0$):
+$$\hat{X}_{t+1|t} = X_t + X_{t-11} - X_{t-12} + \theta \hat{z}_t + \tilde{\Theta} \hat{z}_{t-11} + \theta\tilde{\Theta} \hat{z}_{t-12}$$
+
+::: {.callout-tip}
+#### Key Takeaway:
+Use differencing ($\nabla^d, \nabla_s^D$) to eliminate stochastic unit roots and seasonal cycles, but stop as soon as stationarity is achieved to avoid injecting artificial unit-root MA($-1$) terms.
+:::
+
+
+
+## Multivariate Systems: Vector Autoregression (VAR($p$))
+
+In both **multi-channel EEG** (frontal, parietal, occipital electrodes) and **multi-asset portfolios** (equities, bonds, FX), variables co-evolve and lead or lag one another [@shumway2011time; @nielsen2019practical].
+
+### Key Definitions & Important Terms
+
+::: {.callout-note icon="false"}
+#### Definition 2.2: Vector Autoregressive Model VAR($p$)
+Let $\mathbf{Y}_t \in \mathbb{R}^K$. A **$\mathrm{VAR}(p)$** process satisfies:
+$$\mathbf{Y}_t = \mathbf{c} + \mathbf{\Phi}_1 \mathbf{Y}_{t-1} + \dots + \mathbf{\Phi}_p \mathbf{Y}_{t-p} + \boldsymbol{\epsilon}_t, \qquad \mathbb{E}[\boldsymbol{\epsilon}_t\boldsymbol{\epsilon}_t^T] = \boldsymbol{\Sigma} \tag{2.5}$$
+:::
+
+* **Granger Causality**: $Y_j$ *Granger-causes* $Y_i$ if past lags of $Y_j$ improve forecasts of $Y_{i,t}$ beyond $Y_i$'s own past (tested via joint Wald $F$-test on $\Phi_{1,ij} = \dots = \Phi_{p,ij} = 0$).
+* **Impulse Response Function (IRF)**: Traces how a 1-unit orthogonalized shock in variable $j$ propagates through all $K$ variables over future steps $h = 0, 1, 2, \dots$.
+
+### First-Principles Result: Companion Matrix Stability Condition
+Any VAR($p$) can be stacked into a $Kp$-dimensional VAR(1) companion system $\mathbf{Z}_t = \mathbf{C} + \mathbf{F}\mathbf{Z}_{t-1} + \mathbf{U}_t$. The system is weakly stationary if and only if all eigenvalues of the companion matrix $\mathbf{F}$ have modulus strictly less than $1$, equivalently:
+$$\det\left(\mathbf{I}_K - \sum_{i=1}^p \mathbf{\Phi}_i z^i\right) \neq 0, \quad \forall |z| \le 1 \tag{2.6}$$
+
+### Sample Problem 2.3 (Bivariate VAR(1) Stability & Forecasting)
+**Statement**: Let $\mathbf{Y}_t = \begin{bmatrix} 0.6 & 0.2 \\ 0.1 & 0.7 \end{bmatrix} \mathbf{Y}_{t-1} + \boldsymbol{\epsilon}_t$. Check stability and compute $\hat{\mathbf{Y}}_{T+1|T}$ given $\mathbf{Y}_T = [40, 100]^T$.
+
+**Solution**:
+Eigenvalues satisfy $\det(\mathbf{\Phi}_1 - \lambda \mathbf{I}) = (0.6-\lambda)(0.7-\lambda) - 0.02 = \lambda^2 - 1.3\lambda + 0.40 = (\lambda-0.8)(\lambda-0.5) = 0$. Since $|\lambda_1|=0.8 < 1$ and $|\lambda_2|=0.5 < 1$, the system is **stable**.
+Forecast: $\hat{\mathbf{Y}}_{T+1|T} = \begin{bmatrix} 0.6(40)+0.2(100) \\ 0.1(40)+0.7(100) \end{bmatrix} = \begin{bmatrix} 44 \\ 74 \end{bmatrix}$.
+
+::: {.callout-tip}
+#### Key Takeaway:
+VAR($p$) models capture bidirectional cross-channel feedback (such as brain-region connectivity or cross-asset spillovers) and enable formal Granger causality testing.
+:::
+
+## Conditional Heteroscedastic Models: ARCH and GARCH
+
+Let $r_t = \mu_t + a_t$ where $a_t = \sigma_t \epsilon_t$, $\epsilon_t \overset{i.i.d.}{\sim} \mathcal{N}(0, 1)$, and $\sigma_t^2 = \mathrm{Var}(r_t | \mathcal{F}_{t-1})$ is the time-varying conditional variance [@cryer2008time; @engle1982autoregressive; @bollerslev1986generalized].
+
+### Key Definitions & Important Terms
+
+* **ARCH($q$) (Engle, 1982)**: $\sigma_t^2 = \alpha_0 + \sum_{i=1}^q \alpha_i a_{t-i}^2$ ($\alpha_0 > 0, \alpha_i \ge 0$).
+* **GARCH($p,q$) (Bollerslev, 1986)**: $\sigma_t^2 = \omega + \sum_{i=1}^q \alpha_i a_{t-i}^2 + \sum_{j=1}^p \beta_j \sigma_{t-j}^2$ ($\omega > 0, \alpha_i, \beta_j \ge 0$).
+* **Volatility Persistence ($\alpha + \beta$)**: Governs how slowly a volatility spike decays back to the long-run variance $\bar{\sigma}^2$.
+
+### First-Principles Derivations: ARCH(1) Kurtosis & GARCH(1,1) Persistence
+
+#### Theorem 2.1: Unconditional Variance & Leptokurtosis of ARCH(1)
+For $\sigma_t^2 = \alpha_0 + \alpha_1 a_{t-1}^2$ with $0 \le \alpha_1 < 1$ and $3\alpha_1^2 < 1$:
+$$\bar{\sigma}^2 = \frac{\alpha_0}{1 - \alpha_1}, \qquad \kappa = \frac{\mathbb{E}[a_t^4]}{(\mathbb{E}[a_t^2])^2} = 3\frac{1 - \alpha_1^2}{1 - 3\alpha_1^2} > 3 \tag{2.7}$$
+
+**Derivation from First Principles**:
+By the Law of Total Expectation, $\mathbb{E}[a_t^2] = \mathbb{E}[\sigma_t^2 \mathbb{E}[\epsilon_t^2|\mathcal{F}_{t-1}]] = \mathbb{E}[\sigma_t^2] = \alpha_0 + \alpha_1\mathbb{E}[a_{t-1}^2]$. Under stationarity ($\mathbb{E}[a_t^2] = \bar{\sigma}^2$), solving gives $\bar{\sigma}^2 = \frac{\alpha_0}{1 - \alpha_1}$.
+For the fourth moment, since $\mathbb{E}[\epsilon_t^4] = 3$:
+$$\mathbb{E}[a_t^4] = 3\mathbb{E}[\sigma_t^4] = 3\mathbb{E}\big[(\alpha_0 + \alpha_1 a_{t-1}^2)^2\big] = 3\alpha_0^2 + 6\alpha_0\alpha_1 \bar{\sigma}^2 + 3\alpha_1^2 \mathbb{E}[a_{t-1}^4]$$
+Substituting $\bar{\sigma}^2 = \alpha_0/(1-\alpha_1)$ and solving for $\mathbb{E}[a_t^4]$ yields $\mathbb{E}[a_t^4] = \frac{3\alpha_0^2(1+\alpha_1)}{(1-\alpha_1)(1-3\alpha_1^2)}$. Dividing by $(\bar{\sigma}^2)^2 = \frac{\alpha_0^2}{(1-\alpha_1)^2}$ gives $\kappa = 3\frac{1 - \alpha_1^2}{1 - 3\alpha_1^2} > 3$. Even with Normal innovations $\epsilon_t$, ARCH generates **fat tails**!
+
+#### Theorem 2.2: GARCH(1,1) Stationarity & Multi-Step Variance Forecast
+For $\sigma_t^2 = \omega + \alpha a_{t-1}^2 + \beta \sigma_{t-1}^2$, taking expectations gives $\bar{\sigma}^2 = \frac{\omega}{1 - (\alpha + \beta)}$ (requiring $\alpha + \beta < 1$). Iterating $k$ steps ahead:
+$$\mathbb{E}[\sigma_{t+k}^2 | \mathcal{F}_t] = \bar{\sigma}^2 + (\alpha + \beta)^{k-1}\big(\sigma_{t+1}^2 - \bar{\sigma}^2\big) \tag{2.8}$$
+
+### Sample Problem 2.4 (ARCH(1) Risk & Kurtosis)
+**Statement**: A stock return series follows ARCH(1): $\sigma_t^2 = 0.00004 + 0.35 a_{t-1}^2$. Compute $\bar{\sigma}^2$, annualized volatility ($\times\sqrt{252}$), and theoretical kurtosis $\kappa$.
+
+**Solution**:
+$\bar{\sigma}^2 = \frac{0.00004}{1 - 0.35} \approx 6.1538 \times 10^{-5}$. Annualized volatility: $\sqrt{252 \times 6.1538\times 10^{-5}} \approx 12.45\%$.
+Since $3(0.35)^2 = 0.3675 < 1$, $\kappa = 3\frac{1 - 0.1225}{1 - 0.3675} \approx 4.162 > 3$ (leptokurtic).
+
+::: {.callout-tip}
+#### Key Takeaway:
+ARCH and GARCH model *time-varying risk* ($\sigma_t^2$), naturally explaining both volatility clustering and fat-tailed return distributions when $\alpha + \beta < 1$.
+:::
+
+
+## 3-Tier Graduated Problem Ladder
+
+### Tier 1: By-Hand Intuition
+* **Problem 2.5 (Practice)**: Identify the orders $(p,d,q)\times(P,D,Q)_{12}$ of $(1 - 0.5B)(1 - B)(1 - B^{12})X_t = (1 + 0.3B^{12})Z_t$. *(Answer: $\mathrm{SARIMA}(1,1,0)\times(0,1,1)_{12}$.)*
+* **Problem 2.6 (Practice)**: A GARCH(1,1) has $\omega = 2\times 10^{-6}$, $\alpha = 0.09$, $\beta = 0.89$. Compute the long-run daily volatility $\bar{\sigma}$. *(Answer: $\bar{\sigma}^2 = 2\times 10^{-6}/0.02 = 0.0001 \implies \bar{\sigma} = 1.0\%$.)*
+
+### Tier 2: Analytical & Exam-Style
+* **Problem 2.7 (Worked — GARCH(1,1) as ARMA(1,1))**: Show that $a_t^2$ in GARCH(1,1) obeys an ARMA(1,1) equation.
+  *Solution*: Let $\nu_t = a_t^2 - \sigma_t^2$ (note $\mathbb{E}[\nu_t|\mathcal{F}_{t-1}] = 0$). Substituting $\sigma_t^2 = a_t^2 - \nu_t$ into $\sigma_t^2 = \omega + \alpha a_{t-1}^2 + \beta \sigma_{t-1}^2$ gives $a_t^2 - \nu_t = \omega + \alpha a_{t-1}^2 + \beta(a_{t-1}^2 - \nu_{t-1}) \implies a_t^2 = \omega + (\alpha + \beta)a_{t-1}^2 + \nu_t - \beta\nu_{t-1}$, which is ARMA(1,1) with $\phi_1 = \alpha+\beta$ and $\theta_1 = -\beta$.
+
+### Tier 3: Domain Case Studies (EEG & Finance/Portfolio)
+* **Problem 2.8 (EEG Multi-Channel Granger Coupling — Worked)**: In a 2-channel EEG VAR(1) connecting Frontal ($Y_{1,t}$) and Occipital ($Y_{2,t}$) cortex, $\mathbf{\Phi}_1 = \begin{bmatrix} 0.5 & 0.0 \\ 0.35 & 0.4 \end{bmatrix}$. Does Occipital activity Granger-cause Frontal activity?
+  *Solution*: Look at row 1, col 2: $\Phi_{1,12} = 0.0$, so Occipital lags do **not** predict Frontal activity. However, $\Phi_{1,21} = 0.35 \neq 0$, meaning Frontal activity *unidirectionally Granger-causes* Occipital activity.
+* **Problem 2.9 (Dynamic Portfolio Value-at-Risk — Practice)**: Using Problem 2.6's GARCH(1,1), today's shock is $a_T = -0.03$ ($-3\%$) and $\sigma_T = 0.01$. Compute tomorrow's 1-day 99% VaR ($\text{VaR}_{0.99} = 2.326\,\sigma_{T+1}$) for a Rs.10,00,000 portfolio. *(Answer: $\sigma_{T+1}^2 = 2\times 10^{-6} + 0.09(0.0009) + 0.89(0.0001) = 0.000172 \implies \sigma_{T+1} = 1.311\%$, $\text{VaR}_{0.99} \approx 30,505$.)*
+
+
+## Dual-Track Laboratory Experimental Section
+
+### Lab Track A: Multi-Channel EEG VAR(p) & Granger Connectivity
+
+```python
+import numpy as np
+import pandas as pd
+from statsmodels.tsa.api import VAR
+
+# Simulate coupled 2-channel EEG (Frontal -> Occipital delayed propagation)
+np.random.seed(10)
+n = 600
+frontal = np.zeros(n)
+occipital = np.zeros(n)
+e1, e2 = np.random.normal(0, 1, n), np.random.normal(0, 1, n)
+
+for t in range(1, n):
+    frontal[t] = 0.65 * frontal[t-1] + e1[t]
+    occipital[t] = 0.45 * occipital[t-1] + 0.40 * frontal[t-1] + e2[t]
+
+eeg_df = pd.DataFrame({"Frontal": frontal, "Occipital": occipital})
+var_fit = VAR(eeg_df).fit(maxlags=2, ic="aic")
+print(var_fit.summary())
+
+# Test Granger causality: Does Frontal Granger-cause Occipital?
+gc_f_to_o = var_fit.test_causality("Occipital", ["Frontal"], kind="f")
+gc_o_to_f = var_fit.test_causality("Frontal", ["Occipital"], kind="f")
+print(f"\nFrontal -> Occipital p-value: {gc_f_to_o.pvalue:.4e}")
+print(f"Occipital -> Frontal p-value: {gc_o_to_f.pvalue:.4e}")
+```
+
+### Lab Track B: SARIMA Forecasting & GARCH(1,1) Portfolio VaR
+
+```python
+import numpy as np
+import pandas as pd
+import statsmodels.api as sm
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from scipy.optimize import minimize
+
+# Part 1: Box-Jenkins Airline SARIMA(0,1,1)x(0,1,1)_12
+air = sm.datasets.get_rdataset("AirPassengers", package="datasets").data["value"]
+log_air = np.log(pd.Series(air.values, index=pd.date_range("1949-01-01", periods=len(air), freq="MS")))
+sarima = SARIMAX(log_air.iloc[:-12], order=(0, 1, 1), seasonal_order=(0, 1, 1, 12)).fit(disp=False)
+pred = np.exp(sarima.get_forecast(12).predicted_mean)
+rmse = np.sqrt(np.mean((np.exp(log_air.iloc[-12:]) - pred)**2))
+print(f"Airline 12-Month Out-of-Sample RMSE: {rmse:.2f} thousand passengers")
+
+# Part 2: GARCH(1,1) MLE & 99% VaR Backtest on Equity Returns
+np.random.seed(42)
+T = 1000
+r, s2 = np.zeros(T), np.zeros(T)
+s2[0] = 0.0001
+eps = np.random.normal(0, 1, T)
+for t in range(1, T):
+    s2[t] = 0.00001 + 0.08 * r[t-1]**2 + 0.88 * s2[t-1]
+    r[t] = np.sqrt(s2[t]) * eps[t]
+
+def neg_ll(params):
+    w, a, b = params
+    if w <= 0 or a < 0 or b < 0 or a + b >= 1:
+        return 1e10
+    sig2 = np.empty(T)
+    sig2[0] = np.var(r)
+    for t in range(1, T):
+        sig2[t] = w + a * r[t-1]**2 + b * sig2[t-1]
+    return 0.5 * np.sum(np.log(2 * np.pi * sig2) + r**2 / sig2)
+
+res = minimize(neg_ll, [0.00002, 0.1, 0.8], method="Nelder-Mead")
+w_hat, a_hat, b_hat = res.x
+print(f"GARCH(1,1) MLE -> omega={w_hat:.6f}, alpha={a_hat:.4f}, beta={b_hat:.4f}, persistence={a_hat+b_hat:.4f}")
+```
+
+---
+
+## Summary of Concepts
+
+* **ARMA($p,q$)**: Combines AR and MA polynomials; valid identification requires no common factors and all roots outside $|z| > 1$.
+* **ARIMA & SARIMA**: First and seasonal differencing ($\nabla^d \nabla_s^D$) eliminate unit roots and periodic trends without over-differencing.
+* **VAR($p$)**: Models multi-channel/multi-asset feedback; stability requires companion eigenvalues strictly inside the unit circle, enabling Granger causality and IRF analysis.
+* **ARCH / GARCH**: Models time-varying conditional variance $\sigma_t^2$, producing volatility clustering, fat tails ($\kappa > 3$), and dynamic Value-at-Risk bounds.
+
+::: {.callout-tip}
+### Prescribed Textbook Cross-Walk
+| Concept | Cryer & Chan (2008) | Shumway & Stoffer (2011) | Box et al. (2016) | Nielsen (2019) |
+|:---|:---|:---|:---|:---|
+| ARMA & ARIMA | Ch. 4.4, 5.2 | Ch. 3.1, 3.6 | Ch. 3.4, 4.1 | Ch. 6 |
+| Seasonal ARIMA (SARIMA) | Ch. 10 | Ch. 3.9 | Ch. 9 | Ch. 6 |
+| Vector Autoregression (VAR) | — | Ch. 5.6 | Ch. 14 | Ch. 7 |
+| ARCH & GARCH Models | Ch. 12 | Ch. 5.3 | — | Ch. 4, 11 |
+:::

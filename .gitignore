@@ -1,0 +1,7 @@
+.quarto/
+.DS_Store
+**/.DS_Store
+_book/
+__pycache__/
+.ipynb_checkpoints/
+publish_to_github.sh

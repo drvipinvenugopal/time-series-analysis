@@ -1,0 +1,54 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "Time Series Analysis: First Principles to Deep Applications"
+  subtitle: "Analytical Problem Sets & Dual-Track Lab Manual"
+  author:
+    - name: "Amrita Vishwa Vidyapeetham"
+      affiliation: "School of AI"
+  date: "2026"
+  site-url: "https://amrita.edu/course/22aie463-time-series-analysis"
+  repo-url: "https://github.com/amrita-aie/22AIE463-time-series-analysis"
+  chapters:
+    - index.qmd
+    - chapters/00_bootcamp_foundations.qmd
+    - chapters/01_unit1_linear_models.qmd
+    - chapters/02_unit2_arima_var_garch.qmd
+    - chapters/03_unit3_nonlinear_statespace.qmd
+    - chapters/04_unit4_ml_dl_catastrophic.qmd
+    - references.qmd
+
+jupyter: python3
+bibliography: references.bib
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/ieee.csl
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: false
+    code-tools: true
+    code-line-numbers: true
+    highlight-style: github
+    smooth-scroll: true
+    mathjax: true
+    callout-appearance: default
+    callout-icon: true
+  pdf:
+    documentclass: scrreprt
+    number-sections: true
+    toc: true
+    toc-depth: 3
+    colorlinks: true
+    papersize: a4
+    geometry:
+      - top=25mm
+      - bottom=25mm
+      - left=25mm
+      - right=25mm

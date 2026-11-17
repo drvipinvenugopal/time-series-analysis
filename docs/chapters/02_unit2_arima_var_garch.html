@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.31">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>3&nbsp; Unit 2: ARMA, ARIMA, SARIMA, VAR, and Conditional Heteroscedastic Models – Time Series Analysis: First Principles to Deep Applications</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/03_unit3_nonlinear_statespace.html" rel="next">
+<link href="../chapters/01_unit1_linear_models.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-4a990d8dcb58f517c7c86712b8f2ac7c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-46f4cc9626f044588a66931b604fc9c8.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-4a990d8dcb58f517c7c86712b8f2ac7c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-4c7a00f65c4f7b083d618916be6661e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-2f778816bbcb37d180fb5a0deea0cd82.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-4c7a00f65c4f7b083d618916be6661e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/02_unit2_arima_var_garch.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Unit 2: ARMA, ARIMA, SARIMA, VAR, and Conditional Heteroscedastic Models</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Time Series Analysis: First Principles to Deep Applications</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/amrita-aie/22AIE463-time-series-analysis" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Course Overview &amp; Syllabus Mapping</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/00_bootcamp_foundations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Chapter 0: Zero-Prerequisite Foundations Bootcamp</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01_unit1_linear_models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Unit 1: Linear Time Series, Stationarity, Ergodicity, and Classical Processes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02_unit2_arima_var_garch.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Unit 2: ARMA, ARIMA, SARIMA, VAR, and Conditional Heteroscedastic Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03_unit3_nonlinear_statespace.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Unit 3: Nonlinear Dynamics, Formal Hypothesis Testing, and State-Space Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04_unit4_ml_dl_catastrophic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Unit 4: Machine Learning, Deep Learning, and Precursors for Catastrophic Transitions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prescribed Textbooks and References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-box-jenkins-revolution-and-volatility-clusters" id="toc-the-box-jenkins-revolution-and-volatility-clusters" class="nav-link active" data-scroll-target="#the-box-jenkins-revolution-and-volatility-clusters"><span class="header-section-number">3.1</span> The Box-Jenkins Revolution and Volatility Clusters</a></li>
+  <li><a href="#mixed-armapq-models" id="toc-mixed-armapq-models" class="nav-link" data-scroll-target="#mixed-armapq-models"><span class="header-section-number">3.2</span> Mixed ARMA(<span class="math inline">\(p,q\)</span>) Models</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms" id="toc-key-definitions-important-terms" class="nav-link" data-scroll-target="#key-definitions-important-terms"><span class="header-section-number">3.2.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#first-principles-derivation-psi-weights-of-arma11" id="toc-first-principles-derivation-psi-weights-of-arma11" class="nav-link" data-scroll-target="#first-principles-derivation-psi-weights-of-arma11"><span class="header-section-number">3.2.2</span> First-Principles Derivation: <span class="math inline">\(\psi\)</span>-Weights of ARMA(1,1)</a></li>
+  <li><a href="#sample-problem-2.1-arma11-psi-weights-variance" id="toc-sample-problem-2.1-arma11-psi-weights-variance" class="nav-link" data-scroll-target="#sample-problem-2.1-arma11-psi-weights-variance"><span class="header-section-number">3.2.3</span> Sample Problem 2.1 (ARMA(1,1) <span class="math inline">\(\psi\)</span>-Weights &amp; Variance)</a></li>
+  </ul></li>
+  <li><a href="#non-stationarity-differencing-and-arima-sarima" id="toc-non-stationarity-differencing-and-arima-sarima" class="nav-link" data-scroll-target="#non-stationarity-differencing-and-arima-sarima"><span class="header-section-number">3.3</span> Non-Stationarity, Differencing, and ARIMA / SARIMA</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms-1" id="toc-key-definitions-important-terms-1" class="nav-link" data-scroll-target="#key-definitions-important-terms-1"><span class="header-section-number">3.3.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#first-principles-result-the-hazard-of-over-differencing" id="toc-first-principles-result-the-hazard-of-over-differencing" class="nav-link" data-scroll-target="#first-principles-result-the-hazard-of-over-differencing"><span class="header-section-number">3.3.2</span> First-Principles Result: The Hazard of Over-Differencing</a></li>
+  <li><a href="#sample-problem-2.2-expanding-the-box-jenkins-airline-model" id="toc-sample-problem-2.2-expanding-the-box-jenkins-airline-model" class="nav-link" data-scroll-target="#sample-problem-2.2-expanding-the-box-jenkins-airline-model"><span class="header-section-number">3.3.3</span> Sample Problem 2.2 (Expanding the Box-Jenkins Airline Model)</a></li>
+  </ul></li>
+  <li><a href="#multivariate-systems-vector-autoregression-varp" id="toc-multivariate-systems-vector-autoregression-varp" class="nav-link" data-scroll-target="#multivariate-systems-vector-autoregression-varp"><span class="header-section-number">3.4</span> Multivariate Systems: Vector Autoregression (VAR(<span class="math inline">\(p\)</span>))</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms-2" id="toc-key-definitions-important-terms-2" class="nav-link" data-scroll-target="#key-definitions-important-terms-2"><span class="header-section-number">3.4.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#first-principles-result-companion-matrix-stability-condition" id="toc-first-principles-result-companion-matrix-stability-condition" class="nav-link" data-scroll-target="#first-principles-result-companion-matrix-stability-condition"><span class="header-section-number">3.4.2</span> First-Principles Result: Companion Matrix Stability Condition</a></li>
+  <li><a href="#sample-problem-2.3-bivariate-var1-stability-forecasting" id="toc-sample-problem-2.3-bivariate-var1-stability-forecasting" class="nav-link" data-scroll-target="#sample-problem-2.3-bivariate-var1-stability-forecasting"><span class="header-section-number">3.4.3</span> Sample Problem 2.3 (Bivariate VAR(1) Stability &amp; Forecasting)</a></li>
+  </ul></li>
+  <li><a href="#conditional-heteroscedastic-models-arch-and-garch" id="toc-conditional-heteroscedastic-models-arch-and-garch" class="nav-link" data-scroll-target="#conditional-heteroscedastic-models-arch-and-garch"><span class="header-section-number">3.5</span> Conditional Heteroscedastic Models: ARCH and GARCH</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms-3" id="toc-key-definitions-important-terms-3" class="nav-link" data-scroll-target="#key-definitions-important-terms-3"><span class="header-section-number">3.5.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#first-principles-derivations-arch1-kurtosis-garch11-persistence" id="toc-first-principles-derivations-arch1-kurtosis-garch11-persistence" class="nav-link" data-scroll-target="#first-principles-derivations-arch1-kurtosis-garch11-persistence"><span class="header-section-number">3.5.2</span> First-Principles Derivations: ARCH(1) Kurtosis &amp; GARCH(1,1) Persistence</a></li>
+  <li><a href="#sample-problem-2.4-arch1-risk-kurtosis" id="toc-sample-problem-2.4-arch1-risk-kurtosis" class="nav-link" data-scroll-target="#sample-problem-2.4-arch1-risk-kurtosis"><span class="header-section-number">3.5.3</span> Sample Problem 2.4 (ARCH(1) Risk &amp; Kurtosis)</a></li>
+  </ul></li>
+  <li><a href="#tier-graduated-problem-ladder" id="toc-tier-graduated-problem-ladder" class="nav-link" data-scroll-target="#tier-graduated-problem-ladder"><span class="header-section-number">3.6</span> 3-Tier Graduated Problem Ladder</a>
+  <ul class="collapse">
+  <li><a href="#tier-1-by-hand-intuition" id="toc-tier-1-by-hand-intuition" class="nav-link" data-scroll-target="#tier-1-by-hand-intuition"><span class="header-section-number">3.6.1</span> Tier 1: By-Hand Intuition</a></li>
+  <li><a href="#tier-2-analytical-exam-style" id="toc-tier-2-analytical-exam-style" class="nav-link" data-scroll-target="#tier-2-analytical-exam-style"><span class="header-section-number">3.6.2</span> Tier 2: Analytical &amp; Exam-Style</a></li>
+  <li><a href="#tier-3-domain-case-studies-eeg-financeportfolio" id="toc-tier-3-domain-case-studies-eeg-financeportfolio" class="nav-link" data-scroll-target="#tier-3-domain-case-studies-eeg-financeportfolio"><span class="header-section-number">3.6.3</span> Tier 3: Domain Case Studies (EEG &amp; Finance/Portfolio)</a></li>
+  </ul></li>
+  <li><a href="#dual-track-laboratory-experimental-section" id="toc-dual-track-laboratory-experimental-section" class="nav-link" data-scroll-target="#dual-track-laboratory-experimental-section"><span class="header-section-number">3.7</span> Dual-Track Laboratory Experimental Section</a>
+  <ul class="collapse">
+  <li><a href="#lab-track-a-multi-channel-eeg-varp-granger-connectivity" id="toc-lab-track-a-multi-channel-eeg-varp-granger-connectivity" class="nav-link" data-scroll-target="#lab-track-a-multi-channel-eeg-varp-granger-connectivity"><span class="header-section-number">3.7.1</span> Lab Track A: Multi-Channel EEG VAR(p) &amp; Granger Connectivity</a></li>
+  <li><a href="#lab-track-b-sarima-forecasting-garch11-portfolio-var" id="toc-lab-track-b-sarima-forecasting-garch11-portfolio-var" class="nav-link" data-scroll-target="#lab-track-b-sarima-forecasting-garch11-portfolio-var"><span class="header-section-number">3.7.2</span> Lab Track B: SARIMA Forecasting &amp; GARCH(1,1) Portfolio VaR</a></li>
+  </ul></li>
+  <li><a href="#summary-of-concepts" id="toc-summary-of-concepts" class="nav-link" data-scroll-target="#summary-of-concepts"><span class="header-section-number">3.8</span> Summary of Concepts</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-unit2" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Unit 2: ARMA, ARIMA, SARIMA, VAR, and Conditional Heteroscedastic Models</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Unit 2 Curriculum Checklist
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>ARMA(<span class="math inline">\(p,q\)</span>)</strong>: Mixed autoregressive-moving average processes, common-factor cancellation, <span class="math inline">\(\psi\)</span>-weight expansions.</li>
+<li><strong>ARIMA(<span class="math inline">\(p,d,q\)</span>) &amp; SARIMA</strong>: Stochastic vs.&nbsp;deterministic trends, differencing operators, over-differencing hazards, multiplicative seasonal operators.</li>
+<li><strong>Multivariate Systems (VAR(<span class="math inline">\(p\)</span>))</strong>: Vector autoregression, companion matrix stability, Granger causality, impulse response functions (IRF).</li>
+<li><strong>Conditional Heteroscedasticity</strong>: Volatility clustering, leptokurtosis, ARCH(<span class="math inline">\(q\)</span>) and GARCH(<span class="math inline">\(p,q\)</span>) first-principles derivations, Value-at-Risk (VaR) &amp; portfolio risk.</li>
+<li><strong>Prescribed Text References</strong>: Cryer &amp; Chan (2008, Ch. 4–6, 12) <span class="citation" data-cites="cryer2008time"><a href="../references.html#ref-cryer2008time" role="doc-biblioref">[1]</a></span>; Shumway &amp; Stoffer (2011, Ch. 3, 5) <span class="citation" data-cites="shumway2011time"><a href="../references.html#ref-shumway2011time" role="doc-biblioref">[2]</a></span>; Box et al.&nbsp;(2016, Ch. 4–6, 8–9) <span class="citation" data-cites="box2016time"><a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>; Nielsen (2019, Ch. 3–5) <span class="citation" data-cites="nielsen2019practical"><a href="../references.html#ref-nielsen2019practical" role="doc-biblioref">[4]</a></span>; Engle (1982) <span class="citation" data-cites="engle1982autoregressive"><a href="../references.html#ref-engle1982autoregressive" role="doc-biblioref">[5]</a></span>; Bollerslev (1986) <span class="citation" data-cites="bollerslev1986generalized"><a href="../references.html#ref-bollerslev1986generalized" role="doc-biblioref">[6]</a></span>.</li>
+</ul>
+</div>
+</div>
+<section id="the-box-jenkins-revolution-and-volatility-clusters" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="the-box-jenkins-revolution-and-volatility-clusters"><span class="header-section-number">3.1</span> The Box-Jenkins Revolution and Volatility Clusters</h2>
+<p>In 1970, George Box and Gwilym Jenkins transformed forecasting from ad-hoc smoothing heuristics into a disciplined three-stage scientific loop: <strong>Identification <span class="math inline">\(\to\)</span> Estimation <span class="math inline">\(\to\)</span> Diagnostic Checking</strong> <span class="citation" data-cites="box2016time"><a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>. By combining difference operators <span class="math inline">\(\nabla^d = (1-B)^d\)</span> with mixed ARMA polynomials, their ARIMA framework could tame drifting economic indices, industrial sensors, and seasonal demand with just a handful of parameters.</p>
+<p>Yet even as ARIMA conquered mean forecasting, a blind spot remained: <strong>constant variance (homoscedasticity)</strong>. In financial markets, daily stock returns are nearly uncorrelated in their <em>direction</em> (<span class="math inline">\(\rho(h) \approx 0\)</span>), yet large price swings—positive or negative—arrive in tight clusters, followed by calm stretches. In 1982, Robert Engle solved this puzzle by letting the <em>conditional variance</em> <span class="math inline">\(\sigma_t^2\)</span> evolve autoregressively as a function of past squared shocks (<strong>ARCH</strong>) <span class="citation" data-cites="engle1982autoregressive"><a href="../references.html#ref-engle1982autoregressive" role="doc-biblioref">[5]</a></span>, and Tim Bollerslev (1986) generalized it into <strong>GARCH</strong> <span class="citation" data-cites="bollerslev1986generalized"><a href="../references.html#ref-bollerslev1986generalized" role="doc-biblioref">[6]</a></span>—forming the backbone of modern Value-at-Risk and portfolio risk management.</p>
+</section>
+<section id="mixed-armapq-models" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="mixed-armapq-models"><span class="header-section-number">3.2</span> Mixed ARMA(<span class="math inline">\(p,q\)</span>) Models</h2>
+<p>When a pure AR(<span class="math inline">\(p\)</span>) or pure MA(<span class="math inline">\(q\)</span>) model requires too many parameters to capture both persistent feedback and finite shock memory, combining them yields a parsimonious <strong>ARMA(<span class="math inline">\(p,q\)</span>)</strong> model <span class="citation" data-cites="box2016time cryer2008time"><a href="../references.html#ref-cryer2008time" role="doc-biblioref">[1]</a>, <a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>.</p>
+<section id="key-definitions-important-terms" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="key-definitions-important-terms"><span class="header-section-number">3.2.1</span> Key Definitions &amp; Important Terms</h3>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definition 2.1: ARMA(<span class="math inline">\(p,q\)</span>) Process
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A weakly stationary process <span class="math inline">\(\{X_t\}\)</span> is <strong>ARMA(<span class="math inline">\(p,q\)</span>)</strong> if it satisfies: <span class="math display">\[\Phi(B) X_t = \Theta(B) Z_t, \qquad Z_t \sim WN(0, \sigma^2) \tag{2.1}\]</span> where <span class="math inline">\(\Phi(B) = 1 - \sum_{i=1}^p \phi_i B^i\)</span> and <span class="math inline">\(\Theta(B) = 1 + \sum_{j=1}^q \theta_j B^j\)</span>.</p>
+</div>
+</div>
+<ul>
+<li><strong>Parameter Redundancy</strong>: When <span class="math inline">\(\Phi(z)\)</span> and <span class="math inline">\(\Theta(z)\)</span> share a common factor <span class="math inline">\((1 - c z)\)</span>, that factor cancels out, leaving a lower-order model with non-identifiable parameters.</li>
+<li><strong>Causality &amp; Invertibility</strong>: Requires no common roots between <span class="math inline">\(\Phi(z)\)</span> and <span class="math inline">\(\Theta(z)\)</span>, and all roots of both polynomials to lie strictly outside the unit circle (<span class="math inline">\(|z| &gt; 1\)</span>).</li>
+</ul>
+</section>
+<section id="first-principles-derivation-psi-weights-of-arma11" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="first-principles-derivation-psi-weights-of-arma11"><span class="header-section-number">3.2.2</span> First-Principles Derivation: <span class="math inline">\(\psi\)</span>-Weights of ARMA(1,1)</h3>
+<p>Consider <span class="math inline">\((1 - \phi B) X_t = (1 + \theta B) Z_t\)</span> with <span class="math inline">\(|\phi| &lt; 1\)</span>. Writing <span class="math inline">\(X_t = \Psi(B) Z_t = \sum_{j=0}^\infty \psi_j Z_{t-j}\)</span>, we equate coefficients in <span class="math inline">\(\Phi(B)\Psi(B) = \Theta(B)\)</span>: <span class="math display">\[(1 - \phi B)(\psi_0 + \psi_1 B + \psi_2 B^2 + \dots) = 1 + \theta B \tag{2.2}\]</span></p>
+<ul>
+<li><span class="math inline">\(B^0\)</span>: <span class="math inline">\(\psi_0 = 1\)</span>.</li>
+<li><span class="math inline">\(B^1\)</span>: <span class="math inline">\(\psi_1 - \phi\psi_0 = \theta \implies \psi_1 = \phi + \theta\)</span>.</li>
+<li><span class="math inline">\(B^j\)</span> (<span class="math inline">\(j \ge 2\)</span>): <span class="math inline">\(\psi_j - \phi\psi_{j-1} = 0 \implies \psi_j = \phi^{j-1}(\phi + \theta)\)</span>.</li>
+</ul>
+</section>
+<section id="sample-problem-2.1-arma11-psi-weights-variance" class="level3" data-number="3.2.3">
+<h3 data-number="3.2.3" class="anchored" data-anchor-id="sample-problem-2.1-arma11-psi-weights-variance"><span class="header-section-number">3.2.3</span> Sample Problem 2.1 (ARMA(1,1) <span class="math inline">\(\psi\)</span>-Weights &amp; Variance)</h3>
+<p><strong>Statement</strong>: For <span class="math inline">\(X_t - 0.4 X_{t-1} = Z_t + 0.8 Z_{t-1}\)</span> with <span class="math inline">\(Z_t \sim WN(0, 2.0)\)</span>, verify causality/invertibility, find <span class="math inline">\(\psi_0, \psi_1, \psi_2\)</span>, and compute <span class="math inline">\(\gamma(0)\)</span>.</p>
+<p><strong>Solution</strong>: Roots: <span class="math inline">\(z_\Phi = 2.5\)</span> and <span class="math inline">\(z_\Theta = -1.25\)</span> (both <span class="math inline">\(|z| &gt; 1\)</span>, no common root <span class="math inline">\(\implies\)</span> causal &amp; invertible). <span class="math inline">\(\psi_0 = 1\)</span>, <span class="math inline">\(\psi_1 = 0.4 + 0.8 = 1.2\)</span>, <span class="math inline">\(\psi_2 = 0.4(1.2) = 0.48\)</span>. Using <span class="math inline">\(\gamma(0) = \sigma^2 \sum_{j=0}^\infty \psi_j^2\)</span>: <span class="math display">\[\gamma(0) = 2.0 \left(1 + \frac{(1.2)^2}{1 - 0.4^2}\right) = 2.0 \left(1 + \frac{1.44}{0.84}\right) = 2.0(1 + 1.7143) \approx 5.4286\]</span></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>ARMA(<span class="math inline">\(p,q\)</span>) models achieve parsimony by blending AR feedback and MA shock memory. Always check that <span class="math inline">\(\Phi(z)\)</span> and <span class="math inline">\(\Theta(z)\)</span> share no common roots before estimation.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="non-stationarity-differencing-and-arima-sarima" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="non-stationarity-differencing-and-arima-sarima"><span class="header-section-number">3.3</span> Non-Stationarity, Differencing, and ARIMA / SARIMA</h2>
+<p>Most raw asset prices, EEG baseline drifts, and macroeconomic series wander without a fixed mean. Differencing removes stochastic trends <span class="citation" data-cites="box2016time shumway2011time"><a href="../references.html#ref-shumway2011time" role="doc-biblioref">[2]</a>, <a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>.</p>
+<section id="key-definitions-important-terms-1" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="key-definitions-important-terms-1"><span class="header-section-number">3.3.1</span> Key Definitions &amp; Important Terms</h3>
+<ul>
+<li><strong>Deterministic Trend</strong>: <span class="math inline">\(X_t = \beta_0 + \beta_1 t + Y_t\)</span> (stationary fluctuations around a fixed line; shocks are temporary).</li>
+<li><strong>Stochastic Trend (Unit Root)</strong>: <span class="math inline">\(X_t = c + X_{t-1} + Z_t\)</span> (shocks accumulate permanently; <span class="math inline">\(\mathrm{Var}(X_t | X_0) = t\sigma^2\)</span>).</li>
+<li><strong>ARIMA(<span class="math inline">\(p,d,q\)</span>)</strong>: <span class="math inline">\(\Phi(B)(1 - B)^d X_t = \Theta(B) Z_t\)</span>, meaning <span class="math inline">\(W_t = \nabla^d X_t\)</span> is a stationary ARMA(<span class="math inline">\(p,q\)</span>) process.</li>
+<li><strong>Seasonal ARIMA (<span class="math inline">\(\mathrm{SARIMA}(p,d,q)\times(P,D,Q)_s\)</span>)</strong>: <span class="math display">\[\Phi_p(B)\tilde{\Phi}_P(B^s)\nabla^d \nabla_s^D X_t = \Theta_q(B)\tilde{\Theta}_Q(B^s) Z_t \tag{2.3}\]</span> where <span class="math inline">\(\nabla_s X_t = (1 - B^s) X_t = X_t - X_{t-s}\)</span> removes repeating cycles of period <span class="math inline">\(s\)</span>.</li>
+</ul>
+</section>
+<section id="first-principles-result-the-hazard-of-over-differencing" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="first-principles-result-the-hazard-of-over-differencing"><span class="header-section-number">3.3.2</span> First-Principles Result: The Hazard of Over-Differencing</h3>
+<p>Suppose <span class="math inline">\(X_t = \beta_0 + \beta_1 t + Z_t\)</span> is already trend-stationary. Applying <span class="math inline">\(\nabla = 1 - B\)</span> gives: <span class="math display">\[\nabla X_t = \beta_1 + Z_t - Z_{t-1} = \beta_1 + (1 - B)Z_t \tag{2.4}\]</span> Differencing turned pure white noise into a <strong>non-invertible MA(1)</strong> process with <span class="math inline">\(\theta = -1\)</span> (root <span class="math inline">\(z = 1\)</span> on the unit circle) and doubled the innovation variance from <span class="math inline">\(\sigma^2\)</span> to <span class="math inline">\(2\sigma^2\)</span>.</p>
+</section>
+<section id="sample-problem-2.2-expanding-the-box-jenkins-airline-model" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="sample-problem-2.2-expanding-the-box-jenkins-airline-model"><span class="header-section-number">3.3.3</span> Sample Problem 2.2 (Expanding the Box-Jenkins Airline Model)</h3>
+<p><strong>Statement</strong>: Expand the canonical <span class="math inline">\(\mathrm{SARIMA}(0,1,1)\times(0,1,1)_{12}\)</span> equation <span class="math inline">\((1-B)(1-B^{12})X_t = (1 + \theta B)(1 + \tilde{\Theta} B^{12})Z_t\)</span> into a one-step forecast formula for <span class="math inline">\(\hat{X}_{t+1|t}\)</span>.</p>
+<p><strong>Solution</strong>: Expanding LHS: <span class="math inline">\(X_t - X_{t-1} - X_{t-12} + X_{t-13}\)</span>. Expanding RHS: <span class="math inline">\(Z_t + \theta Z_{t-1} + \tilde{\Theta} Z_{t-12} + \theta\tilde{\Theta} Z_{t-13}\)</span>. Shifting <span class="math inline">\(t \to t+1\)</span> and taking <span class="math inline">\(\mathbb{E}[\cdot | \mathcal{F}_t]\)</span> (noting <span class="math inline">\(\mathbb{E}[Z_{t+1}|\mathcal{F}_t] = 0\)</span>): <span class="math display">\[\hat{X}_{t+1|t} = X_t + X_{t-11} - X_{t-12} + \theta \hat{z}_t + \tilde{\Theta} \hat{z}_{t-11} + \theta\tilde{\Theta} \hat{z}_{t-12}\]</span></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use differencing (<span class="math inline">\(\nabla^d, \nabla_s^D\)</span>) to eliminate stochastic unit roots and seasonal cycles, but stop as soon as stationarity is achieved to avoid injecting artificial unit-root MA(<span class="math inline">\(-1\)</span>) terms.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="multivariate-systems-vector-autoregression-varp" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="multivariate-systems-vector-autoregression-varp"><span class="header-section-number">3.4</span> Multivariate Systems: Vector Autoregression (VAR(<span class="math inline">\(p\)</span>))</h2>
+<p>In both <strong>multi-channel EEG</strong> (frontal, parietal, occipital electrodes) and <strong>multi-asset portfolios</strong> (equities, bonds, FX), variables co-evolve and lead or lag one another <span class="citation" data-cites="shumway2011time nielsen2019practical"><a href="../references.html#ref-shumway2011time" role="doc-biblioref">[2]</a>, <a href="../references.html#ref-nielsen2019practical" role="doc-biblioref">[4]</a></span>.</p>
+<section id="key-definitions-important-terms-2" class="level3" data-number="3.4.1">
+<h3 data-number="3.4.1" class="anchored" data-anchor-id="key-definitions-important-terms-2"><span class="header-section-number">3.4.1</span> Key Definitions &amp; Important Terms</h3>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definition 2.2: Vector Autoregressive Model VAR(<span class="math inline">\(p\)</span>)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\mathbf{Y}_t \in \mathbb{R}^K\)</span>. A <strong><span class="math inline">\(\mathrm{VAR}(p)\)</span></strong> process satisfies: <span class="math display">\[\mathbf{Y}_t = \mathbf{c} + \mathbf{\Phi}_1 \mathbf{Y}_{t-1} + \dots + \mathbf{\Phi}_p \mathbf{Y}_{t-p} + \boldsymbol{\epsilon}_t, \qquad \mathbb{E}[\boldsymbol{\epsilon}_t\boldsymbol{\epsilon}_t^T] = \boldsymbol{\Sigma} \tag{2.5}\]</span></p>
+</div>
+</div>
+<ul>
+<li><strong>Granger Causality</strong>: <span class="math inline">\(Y_j\)</span> <em>Granger-causes</em> <span class="math inline">\(Y_i\)</span> if past lags of <span class="math inline">\(Y_j\)</span> improve forecasts of <span class="math inline">\(Y_{i,t}\)</span> beyond <span class="math inline">\(Y_i\)</span>’s own past (tested via joint Wald <span class="math inline">\(F\)</span>-test on <span class="math inline">\(\Phi_{1,ij} = \dots = \Phi_{p,ij} = 0\)</span>).</li>
+<li><strong>Impulse Response Function (IRF)</strong>: Traces how a 1-unit orthogonalized shock in variable <span class="math inline">\(j\)</span> propagates through all <span class="math inline">\(K\)</span> variables over future steps <span class="math inline">\(h = 0, 1, 2, \dots\)</span>.</li>
+</ul>
+</section>
+<section id="first-principles-result-companion-matrix-stability-condition" class="level3" data-number="3.4.2">
+<h3 data-number="3.4.2" class="anchored" data-anchor-id="first-principles-result-companion-matrix-stability-condition"><span class="header-section-number">3.4.2</span> First-Principles Result: Companion Matrix Stability Condition</h3>
+<p>Any VAR(<span class="math inline">\(p\)</span>) can be stacked into a <span class="math inline">\(Kp\)</span>-dimensional VAR(1) companion system <span class="math inline">\(\mathbf{Z}_t = \mathbf{C} + \mathbf{F}\mathbf{Z}_{t-1} + \mathbf{U}_t\)</span>. The system is weakly stationary if and only if all eigenvalues of the companion matrix <span class="math inline">\(\mathbf{F}\)</span> have modulus strictly less than <span class="math inline">\(1\)</span>, equivalently: <span class="math display">\[\det\left(\mathbf{I}_K - \sum_{i=1}^p \mathbf{\Phi}_i z^i\right) \neq 0, \quad \forall |z| \le 1 \tag{2.6}\]</span></p>
+</section>
+<section id="sample-problem-2.3-bivariate-var1-stability-forecasting" class="level3" data-number="3.4.3">
+<h3 data-number="3.4.3" class="anchored" data-anchor-id="sample-problem-2.3-bivariate-var1-stability-forecasting"><span class="header-section-number">3.4.3</span> Sample Problem 2.3 (Bivariate VAR(1) Stability &amp; Forecasting)</h3>
+<p><strong>Statement</strong>: Let <span class="math inline">\(\mathbf{Y}_t = \begin{bmatrix} 0.6 &amp; 0.2 \\ 0.1 &amp; 0.7 \end{bmatrix} \mathbf{Y}_{t-1} + \boldsymbol{\epsilon}_t\)</span>. Check stability and compute <span class="math inline">\(\hat{\mathbf{Y}}_{T+1|T}\)</span> given <span class="math inline">\(\mathbf{Y}_T = [40, 100]^T\)</span>.</p>
+<p><strong>Solution</strong>: Eigenvalues satisfy <span class="math inline">\(\det(\mathbf{\Phi}_1 - \lambda \mathbf{I}) = (0.6-\lambda)(0.7-\lambda) - 0.02 = \lambda^2 - 1.3\lambda + 0.40 = (\lambda-0.8)(\lambda-0.5) = 0\)</span>. Since <span class="math inline">\(|\lambda_1|=0.8 &lt; 1\)</span> and <span class="math inline">\(|\lambda_2|=0.5 &lt; 1\)</span>, the system is <strong>stable</strong>. Forecast: <span class="math inline">\(\hat{\mathbf{Y}}_{T+1|T} = \begin{bmatrix} 0.6(40)+0.2(100) \\ 0.1(40)+0.7(100) \end{bmatrix} = \begin{bmatrix} 44 \\ 74 \end{bmatrix}\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>VAR(<span class="math inline">\(p\)</span>) models capture bidirectional cross-channel feedback (such as brain-region connectivity or cross-asset spillovers) and enable formal Granger causality testing.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="conditional-heteroscedastic-models-arch-and-garch" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="conditional-heteroscedastic-models-arch-and-garch"><span class="header-section-number">3.5</span> Conditional Heteroscedastic Models: ARCH and GARCH</h2>
+<p>Let <span class="math inline">\(r_t = \mu_t + a_t\)</span> where <span class="math inline">\(a_t = \sigma_t \epsilon_t\)</span>, <span class="math inline">\(\epsilon_t \overset{i.i.d.}{\sim} \mathcal{N}(0, 1)\)</span>, and <span class="math inline">\(\sigma_t^2 = \mathrm{Var}(r_t | \mathcal{F}_{t-1})\)</span> is the time-varying conditional variance <span class="citation" data-cites="cryer2008time engle1982autoregressive bollerslev1986generalized"><a href="../references.html#ref-cryer2008time" role="doc-biblioref">[1]</a>, <a href="../references.html#ref-engle1982autoregressive" role="doc-biblioref">[5]</a>, <a href="../references.html#ref-bollerslev1986generalized" role="doc-biblioref">[6]</a></span>.</p>
+<section id="key-definitions-important-terms-3" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="key-definitions-important-terms-3"><span class="header-section-number">3.5.1</span> Key Definitions &amp; Important Terms</h3>
+<ul>
+<li><strong>ARCH(<span class="math inline">\(q\)</span>) (Engle, 1982)</strong>: <span class="math inline">\(\sigma_t^2 = \alpha_0 + \sum_{i=1}^q \alpha_i a_{t-i}^2\)</span> (<span class="math inline">\(\alpha_0 &gt; 0, \alpha_i \ge 0\)</span>).</li>
+<li><strong>GARCH(<span class="math inline">\(p,q\)</span>) (Bollerslev, 1986)</strong>: <span class="math inline">\(\sigma_t^2 = \omega + \sum_{i=1}^q \alpha_i a_{t-i}^2 + \sum_{j=1}^p \beta_j \sigma_{t-j}^2\)</span> (<span class="math inline">\(\omega &gt; 0, \alpha_i, \beta_j \ge 0\)</span>).</li>
+<li><strong>Volatility Persistence (<span class="math inline">\(\alpha + \beta\)</span>)</strong>: Governs how slowly a volatility spike decays back to the long-run variance <span class="math inline">\(\bar{\sigma}^2\)</span>.</li>
+</ul>
+</section>
+<section id="first-principles-derivations-arch1-kurtosis-garch11-persistence" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="first-principles-derivations-arch1-kurtosis-garch11-persistence"><span class="header-section-number">3.5.2</span> First-Principles Derivations: ARCH(1) Kurtosis &amp; GARCH(1,1) Persistence</h3>
+<section id="theorem-2.1-unconditional-variance-leptokurtosis-of-arch1" class="level4" data-number="3.5.2.1">
+<h4 data-number="3.5.2.1" class="anchored" data-anchor-id="theorem-2.1-unconditional-variance-leptokurtosis-of-arch1"><span class="header-section-number">3.5.2.1</span> Theorem 2.1: Unconditional Variance &amp; Leptokurtosis of ARCH(1)</h4>
+<p>For <span class="math inline">\(\sigma_t^2 = \alpha_0 + \alpha_1 a_{t-1}^2\)</span> with <span class="math inline">\(0 \le \alpha_1 &lt; 1\)</span> and <span class="math inline">\(3\alpha_1^2 &lt; 1\)</span>: <span class="math display">\[\bar{\sigma}^2 = \frac{\alpha_0}{1 - \alpha_1}, \qquad \kappa = \frac{\mathbb{E}[a_t^4]}{(\mathbb{E}[a_t^2])^2} = 3\frac{1 - \alpha_1^2}{1 - 3\alpha_1^2} &gt; 3 \tag{2.7}\]</span></p>
+<p><strong>Derivation from First Principles</strong>: By the Law of Total Expectation, <span class="math inline">\(\mathbb{E}[a_t^2] = \mathbb{E}[\sigma_t^2 \mathbb{E}[\epsilon_t^2|\mathcal{F}_{t-1}]] = \mathbb{E}[\sigma_t^2] = \alpha_0 + \alpha_1\mathbb{E}[a_{t-1}^2]\)</span>. Under stationarity (<span class="math inline">\(\mathbb{E}[a_t^2] = \bar{\sigma}^2\)</span>), solving gives <span class="math inline">\(\bar{\sigma}^2 = \frac{\alpha_0}{1 - \alpha_1}\)</span>. For the fourth moment, since <span class="math inline">\(\mathbb{E}[\epsilon_t^4] = 3\)</span>: <span class="math display">\[\mathbb{E}[a_t^4] = 3\mathbb{E}[\sigma_t^4] = 3\mathbb{E}\big[(\alpha_0 + \alpha_1 a_{t-1}^2)^2\big] = 3\alpha_0^2 + 6\alpha_0\alpha_1 \bar{\sigma}^2 + 3\alpha_1^2 \mathbb{E}[a_{t-1}^4]\]</span> Substituting <span class="math inline">\(\bar{\sigma}^2 = \alpha_0/(1-\alpha_1)\)</span> and solving for <span class="math inline">\(\mathbb{E}[a_t^4]\)</span> yields <span class="math inline">\(\mathbb{E}[a_t^4] = \frac{3\alpha_0^2(1+\alpha_1)}{(1-\alpha_1)(1-3\alpha_1^2)}\)</span>. Dividing by <span class="math inline">\((\bar{\sigma}^2)^2 = \frac{\alpha_0^2}{(1-\alpha_1)^2}\)</span> gives <span class="math inline">\(\kappa = 3\frac{1 - \alpha_1^2}{1 - 3\alpha_1^2} &gt; 3\)</span>. Even with Normal innovations <span class="math inline">\(\epsilon_t\)</span>, ARCH generates <strong>fat tails</strong>!</p>
+</section>
+<section id="theorem-2.2-garch11-stationarity-multi-step-variance-forecast" class="level4" data-number="3.5.2.2">
+<h4 data-number="3.5.2.2" class="anchored" data-anchor-id="theorem-2.2-garch11-stationarity-multi-step-variance-forecast"><span class="header-section-number">3.5.2.2</span> Theorem 2.2: GARCH(1,1) Stationarity &amp; Multi-Step Variance Forecast</h4>
+<p>For <span class="math inline">\(\sigma_t^2 = \omega + \alpha a_{t-1}^2 + \beta \sigma_{t-1}^2\)</span>, taking expectations gives <span class="math inline">\(\bar{\sigma}^2 = \frac{\omega}{1 - (\alpha + \beta)}\)</span> (requiring <span class="math inline">\(\alpha + \beta &lt; 1\)</span>). Iterating <span class="math inline">\(k\)</span> steps ahead: <span class="math display">\[\mathbb{E}[\sigma_{t+k}^2 | \mathcal{F}_t] = \bar{\sigma}^2 + (\alpha + \beta)^{k-1}\big(\sigma_{t+1}^2 - \bar{\sigma}^2\big) \tag{2.8}\]</span></p>
+</section>
+</section>
+<section id="sample-problem-2.4-arch1-risk-kurtosis" class="level3" data-number="3.5.3">
+<h3 data-number="3.5.3" class="anchored" data-anchor-id="sample-problem-2.4-arch1-risk-kurtosis"><span class="header-section-number">3.5.3</span> Sample Problem 2.4 (ARCH(1) Risk &amp; Kurtosis)</h3>
+<p><strong>Statement</strong>: A stock return series follows ARCH(1): <span class="math inline">\(\sigma_t^2 = 0.00004 + 0.35 a_{t-1}^2\)</span>. Compute <span class="math inline">\(\bar{\sigma}^2\)</span>, annualized volatility (<span class="math inline">\(\times\sqrt{252}\)</span>), and theoretical kurtosis <span class="math inline">\(\kappa\)</span>.</p>
+<p><strong>Solution</strong>: <span class="math inline">\(\bar{\sigma}^2 = \frac{0.00004}{1 - 0.35} \approx 6.1538 \times 10^{-5}\)</span>. Annualized volatility: <span class="math inline">\(\sqrt{252 \times 6.1538\times 10^{-5}} \approx 12.45\%\)</span>. Since <span class="math inline">\(3(0.35)^2 = 0.3675 &lt; 1\)</span>, <span class="math inline">\(\kappa = 3\frac{1 - 0.1225}{1 - 0.3675} \approx 4.162 &gt; 3\)</span> (leptokurtic).</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>ARCH and GARCH model <em>time-varying risk</em> (<span class="math inline">\(\sigma_t^2\)</span>), naturally explaining both volatility clustering and fat-tailed return distributions when <span class="math inline">\(\alpha + \beta &lt; 1\)</span>.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="tier-graduated-problem-ladder" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="tier-graduated-problem-ladder"><span class="header-section-number">3.6</span> 3-Tier Graduated Problem Ladder</h2>
+<section id="tier-1-by-hand-intuition" class="level3" data-number="3.6.1">
+<h3 data-number="3.6.1" class="anchored" data-anchor-id="tier-1-by-hand-intuition"><span class="header-section-number">3.6.1</span> Tier 1: By-Hand Intuition</h3>
+<ul>
+<li><strong>Problem 2.5 (Practice)</strong>: Identify the orders <span class="math inline">\((p,d,q)\times(P,D,Q)_{12}\)</span> of <span class="math inline">\((1 - 0.5B)(1 - B)(1 - B^{12})X_t = (1 + 0.3B^{12})Z_t\)</span>. <em>(Answer: <span class="math inline">\(\mathrm{SARIMA}(1,1,0)\times(0,1,1)_{12}\)</span>.)</em></li>
+<li><strong>Problem 2.6 (Practice)</strong>: A GARCH(1,1) has <span class="math inline">\(\omega = 2\times 10^{-6}\)</span>, <span class="math inline">\(\alpha = 0.09\)</span>, <span class="math inline">\(\beta = 0.89\)</span>. Compute the long-run daily volatility <span class="math inline">\(\bar{\sigma}\)</span>. <em>(Answer: <span class="math inline">\(\bar{\sigma}^2 = 2\times 10^{-6}/0.02 = 0.0001 \implies \bar{\sigma} = 1.0\%\)</span>.)</em></li>
+</ul>
+</section>
+<section id="tier-2-analytical-exam-style" class="level3" data-number="3.6.2">
+<h3 data-number="3.6.2" class="anchored" data-anchor-id="tier-2-analytical-exam-style"><span class="header-section-number">3.6.2</span> Tier 2: Analytical &amp; Exam-Style</h3>
+<ul>
+<li><strong>Problem 2.7 (Worked — GARCH(1,1) as ARMA(1,1))</strong>: Show that <span class="math inline">\(a_t^2\)</span> in GARCH(1,1) obeys an ARMA(1,1) equation. <em>Solution</em>: Let <span class="math inline">\(\nu_t = a_t^2 - \sigma_t^2\)</span> (note <span class="math inline">\(\mathbb{E}[\nu_t|\mathcal{F}_{t-1}] = 0\)</span>). Substituting <span class="math inline">\(\sigma_t^2 = a_t^2 - \nu_t\)</span> into <span class="math inline">\(\sigma_t^2 = \omega + \alpha a_{t-1}^2 + \beta \sigma_{t-1}^2\)</span> gives <span class="math inline">\(a_t^2 - \nu_t = \omega + \alpha a_{t-1}^2 + \beta(a_{t-1}^2 - \nu_{t-1}) \implies a_t^2 = \omega + (\alpha + \beta)a_{t-1}^2 + \nu_t - \beta\nu_{t-1}\)</span>, which is ARMA(1,1) with <span class="math inline">\(\phi_1 = \alpha+\beta\)</span> and <span class="math inline">\(\theta_1 = -\beta\)</span>.</li>
+</ul>
+</section>
+<section id="tier-3-domain-case-studies-eeg-financeportfolio" class="level3" data-number="3.6.3">
+<h3 data-number="3.6.3" class="anchored" data-anchor-id="tier-3-domain-case-studies-eeg-financeportfolio"><span class="header-section-number">3.6.3</span> Tier 3: Domain Case Studies (EEG &amp; Finance/Portfolio)</h3>
+<ul>
+<li><strong>Problem 2.8 (EEG Multi-Channel Granger Coupling — Worked)</strong>: In a 2-channel EEG VAR(1) connecting Frontal (<span class="math inline">\(Y_{1,t}\)</span>) and Occipital (<span class="math inline">\(Y_{2,t}\)</span>) cortex, <span class="math inline">\(\mathbf{\Phi}_1 = \begin{bmatrix} 0.5 &amp; 0.0 \\ 0.35 &amp; 0.4 \end{bmatrix}\)</span>. Does Occipital activity Granger-cause Frontal activity? <em>Solution</em>: Look at row 1, col 2: <span class="math inline">\(\Phi_{1,12} = 0.0\)</span>, so Occipital lags do <strong>not</strong> predict Frontal activity. However, <span class="math inline">\(\Phi_{1,21} = 0.35 \neq 0\)</span>, meaning Frontal activity <em>unidirectionally Granger-causes</em> Occipital activity.</li>
+<li><strong>Problem 2.9 (Dynamic Portfolio Value-at-Risk — Practice)</strong>: Using Problem 2.6’s GARCH(1,1), today’s shock is <span class="math inline">\(a_T = -0.03\)</span> (<span class="math inline">\(-3\%\)</span>) and <span class="math inline">\(\sigma_T = 0.01\)</span>. Compute tomorrow’s 1-day 99% VaR (<span class="math inline">\(\text{VaR}_{0.99} = 2.326\,\sigma_{T+1}\)</span>) for a Rs.10,00,000 portfolio. <em>(Answer: <span class="math inline">\(\sigma_{T+1}^2 = 2\times 10^{-6} + 0.09(0.0009) + 0.89(0.0001) = 0.000172 \implies \sigma_{T+1} = 1.311\%\)</span>, <span class="math inline">\(\text{VaR}_{0.99} \approx 30,505\)</span>.)</em></li>
+</ul>
+</section>
+</section>
+<section id="dual-track-laboratory-experimental-section" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="dual-track-laboratory-experimental-section"><span class="header-section-number">3.7</span> Dual-Track Laboratory Experimental Section</h2>
+<section id="lab-track-a-multi-channel-eeg-varp-granger-connectivity" class="level3" data-number="3.7.1">
+<h3 data-number="3.7.1" class="anchored" data-anchor-id="lab-track-a-multi-channel-eeg-varp-granger-connectivity"><span class="header-section-number">3.7.1</span> Lab Track A: Multi-Channel EEG VAR(p) &amp; Granger Connectivity</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">from</span> statsmodels.tsa.api <span class="im">import</span> VAR</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co"># Simulate coupled 2-channel EEG (Frontal -&gt; Occipital delayed propagation)</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>np.random.seed(<span class="dv">10</span>)</span>
+<span id="cb1-7"><a href="#cb1-7"></a>n <span class="op">=</span> <span class="dv">600</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>frontal <span class="op">=</span> np.zeros(n)</span>
+<span id="cb1-9"><a href="#cb1-9"></a>occipital <span class="op">=</span> np.zeros(n)</span>
+<span id="cb1-10"><a href="#cb1-10"></a>e1, e2 <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, n), np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, n)</span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, n):</span>
+<span id="cb1-13"><a href="#cb1-13"></a>    frontal[t] <span class="op">=</span> <span class="fl">0.65</span> <span class="op">*</span> frontal[t<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> e1[t]</span>
+<span id="cb1-14"><a href="#cb1-14"></a>    occipital[t] <span class="op">=</span> <span class="fl">0.45</span> <span class="op">*</span> occipital[t<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> <span class="fl">0.40</span> <span class="op">*</span> frontal[t<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> e2[t]</span>
+<span id="cb1-15"><a href="#cb1-15"></a></span>
+<span id="cb1-16"><a href="#cb1-16"></a>eeg_df <span class="op">=</span> pd.DataFrame({<span class="st">"Frontal"</span>: frontal, <span class="st">"Occipital"</span>: occipital})</span>
+<span id="cb1-17"><a href="#cb1-17"></a>var_fit <span class="op">=</span> VAR(eeg_df).fit(maxlags<span class="op">=</span><span class="dv">2</span>, ic<span class="op">=</span><span class="st">"aic"</span>)</span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="bu">print</span>(var_fit.summary())</span>
+<span id="cb1-19"><a href="#cb1-19"></a></span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="co"># Test Granger causality: Does Frontal Granger-cause Occipital?</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a>gc_f_to_o <span class="op">=</span> var_fit.test_causality(<span class="st">"Occipital"</span>, [<span class="st">"Frontal"</span>], kind<span class="op">=</span><span class="st">"f"</span>)</span>
+<span id="cb1-22"><a href="#cb1-22"></a>gc_o_to_f <span class="op">=</span> var_fit.test_causality(<span class="st">"Frontal"</span>, [<span class="st">"Occipital"</span>], kind<span class="op">=</span><span class="st">"f"</span>)</span>
+<span id="cb1-23"><a href="#cb1-23"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Frontal -&gt; Occipital p-value: </span><span class="sc">{</span>gc_f_to_o<span class="sc">.</span>pvalue<span class="sc">:.4e}</span><span class="ss">"</span>)</span>
+<span id="cb1-24"><a href="#cb1-24"></a><span class="bu">print</span>(<span class="ss">f"Occipital -&gt; Frontal p-value: </span><span class="sc">{</span>gc_o_to_f<span class="sc">.</span>pvalue<span class="sc">:.4e}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="lab-track-b-sarima-forecasting-garch11-portfolio-var" class="level3" data-number="3.7.2">
+<h3 data-number="3.7.2" class="anchored" data-anchor-id="lab-track-b-sarima-forecasting-garch11-portfolio-var"><span class="header-section-number">3.7.2</span> Lab Track B: SARIMA Forecasting &amp; GARCH(1,1) Portfolio VaR</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="im">from</span> statsmodels.tsa.statespace.sarimax <span class="im">import</span> SARIMAX</span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize</span>
+<span id="cb2-6"><a href="#cb2-6"></a></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co"># Part 1: Box-Jenkins Airline SARIMA(0,1,1)x(0,1,1)_12</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>air <span class="op">=</span> sm.datasets.get_rdataset(<span class="st">"AirPassengers"</span>, package<span class="op">=</span><span class="st">"datasets"</span>).data[<span class="st">"value"</span>]</span>
+<span id="cb2-9"><a href="#cb2-9"></a>log_air <span class="op">=</span> np.log(pd.Series(air.values, index<span class="op">=</span>pd.date_range(<span class="st">"1949-01-01"</span>, periods<span class="op">=</span><span class="bu">len</span>(air), freq<span class="op">=</span><span class="st">"MS"</span>)))</span>
+<span id="cb2-10"><a href="#cb2-10"></a>sarima <span class="op">=</span> SARIMAX(log_air.iloc[:<span class="op">-</span><span class="dv">12</span>], order<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>), seasonal_order<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">12</span>)).fit(disp<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-11"><a href="#cb2-11"></a>pred <span class="op">=</span> np.exp(sarima.get_forecast(<span class="dv">12</span>).predicted_mean)</span>
+<span id="cb2-12"><a href="#cb2-12"></a>rmse <span class="op">=</span> np.sqrt(np.mean((np.exp(log_air.iloc[<span class="op">-</span><span class="dv">12</span>:]) <span class="op">-</span> pred)<span class="op">**</span><span class="dv">2</span>))</span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="bu">print</span>(<span class="ss">f"Airline 12-Month Out-of-Sample RMSE: </span><span class="sc">{</span>rmse<span class="sc">:.2f}</span><span class="ss"> thousand passengers"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14"></a></span>
+<span id="cb2-15"><a href="#cb2-15"></a><span class="co"># Part 2: GARCH(1,1) MLE &amp; 99% VaR Backtest on Equity Returns</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb2-17"><a href="#cb2-17"></a>T <span class="op">=</span> <span class="dv">1000</span></span>
+<span id="cb2-18"><a href="#cb2-18"></a>r, s2 <span class="op">=</span> np.zeros(T), np.zeros(T)</span>
+<span id="cb2-19"><a href="#cb2-19"></a>s2[<span class="dv">0</span>] <span class="op">=</span> <span class="fl">0.0001</span></span>
+<span id="cb2-20"><a href="#cb2-20"></a>eps <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, T)</span>
+<span id="cb2-21"><a href="#cb2-21"></a><span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, T):</span>
+<span id="cb2-22"><a href="#cb2-22"></a>    s2[t] <span class="op">=</span> <span class="fl">0.00001</span> <span class="op">+</span> <span class="fl">0.08</span> <span class="op">*</span> r[t<span class="op">-</span><span class="dv">1</span>]<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="fl">0.88</span> <span class="op">*</span> s2[t<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb2-23"><a href="#cb2-23"></a>    r[t] <span class="op">=</span> np.sqrt(s2[t]) <span class="op">*</span> eps[t]</span>
+<span id="cb2-24"><a href="#cb2-24"></a></span>
+<span id="cb2-25"><a href="#cb2-25"></a><span class="kw">def</span> neg_ll(params):</span>
+<span id="cb2-26"><a href="#cb2-26"></a>    w, a, b <span class="op">=</span> params</span>
+<span id="cb2-27"><a href="#cb2-27"></a>    <span class="cf">if</span> w <span class="op">&lt;=</span> <span class="dv">0</span> <span class="kw">or</span> a <span class="op">&lt;</span> <span class="dv">0</span> <span class="kw">or</span> b <span class="op">&lt;</span> <span class="dv">0</span> <span class="kw">or</span> a <span class="op">+</span> b <span class="op">&gt;=</span> <span class="dv">1</span>:</span>
+<span id="cb2-28"><a href="#cb2-28"></a>        <span class="cf">return</span> <span class="fl">1e10</span></span>
+<span id="cb2-29"><a href="#cb2-29"></a>    sig2 <span class="op">=</span> np.empty(T)</span>
+<span id="cb2-30"><a href="#cb2-30"></a>    sig2[<span class="dv">0</span>] <span class="op">=</span> np.var(r)</span>
+<span id="cb2-31"><a href="#cb2-31"></a>    <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, T):</span>
+<span id="cb2-32"><a href="#cb2-32"></a>        sig2[t] <span class="op">=</span> w <span class="op">+</span> a <span class="op">*</span> r[t<span class="op">-</span><span class="dv">1</span>]<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> b <span class="op">*</span> sig2[t<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb2-33"><a href="#cb2-33"></a>    <span class="cf">return</span> <span class="fl">0.5</span> <span class="op">*</span> np.<span class="bu">sum</span>(np.log(<span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> sig2) <span class="op">+</span> r<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> sig2)</span>
+<span id="cb2-34"><a href="#cb2-34"></a></span>
+<span id="cb2-35"><a href="#cb2-35"></a>res <span class="op">=</span> minimize(neg_ll, [<span class="fl">0.00002</span>, <span class="fl">0.1</span>, <span class="fl">0.8</span>], method<span class="op">=</span><span class="st">"Nelder-Mead"</span>)</span>
+<span id="cb2-36"><a href="#cb2-36"></a>w_hat, a_hat, b_hat <span class="op">=</span> res.x</span>
+<span id="cb2-37"><a href="#cb2-37"></a><span class="bu">print</span>(<span class="ss">f"GARCH(1,1) MLE -&gt; omega=</span><span class="sc">{</span>w_hat<span class="sc">:.6f}</span><span class="ss">, alpha=</span><span class="sc">{</span>a_hat<span class="sc">:.4f}</span><span class="ss">, beta=</span><span class="sc">{</span>b_hat<span class="sc">:.4f}</span><span class="ss">, persistence=</span><span class="sc">{</span>a_hat<span class="op">+</span>b_hat<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+</section>
+<section id="summary-of-concepts" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="summary-of-concepts"><span class="header-section-number">3.8</span> Summary of Concepts</h2>
+<ul>
+<li><strong>ARMA(<span class="math inline">\(p,q\)</span>)</strong>: Combines AR and MA polynomials; valid identification requires no common factors and all roots outside <span class="math inline">\(|z| &gt; 1\)</span>.</li>
+<li><strong>ARIMA &amp; SARIMA</strong>: First and seasonal differencing (<span class="math inline">\(\nabla^d \nabla_s^D\)</span>) eliminate unit roots and periodic trends without over-differencing.</li>
+<li><strong>VAR(<span class="math inline">\(p\)</span>)</strong>: Models multi-channel/multi-asset feedback; stability requires companion eigenvalues strictly inside the unit circle, enabling Granger causality and IRF analysis.</li>
+<li><strong>ARCH / GARCH</strong>: Models time-varying conditional variance <span class="math inline">\(\sigma_t^2\)</span>, producing volatility clustering, fat tails (<span class="math inline">\(\kappa &gt; 3\)</span>), and dynamic Value-at-Risk bounds.</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Prescribed Textbook Cross-Walk
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Concept</th>
+<th style="text-align: left;">Cryer &amp; Chan (2008)</th>
+<th style="text-align: left;">Shumway &amp; Stoffer (2011)</th>
+<th style="text-align: left;">Box et al.&nbsp;(2016)</th>
+<th style="text-align: left;">Nielsen (2019)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ARMA &amp; ARIMA</td>
+<td style="text-align: left;">Ch. 4.4, 5.2</td>
+<td style="text-align: left;">Ch. 3.1, 3.6</td>
+<td style="text-align: left;">Ch. 3.4, 4.1</td>
+<td style="text-align: left;">Ch. 6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Seasonal ARIMA (SARIMA)</td>
+<td style="text-align: left;">Ch. 10</td>
+<td style="text-align: left;">Ch. 3.9</td>
+<td style="text-align: left;">Ch. 9</td>
+<td style="text-align: left;">Ch. 6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Vector Autoregression (VAR)</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Ch. 5.6</td>
+<td style="text-align: left;">Ch. 14</td>
+<td style="text-align: left;">Ch. 7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ARCH &amp; GARCH Models</td>
+<td style="text-align: left;">Ch. 12</td>
+<td style="text-align: left;">Ch. 5.3</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Ch. 4, 11</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<!-- -->
+
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-cryer2008time" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">J. D. Cryer and K.-S. Chan, <em>Time series analysis: With applications in r</em>, 2nd ed. New York, NY: Springer, 2008. doi: <a href="https://doi.org/10.1007/978-0-387-75959-3">10.1007/978-0-387-75959-3</a>.</div>
+</div>
+<div id="ref-shumway2011time" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">R. H. Shumway and D. S. Stoffer, <em>Time series analysis and its applications: With r examples</em>, 3rd ed. New York, NY: Springer, 2011. doi: <a href="https://doi.org/10.1007/978-1-4419-7865-3">10.1007/978-1-4419-7865-3</a>.</div>
+</div>
+<div id="ref-box2016time" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">G. E. P. Box, G. M. Jenkins, G. C. Reinsel, and G. M. Ljung, <em>Time series analysis: Forecasting and control</em>, 5th ed. Hoboken, NJ: John Wiley &amp; Sons, 2016.</div>
+</div>
+<div id="ref-nielsen2019practical" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">A. Nielsen, <em>Practical time series analysis: Prediction with statistics and machine learning</em>, 1st ed. Sebastopol, CA: O’Reilly Media, 2019.</div>
+</div>
+<div id="ref-engle1982autoregressive" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[5] </div><div class="csl-right-inline">R. F. Engle, <span>“Autoregressive conditional heteroscedasticity with estimates of the variance of united kingdom inflation,”</span> <em>Econometrica</em>, vol. 50, no. 4, pp. 987–1007, 1982, doi: <a href="https://doi.org/10.2307/1912773">10.2307/1912773</a>.</div>
+</div>
+<div id="ref-bollerslev1986generalized" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[6] </div><div class="csl-right-inline">T. Bollerslev, <span>“Generalized autoregressive conditional heteroskedasticity,”</span> <em>Journal of Econometrics</em>, vol. 31, no. 3, pp. 307–327, 1986, doi: <a href="https://doi.org/10.1016/0304-4076(86)90063-1">10.1016/0304-4076(86)90063-1</a>.</div>
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/amrita\.edu\/course\/22aie463-time-series-analysis");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../chapters/01_unit1_linear_models.html" class="pagination-link" aria-label="Unit 1: Linear Time Series, Stationarity, Ergodicity, and Classical Processes">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Unit 1: Linear Time Series, Stationarity, Ergodicity, and Classical Processes</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/03_unit3_nonlinear_statespace.html" class="pagination-link" aria-label="Unit 3: Nonlinear Dynamics, Formal Hypothesis Testing, and State-Space Models">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Unit 3: Nonlinear Dynamics, Formal Hypothesis Testing, and State-Space Models</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu"># Unit 2: ARMA, ARIMA, SARIMA, VAR, and Conditional Heteroscedastic Models {#sec-unit2}</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="fu">### Unit 2 Curriculum Checklist</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="ss">- </span>**ARMA($p,q$)**: Mixed autoregressive-moving average processes, common-factor cancellation, $\psi$-weight expansions.</span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="ss">- </span>**ARIMA($p,d,q$) &amp; SARIMA**: Stochastic vs. deterministic trends, differencing operators, over-differencing hazards, multiplicative seasonal operators.</span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="ss">- </span>**Multivariate Systems (VAR($p$))**: Vector autoregression, companion matrix stability, Granger causality, impulse response functions (IRF).</span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="ss">- </span>**Conditional Heteroscedasticity**: Volatility clustering, leptokurtosis, ARCH($q$) and GARCH($p,q$) first-principles derivations, Value-at-Risk (VaR) &amp; portfolio risk.</span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="ss">- </span>**Prescribed Text References**: Cryer &amp; Chan (2008, Ch. 4–6, 12) <span class="co">[</span><span class="ot">@cryer2008time</span><span class="co">]</span>; Shumway &amp; Stoffer (2011, Ch. 3, 5) <span class="co">[</span><span class="ot">@shumway2011time</span><span class="co">]</span>; Box et al. (2016, Ch. 4–6, 8–9) <span class="co">[</span><span class="ot">@box2016time</span><span class="co">]</span>; Nielsen (2019, Ch. 3–5) <span class="co">[</span><span class="ot">@nielsen2019practical</span><span class="co">]</span>; Engle (1982) <span class="co">[</span><span class="ot">@engle1982autoregressive</span><span class="co">]</span>; Bollerslev (1986) <span class="co">[</span><span class="ot">@bollerslev1986generalized</span><span class="co">]</span>.</span>
+<span id="cb3-10"><a href="#cb3-10"></a>:::</span>
+<span id="cb3-11"><a href="#cb3-11"></a></span>
+<span id="cb3-12"><a href="#cb3-12"></a></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="fu">## The Box-Jenkins Revolution and Volatility Clusters</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a></span>
+<span id="cb3-15"><a href="#cb3-15"></a>In 1970, George Box and Gwilym Jenkins transformed forecasting from ad-hoc smoothing heuristics into a disciplined three-stage scientific loop: **Identification $\to$ Estimation $\to$ Diagnostic Checking** <span class="co">[</span><span class="ot">@box2016time</span><span class="co">]</span>. By combining difference operators $\nabla^d = (1-B)^d$ with mixed ARMA polynomials, their ARIMA framework could tame drifting economic indices, industrial sensors, and seasonal demand with just a handful of parameters.</span>
+<span id="cb3-16"><a href="#cb3-16"></a></span>
+<span id="cb3-17"><a href="#cb3-17"></a>Yet even as ARIMA conquered mean forecasting, a blind spot remained: **constant variance (homoscedasticity)**. In financial markets, daily stock returns are nearly uncorrelated in their *direction* ($\rho(h) \approx 0$), yet large price swings—positive or negative—arrive in tight clusters, followed by calm stretches. In 1982, Robert Engle solved this puzzle by letting the *conditional variance* $\sigma_t^2$ evolve autoregressively as a function of past squared shocks (**ARCH**) [@engle1982autoregressive], and Tim Bollerslev (1986) generalized it into **GARCH** <span class="co">[</span><span class="ot">@bollerslev1986generalized</span><span class="co">]</span>—forming the backbone of modern Value-at-Risk and portfolio risk management.</span>
+<span id="cb3-18"><a href="#cb3-18"></a></span>
+<span id="cb3-19"><a href="#cb3-19"></a></span>
+<span id="cb3-20"><a href="#cb3-20"></a></span>
+<span id="cb3-21"><a href="#cb3-21"></a><span class="fu">## Mixed ARMA($p,q$) Models</span></span>
+<span id="cb3-22"><a href="#cb3-22"></a></span>
+<span id="cb3-23"><a href="#cb3-23"></a>When a pure AR($p$) or pure MA($q$) model requires too many parameters to capture both persistent feedback and finite shock memory, combining them yields a parsimonious **ARMA($p,q$)** model <span class="co">[</span><span class="ot">@box2016time; @cryer2008time</span><span class="co">]</span>.</span>
+<span id="cb3-24"><a href="#cb3-24"></a></span>
+<span id="cb3-25"><a href="#cb3-25"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-26"><a href="#cb3-26"></a></span>
+<span id="cb3-27"><a href="#cb3-27"></a>::: {.callout-note icon="false"}</span>
+<span id="cb3-28"><a href="#cb3-28"></a><span class="fu">#### Definition 2.1: ARMA($p,q$) Process</span></span>
+<span id="cb3-29"><a href="#cb3-29"></a>A weakly stationary process $<span class="sc">\{</span>X_t<span class="sc">\}</span>$ is **ARMA($p,q$)** if it satisfies:</span>
+<span id="cb3-30"><a href="#cb3-30"></a>$$\Phi(B) X_t = \Theta(B) Z_t, \qquad Z_t \sim WN(0, \sigma^2) \tag{2.1}$$</span>
+<span id="cb3-31"><a href="#cb3-31"></a>where $\Phi(B) = 1 - \sum_{i=1}^p \phi_i B^i$ and $\Theta(B) = 1 + \sum_{j=1}^q \theta_j B^j$.</span>
+<span id="cb3-32"><a href="#cb3-32"></a>:::</span>
+<span id="cb3-33"><a href="#cb3-33"></a></span>
+<span id="cb3-34"><a href="#cb3-34"></a><span class="ss">* </span>**Parameter Redundancy**: When $\Phi(z)$ and $\Theta(z)$ share a common factor $(1 - c z)$, that factor cancels out, leaving a lower-order model with non-identifiable parameters.</span>
+<span id="cb3-35"><a href="#cb3-35"></a><span class="ss">* </span>**Causality &amp; Invertibility**: Requires no common roots between $\Phi(z)$ and $\Theta(z)$, and all roots of both polynomials to lie strictly outside the unit circle ($|z| &gt; 1$).</span>
+<span id="cb3-36"><a href="#cb3-36"></a></span>
+<span id="cb3-37"><a href="#cb3-37"></a><span class="fu">### First-Principles Derivation: $\psi$-Weights of ARMA(1,1)</span></span>
+<span id="cb3-38"><a href="#cb3-38"></a></span>
+<span id="cb3-39"><a href="#cb3-39"></a>Consider $(1 - \phi B) X_t = (1 + \theta B) Z_t$ with $|\phi| &lt; 1$. Writing $X_t = \Psi(B) Z_t = \sum_{j=0}^\infty \psi_j Z_{t-j}$, we equate coefficients in $\Phi(B)\Psi(B) = \Theta(B)$:</span>
+<span id="cb3-40"><a href="#cb3-40"></a>$$(1 - \phi B)(\psi_0 + \psi_1 B + \psi_2 B^2 + \dots) = 1 + \theta B \tag{2.2}$$</span>
+<span id="cb3-41"><a href="#cb3-41"></a></span>
+<span id="cb3-42"><a href="#cb3-42"></a><span class="ss">- </span>$B^0$: $\psi_0 = 1$.</span>
+<span id="cb3-43"><a href="#cb3-43"></a><span class="ss">- </span>$B^1$: $\psi_1 - \phi\psi_0 = \theta \implies \psi_1 = \phi + \theta$.</span>
+<span id="cb3-44"><a href="#cb3-44"></a><span class="ss">- </span>$B^j$ ($j \ge 2$): $\psi_j - \phi\psi_{j-1} = 0 \implies \psi_j = \phi^{j-1}(\phi + \theta)$.</span>
+<span id="cb3-45"><a href="#cb3-45"></a></span>
+<span id="cb3-46"><a href="#cb3-46"></a><span class="fu">### Sample Problem 2.1 (ARMA(1,1) $\psi$-Weights &amp; Variance)</span></span>
+<span id="cb3-47"><a href="#cb3-47"></a>**Statement**: For $X_t - 0.4 X_{t-1} = Z_t + 0.8 Z_{t-1}$ with $Z_t \sim WN(0, 2.0)$, verify causality/invertibility, find $\psi_0, \psi_1, \psi_2$, and compute $\gamma(0)$.</span>
+<span id="cb3-48"><a href="#cb3-48"></a></span>
+<span id="cb3-49"><a href="#cb3-49"></a>**Solution**:</span>
+<span id="cb3-50"><a href="#cb3-50"></a>Roots: $z_\Phi = 2.5$ and $z_\Theta = -1.25$ (both $|z| &gt; 1$, no common root $\implies$ causal &amp; invertible).</span>
+<span id="cb3-51"><a href="#cb3-51"></a>$\psi_0 = 1$, $\psi_1 = 0.4 + 0.8 = 1.2$, $\psi_2 = 0.4(1.2) = 0.48$.</span>
+<span id="cb3-52"><a href="#cb3-52"></a>Using $\gamma(0) = \sigma^2 \sum_{j=0}^\infty \psi_j^2$:</span>
+<span id="cb3-53"><a href="#cb3-53"></a>$$\gamma(0) = 2.0 \left(1 + \frac{(1.2)^2}{1 - 0.4^2}\right) = 2.0 \left(1 + \frac{1.44}{0.84}\right) = 2.0(1 + 1.7143) \approx 5.4286$$</span>
+<span id="cb3-54"><a href="#cb3-54"></a></span>
+<span id="cb3-55"><a href="#cb3-55"></a>::: {.callout-tip}</span>
+<span id="cb3-56"><a href="#cb3-56"></a><span class="fu">#### Key Takeaway:</span></span>
+<span id="cb3-57"><a href="#cb3-57"></a>ARMA($p,q$) models achieve parsimony by blending AR feedback and MA shock memory. Always check that $\Phi(z)$ and $\Theta(z)$ share no common roots before estimation.</span>
+<span id="cb3-58"><a href="#cb3-58"></a>:::</span>
+<span id="cb3-59"><a href="#cb3-59"></a></span>
+<span id="cb3-60"><a href="#cb3-60"></a></span>
+<span id="cb3-61"><a href="#cb3-61"></a></span>
+<span id="cb3-62"><a href="#cb3-62"></a><span class="fu">## Non-Stationarity, Differencing, and ARIMA / SARIMA</span></span>
+<span id="cb3-63"><a href="#cb3-63"></a></span>
+<span id="cb3-64"><a href="#cb3-64"></a>Most raw asset prices, EEG baseline drifts, and macroeconomic series wander without a fixed mean. Differencing removes stochastic trends <span class="co">[</span><span class="ot">@box2016time; @shumway2011time</span><span class="co">]</span>.</span>
+<span id="cb3-65"><a href="#cb3-65"></a></span>
+<span id="cb3-66"><a href="#cb3-66"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-67"><a href="#cb3-67"></a></span>
+<span id="cb3-68"><a href="#cb3-68"></a><span class="ss">* </span>**Deterministic Trend**: $X_t = \beta_0 + \beta_1 t + Y_t$ (stationary fluctuations around a fixed line; shocks are temporary).</span>
+<span id="cb3-69"><a href="#cb3-69"></a><span class="ss">* </span>**Stochastic Trend (Unit Root)**: $X_t = c + X_{t-1} + Z_t$ (shocks accumulate permanently; $\mathrm{Var}(X_t | X_0) = t\sigma^2$).</span>
+<span id="cb3-70"><a href="#cb3-70"></a><span class="ss">* </span>**ARIMA($p,d,q$)**: $\Phi(B)(1 - B)^d X_t = \Theta(B) Z_t$, meaning $W_t = \nabla^d X_t$ is a stationary ARMA($p,q$) process.</span>
+<span id="cb3-71"><a href="#cb3-71"></a><span class="ss">* </span>**Seasonal ARIMA ($\mathrm{SARIMA}(p,d,q)\times(P,D,Q)_s$)**:</span>
+<span id="cb3-72"><a href="#cb3-72"></a>  $$\Phi_p(B)\tilde{\Phi}_P(B^s)\nabla^d \nabla_s^D X_t = \Theta_q(B)\tilde{\Theta}_Q(B^s) Z_t \tag{2.3}$$</span>
+<span id="cb3-73"><a href="#cb3-73"></a>  where $\nabla_s X_t = (1 - B^s) X_t = X_t - X_{t-s}$ removes repeating cycles of period $s$.</span>
+<span id="cb3-74"><a href="#cb3-74"></a></span>
+<span id="cb3-75"><a href="#cb3-75"></a><span class="fu">### First-Principles Result: The Hazard of Over-Differencing</span></span>
+<span id="cb3-76"><a href="#cb3-76"></a></span>
+<span id="cb3-77"><a href="#cb3-77"></a>Suppose $X_t = \beta_0 + \beta_1 t + Z_t$ is already trend-stationary. Applying $\nabla = 1 - B$ gives:</span>
+<span id="cb3-78"><a href="#cb3-78"></a>$$\nabla X_t = \beta_1 + Z_t - Z_{t-1} = \beta_1 + (1 - B)Z_t \tag{2.4}$$</span>
+<span id="cb3-79"><a href="#cb3-79"></a>Differencing turned pure white noise into a **non-invertible MA(1)** process with $\theta = -1$ (root $z = 1$ on the unit circle) and doubled the innovation variance from $\sigma^2$ to $2\sigma^2$.</span>
+<span id="cb3-80"><a href="#cb3-80"></a></span>
+<span id="cb3-81"><a href="#cb3-81"></a><span class="fu">### Sample Problem 2.2 (Expanding the Box-Jenkins Airline Model)</span></span>
+<span id="cb3-82"><a href="#cb3-82"></a>**Statement**: Expand the canonical $\mathrm{SARIMA}(0,1,1)\times(0,1,1)_{12}$ equation $(1-B)(1-B^{12})X_t = (1 + \theta B)(1 + \tilde{\Theta} B^{12})Z_t$ into a one-step forecast formula for $\hat{X}_{t+1|t}$.</span>
+<span id="cb3-83"><a href="#cb3-83"></a></span>
+<span id="cb3-84"><a href="#cb3-84"></a>**Solution**:</span>
+<span id="cb3-85"><a href="#cb3-85"></a>Expanding LHS: $X_t - X_{t-1} - X_{t-12} + X_{t-13}$.</span>
+<span id="cb3-86"><a href="#cb3-86"></a>Expanding RHS: $Z_t + \theta Z_{t-1} + \tilde{\Theta} Z_{t-12} + \theta\tilde{\Theta} Z_{t-13}$.</span>
+<span id="cb3-87"><a href="#cb3-87"></a>Shifting $t \to t+1$ and taking $\mathbb{E}<span class="co">[</span><span class="ot">\cdot | \mathcal{F}_t</span><span class="co">]</span>$ (noting $\mathbb{E}<span class="co">[</span><span class="ot">Z_{t+1}|\mathcal{F}_t</span><span class="co">]</span> = 0$):</span>
+<span id="cb3-88"><a href="#cb3-88"></a>$$\hat{X}_{t+1|t} = X_t + X_{t-11} - X_{t-12} + \theta \hat{z}_t + \tilde{\Theta} \hat{z}_{t-11} + \theta\tilde{\Theta} \hat{z}_{t-12}$$</span>
+<span id="cb3-89"><a href="#cb3-89"></a></span>
+<span id="cb3-90"><a href="#cb3-90"></a>::: {.callout-tip}</span>
+<span id="cb3-91"><a href="#cb3-91"></a><span class="fu">#### Key Takeaway:</span></span>
+<span id="cb3-92"><a href="#cb3-92"></a>Use differencing ($\nabla^d, \nabla_s^D$) to eliminate stochastic unit roots and seasonal cycles, but stop as soon as stationarity is achieved to avoid injecting artificial unit-root MA($-1$) terms.</span>
+<span id="cb3-93"><a href="#cb3-93"></a>:::</span>
+<span id="cb3-94"><a href="#cb3-94"></a></span>
+<span id="cb3-95"><a href="#cb3-95"></a></span>
+<span id="cb3-96"><a href="#cb3-96"></a></span>
+<span id="cb3-97"><a href="#cb3-97"></a><span class="fu">## Multivariate Systems: Vector Autoregression (VAR($p$))</span></span>
+<span id="cb3-98"><a href="#cb3-98"></a></span>
+<span id="cb3-99"><a href="#cb3-99"></a>In both **multi-channel EEG** (frontal, parietal, occipital electrodes) and **multi-asset portfolios** (equities, bonds, FX), variables co-evolve and lead or lag one another <span class="co">[</span><span class="ot">@shumway2011time; @nielsen2019practical</span><span class="co">]</span>.</span>
+<span id="cb3-100"><a href="#cb3-100"></a></span>
+<span id="cb3-101"><a href="#cb3-101"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-102"><a href="#cb3-102"></a></span>
+<span id="cb3-103"><a href="#cb3-103"></a>::: {.callout-note icon="false"}</span>
+<span id="cb3-104"><a href="#cb3-104"></a><span class="fu">#### Definition 2.2: Vector Autoregressive Model VAR($p$)</span></span>
+<span id="cb3-105"><a href="#cb3-105"></a>Let $\mathbf{Y}_t \in \mathbb{R}^K$. A **$\mathrm{VAR}(p)$** process satisfies:</span>
+<span id="cb3-106"><a href="#cb3-106"></a>$$\mathbf{Y}_t = \mathbf{c} + \mathbf{\Phi}_1 \mathbf{Y}_{t-1} + \dots + \mathbf{\Phi}_p \mathbf{Y}_{t-p} + \boldsymbol{\epsilon}_t, \qquad \mathbb{E}<span class="co">[</span><span class="ot">\boldsymbol{\epsilon}_t\boldsymbol{\epsilon}_t^T</span><span class="co">]</span> = \boldsymbol{\Sigma} \tag{2.5}$$</span>
+<span id="cb3-107"><a href="#cb3-107"></a>:::</span>
+<span id="cb3-108"><a href="#cb3-108"></a></span>
+<span id="cb3-109"><a href="#cb3-109"></a><span class="ss">* </span>**Granger Causality**: $Y_j$ *Granger-causes* $Y_i$ if past lags of $Y_j$ improve forecasts of $Y_{i,t}$ beyond $Y_i$'s own past (tested via joint Wald $F$-test on $\Phi_{1,ij} = \dots = \Phi_{p,ij} = 0$).</span>
+<span id="cb3-110"><a href="#cb3-110"></a><span class="ss">* </span>**Impulse Response Function (IRF)**: Traces how a 1-unit orthogonalized shock in variable $j$ propagates through all $K$ variables over future steps $h = 0, 1, 2, \dots$.</span>
+<span id="cb3-111"><a href="#cb3-111"></a></span>
+<span id="cb3-112"><a href="#cb3-112"></a><span class="fu">### First-Principles Result: Companion Matrix Stability Condition</span></span>
+<span id="cb3-113"><a href="#cb3-113"></a>Any VAR($p$) can be stacked into a $Kp$-dimensional VAR(1) companion system $\mathbf{Z}_t = \mathbf{C} + \mathbf{F}\mathbf{Z}_{t-1} + \mathbf{U}_t$. The system is weakly stationary if and only if all eigenvalues of the companion matrix $\mathbf{F}$ have modulus strictly less than $1$, equivalently:</span>
+<span id="cb3-114"><a href="#cb3-114"></a>$$\det\left(\mathbf{I}_K - \sum_{i=1}^p \mathbf{\Phi}_i z^i\right) \neq 0, \quad \forall |z| \le 1 \tag{2.6}$$</span>
+<span id="cb3-115"><a href="#cb3-115"></a></span>
+<span id="cb3-116"><a href="#cb3-116"></a><span class="fu">### Sample Problem 2.3 (Bivariate VAR(1) Stability &amp; Forecasting)</span></span>
+<span id="cb3-117"><a href="#cb3-117"></a>**Statement**: Let $\mathbf{Y}_t = \begin{bmatrix} 0.6 &amp; 0.2 \\ 0.1 &amp; 0.7 \end{bmatrix} \mathbf{Y}_{t-1} + \boldsymbol{\epsilon}_t$. Check stability and compute $\hat{\mathbf{Y}}_{T+1|T}$ given $\mathbf{Y}_T = <span class="co">[</span><span class="ot">40, 100</span><span class="co">]</span>^T$.</span>
+<span id="cb3-118"><a href="#cb3-118"></a></span>
+<span id="cb3-119"><a href="#cb3-119"></a>**Solution**:</span>
+<span id="cb3-120"><a href="#cb3-120"></a>Eigenvalues satisfy $\det(\mathbf{\Phi}_1 - \lambda \mathbf{I}) = (0.6-\lambda)(0.7-\lambda) - 0.02 = \lambda^2 - 1.3\lambda + 0.40 = (\lambda-0.8)(\lambda-0.5) = 0$. Since $|\lambda_1|=0.8 &lt; 1$ and $|\lambda_2|=0.5 &lt; 1$, the system is **stable**.</span>
+<span id="cb3-121"><a href="#cb3-121"></a>Forecast: $\hat{\mathbf{Y}}_{T+1|T} = \begin{bmatrix} 0.6(40)+0.2(100) <span class="sc">\\</span> 0.1(40)+0.7(100) \end{bmatrix} = \begin{bmatrix} 44 <span class="sc">\\</span> 74 \end{bmatrix}$.</span>
+<span id="cb3-122"><a href="#cb3-122"></a></span>
+<span id="cb3-123"><a href="#cb3-123"></a>::: {.callout-tip}</span>
+<span id="cb3-124"><a href="#cb3-124"></a><span class="fu">#### Key Takeaway:</span></span>
+<span id="cb3-125"><a href="#cb3-125"></a>VAR($p$) models capture bidirectional cross-channel feedback (such as brain-region connectivity or cross-asset spillovers) and enable formal Granger causality testing.</span>
+<span id="cb3-126"><a href="#cb3-126"></a>:::</span>
+<span id="cb3-127"><a href="#cb3-127"></a></span>
+<span id="cb3-128"><a href="#cb3-128"></a><span class="fu">## Conditional Heteroscedastic Models: ARCH and GARCH</span></span>
+<span id="cb3-129"><a href="#cb3-129"></a></span>
+<span id="cb3-130"><a href="#cb3-130"></a>Let $r_t = \mu_t + a_t$ where $a_t = \sigma_t \epsilon_t$, $\epsilon_t \overset{i.i.d.}{\sim} \mathcal{N}(0, 1)$, and $\sigma_t^2 = \mathrm{Var}(r_t | \mathcal{F}_{t-1})$ is the time-varying conditional variance <span class="co">[</span><span class="ot">@cryer2008time; @engle1982autoregressive; @bollerslev1986generalized</span><span class="co">]</span>.</span>
+<span id="cb3-131"><a href="#cb3-131"></a></span>
+<span id="cb3-132"><a href="#cb3-132"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-133"><a href="#cb3-133"></a></span>
+<span id="cb3-134"><a href="#cb3-134"></a><span class="ss">* </span>**ARCH($q$) (Engle, 1982)**: $\sigma_t^2 = \alpha_0 + \sum_{i=1}^q \alpha_i a_{t-i}^2$ ($\alpha_0 &gt; 0, \alpha_i \ge 0$).</span>
+<span id="cb3-135"><a href="#cb3-135"></a><span class="ss">* </span>**GARCH($p,q$) (Bollerslev, 1986)**: $\sigma_t^2 = \omega + \sum_{i=1}^q \alpha_i a_{t-i}^2 + \sum_{j=1}^p \beta_j \sigma_{t-j}^2$ ($\omega &gt; 0, \alpha_i, \beta_j \ge 0$).</span>
+<span id="cb3-136"><a href="#cb3-136"></a><span class="ss">* </span>**Volatility Persistence ($\alpha + \beta$)**: Governs how slowly a volatility spike decays back to the long-run variance $\bar{\sigma}^2$.</span>
+<span id="cb3-137"><a href="#cb3-137"></a></span>
+<span id="cb3-138"><a href="#cb3-138"></a><span class="fu">### First-Principles Derivations: ARCH(1) Kurtosis &amp; GARCH(1,1) Persistence</span></span>
+<span id="cb3-139"><a href="#cb3-139"></a></span>
+<span id="cb3-140"><a href="#cb3-140"></a><span class="fu">#### Theorem 2.1: Unconditional Variance &amp; Leptokurtosis of ARCH(1)</span></span>
+<span id="cb3-141"><a href="#cb3-141"></a>For $\sigma_t^2 = \alpha_0 + \alpha_1 a_{t-1}^2$ with $0 \le \alpha_1 &lt; 1$ and $3\alpha_1^2 &lt; 1$:</span>
+<span id="cb3-142"><a href="#cb3-142"></a>$$\bar{\sigma}^2 = \frac{\alpha_0}{1 - \alpha_1}, \qquad \kappa = \frac{\mathbb{E}<span class="co">[</span><span class="ot">a_t^4</span><span class="co">]</span>}{(\mathbb{E}<span class="co">[</span><span class="ot">a_t^2</span><span class="co">]</span>)^2} = 3\frac{1 - \alpha_1^2}{1 - 3\alpha_1^2} &gt; 3 \tag{2.7}$$</span>
+<span id="cb3-143"><a href="#cb3-143"></a></span>
+<span id="cb3-144"><a href="#cb3-144"></a>**Derivation from First Principles**:</span>
+<span id="cb3-145"><a href="#cb3-145"></a>By the Law of Total Expectation, $\mathbb{E}<span class="co">[</span><span class="ot">a_t^2</span><span class="co">]</span> = \mathbb{E}<span class="co">[</span><span class="ot">\sigma_t^2 \mathbb{E}[\epsilon_t^2|\mathcal{F}_{t-1}]</span><span class="co">]</span> = \mathbb{E}<span class="co">[</span><span class="ot">\sigma_t^2</span><span class="co">]</span> = \alpha_0 + \alpha_1\mathbb{E}<span class="co">[</span><span class="ot">a_{t-1}^2</span><span class="co">]</span>$. Under stationarity ($\mathbb{E}<span class="co">[</span><span class="ot">a_t^2</span><span class="co">]</span> = \bar{\sigma}^2$), solving gives $\bar{\sigma}^2 = \frac{\alpha_0}{1 - \alpha_1}$.</span>
+<span id="cb3-146"><a href="#cb3-146"></a>For the fourth moment, since $\mathbb{E}<span class="co">[</span><span class="ot">\epsilon_t^4</span><span class="co">]</span> = 3$:</span>
+<span id="cb3-147"><a href="#cb3-147"></a>$$\mathbb{E}<span class="co">[</span><span class="ot">a_t^4</span><span class="co">]</span> = 3\mathbb{E}<span class="co">[</span><span class="ot">\sigma_t^4</span><span class="co">]</span> = 3\mathbb{E}\big<span class="co">[</span><span class="ot">(\alpha_0 + \alpha_1 a_{t-1}^2)^2\big</span><span class="co">]</span> = 3\alpha_0^2 + 6\alpha_0\alpha_1 \bar{\sigma}^2 + 3\alpha_1^2 \mathbb{E}<span class="co">[</span><span class="ot">a_{t-1}^4</span><span class="co">]</span>$$</span>
+<span id="cb3-148"><a href="#cb3-148"></a>Substituting $\bar{\sigma}^2 = \alpha_0/(1-\alpha_1)$ and solving for $\mathbb{E}<span class="co">[</span><span class="ot">a_t^4</span><span class="co">]</span>$ yields $\mathbb{E}<span class="co">[</span><span class="ot">a_t^4</span><span class="co">]</span> = \frac{3\alpha_0^2(1+\alpha_1)}{(1-\alpha_1)(1-3\alpha_1^2)}$. Dividing by $(\bar{\sigma}^2)^2 = \frac{\alpha_0^2}{(1-\alpha_1)^2}$ gives $\kappa = 3\frac{1 - \alpha_1^2}{1 - 3\alpha_1^2} &gt; 3$. Even with Normal innovations $\epsilon_t$, ARCH generates **fat tails**!</span>
+<span id="cb3-149"><a href="#cb3-149"></a></span>
+<span id="cb3-150"><a href="#cb3-150"></a><span class="fu">#### Theorem 2.2: GARCH(1,1) Stationarity &amp; Multi-Step Variance Forecast</span></span>
+<span id="cb3-151"><a href="#cb3-151"></a>For $\sigma_t^2 = \omega + \alpha a_{t-1}^2 + \beta \sigma_{t-1}^2$, taking expectations gives $\bar{\sigma}^2 = \frac{\omega}{1 - (\alpha + \beta)}$ (requiring $\alpha + \beta &lt; 1$). Iterating $k$ steps ahead:</span>
+<span id="cb3-152"><a href="#cb3-152"></a>$$\mathbb{E}<span class="co">[</span><span class="ot">\sigma_{t+k}^2 | \mathcal{F}_t</span><span class="co">]</span> = \bar{\sigma}^2 + (\alpha + \beta)^{k-1}\big(\sigma_{t+1}^2 - \bar{\sigma}^2\big) \tag{2.8}$$</span>
+<span id="cb3-153"><a href="#cb3-153"></a></span>
+<span id="cb3-154"><a href="#cb3-154"></a><span class="fu">### Sample Problem 2.4 (ARCH(1) Risk &amp; Kurtosis)</span></span>
+<span id="cb3-155"><a href="#cb3-155"></a>**Statement**: A stock return series follows ARCH(1): $\sigma_t^2 = 0.00004 + 0.35 a_{t-1}^2$. Compute $\bar{\sigma}^2$, annualized volatility ($\times\sqrt{252}$), and theoretical kurtosis $\kappa$.</span>
+<span id="cb3-156"><a href="#cb3-156"></a></span>
+<span id="cb3-157"><a href="#cb3-157"></a>**Solution**:</span>
+<span id="cb3-158"><a href="#cb3-158"></a>$\bar{\sigma}^2 = \frac{0.00004}{1 - 0.35} \approx 6.1538 \times 10^{-5}$. Annualized volatility: $\sqrt{252 \times 6.1538\times 10^{-5}} \approx 12.45\%$.</span>
+<span id="cb3-159"><a href="#cb3-159"></a>Since $3(0.35)^2 = 0.3675 &lt; 1$, $\kappa = 3\frac{1 - 0.1225}{1 - 0.3675} \approx 4.162 &gt; 3$ (leptokurtic).</span>
+<span id="cb3-160"><a href="#cb3-160"></a></span>
+<span id="cb3-161"><a href="#cb3-161"></a>::: {.callout-tip}</span>
+<span id="cb3-162"><a href="#cb3-162"></a><span class="fu">#### Key Takeaway:</span></span>
+<span id="cb3-163"><a href="#cb3-163"></a>ARCH and GARCH model *time-varying risk* ($\sigma_t^2$), naturally explaining both volatility clustering and fat-tailed return distributions when $\alpha + \beta &lt; 1$.</span>
+<span id="cb3-164"><a href="#cb3-164"></a>:::</span>
+<span id="cb3-165"><a href="#cb3-165"></a></span>
+<span id="cb3-166"><a href="#cb3-166"></a></span>
+<span id="cb3-167"><a href="#cb3-167"></a><span class="fu">## 3-Tier Graduated Problem Ladder</span></span>
+<span id="cb3-168"><a href="#cb3-168"></a></span>
+<span id="cb3-169"><a href="#cb3-169"></a><span class="fu">### Tier 1: By-Hand Intuition</span></span>
+<span id="cb3-170"><a href="#cb3-170"></a><span class="ss">* </span>**Problem 2.5 (Practice)**: Identify the orders $(p,d,q)\times(P,D,Q)_{12}$ of $(1 - 0.5B)(1 - B)(1 - B^{12})X_t = (1 + 0.3B^{12})Z_t$. *(Answer: $\mathrm{SARIMA}(1,1,0)\times(0,1,1)_{12}$.)*</span>
+<span id="cb3-171"><a href="#cb3-171"></a><span class="ss">* </span>**Problem 2.6 (Practice)**: A GARCH(1,1) has $\omega = 2\times 10^{-6}$, $\alpha = 0.09$, $\beta = 0.89$. Compute the long-run daily volatility $\bar{\sigma}$. *(Answer: $\bar{\sigma}^2 = 2\times 10^{-6}/0.02 = 0.0001 \implies \bar{\sigma} = 1.0\%$.)*</span>
+<span id="cb3-172"><a href="#cb3-172"></a></span>
+<span id="cb3-173"><a href="#cb3-173"></a><span class="fu">### Tier 2: Analytical &amp; Exam-Style</span></span>
+<span id="cb3-174"><a href="#cb3-174"></a><span class="ss">* </span>**Problem 2.7 (Worked — GARCH(1,1) as ARMA(1,1))**: Show that $a_t^2$ in GARCH(1,1) obeys an ARMA(1,1) equation.</span>
+<span id="cb3-175"><a href="#cb3-175"></a>  *Solution*: Let $\nu_t = a_t^2 - \sigma_t^2$ (note $\mathbb{E}[\nu_t|\mathcal{F}_{t-1}] = 0$). Substituting $\sigma_t^2 = a_t^2 - \nu_t$ into $\sigma_t^2 = \omega + \alpha a_{t-1}^2 + \beta \sigma_{t-1}^2$ gives $a_t^2 - \nu_t = \omega + \alpha a_{t-1}^2 + \beta(a_{t-1}^2 - \nu_{t-1}) \implies a_t^2 = \omega + (\alpha + \beta)a_{t-1}^2 + \nu_t - \beta\nu_{t-1}$, which is ARMA(1,1) with $\phi_1 = \alpha+\beta$ and $\theta_1 = -\beta$.</span>
+<span id="cb3-176"><a href="#cb3-176"></a></span>
+<span id="cb3-177"><a href="#cb3-177"></a><span class="fu">### Tier 3: Domain Case Studies (EEG &amp; Finance/Portfolio)</span></span>
+<span id="cb3-178"><a href="#cb3-178"></a><span class="ss">* </span>**Problem 2.8 (EEG Multi-Channel Granger Coupling — Worked)**: In a 2-channel EEG VAR(1) connecting Frontal ($Y_{1,t}$) and Occipital ($Y_{2,t}$) cortex, $\mathbf{\Phi}_1 = \begin{bmatrix} 0.5 &amp; 0.0 <span class="sc">\\</span> 0.35 &amp; 0.4 \end{bmatrix}$. Does Occipital activity Granger-cause Frontal activity?</span>
+<span id="cb3-179"><a href="#cb3-179"></a>  *Solution*: Look at row 1, col 2: $\Phi_{1,12} = 0.0$, so Occipital lags do **not** predict Frontal activity. However, $\Phi_{1,21} = 0.35 \neq 0$, meaning Frontal activity *unidirectionally Granger-causes* Occipital activity.</span>
+<span id="cb3-180"><a href="#cb3-180"></a><span class="ss">* </span>**Problem 2.9 (Dynamic Portfolio Value-at-Risk — Practice)**: Using Problem 2.6's GARCH(1,1), today's shock is $a_T = -0.03$ ($-3\%$) and $\sigma_T = 0.01$. Compute tomorrow's 1-day 99% VaR ($\text{VaR}_{0.99} = 2.326\,\sigma_{T+1}$) for a Rs.10,00,000 portfolio. *(Answer: $\sigma_{T+1}^2 = 2\times 10^{-6} + 0.09(0.0009) + 0.89(0.0001) = 0.000172 \implies \sigma_{T+1} = 1.311\%$, $\text{VaR}_{0.99} \approx 30,505$.)*</span>
+<span id="cb3-181"><a href="#cb3-181"></a></span>
+<span id="cb3-182"><a href="#cb3-182"></a></span>
+<span id="cb3-183"><a href="#cb3-183"></a><span class="fu">## Dual-Track Laboratory Experimental Section</span></span>
+<span id="cb3-184"><a href="#cb3-184"></a></span>
+<span id="cb3-185"><a href="#cb3-185"></a><span class="fu">### Lab Track A: Multi-Channel EEG VAR(p) &amp; Granger Connectivity</span></span>
+<span id="cb3-186"><a href="#cb3-186"></a></span>
+<span id="cb3-187"><a href="#cb3-187"></a><span class="in">```python</span></span>
+<span id="cb3-188"><a href="#cb3-188"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-189"><a href="#cb3-189"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-190"><a href="#cb3-190"></a><span class="im">from</span> statsmodels.tsa.api <span class="im">import</span> VAR</span>
+<span id="cb3-191"><a href="#cb3-191"></a></span>
+<span id="cb3-192"><a href="#cb3-192"></a><span class="co"># Simulate coupled 2-channel EEG (Frontal -&gt; Occipital delayed propagation)</span></span>
+<span id="cb3-193"><a href="#cb3-193"></a>np.random.seed(<span class="dv">10</span>)</span>
+<span id="cb3-194"><a href="#cb3-194"></a>n <span class="op">=</span> <span class="dv">600</span></span>
+<span id="cb3-195"><a href="#cb3-195"></a>frontal <span class="op">=</span> np.zeros(n)</span>
+<span id="cb3-196"><a href="#cb3-196"></a>occipital <span class="op">=</span> np.zeros(n)</span>
+<span id="cb3-197"><a href="#cb3-197"></a>e1, e2 <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, n), np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, n)</span>
+<span id="cb3-198"><a href="#cb3-198"></a></span>
+<span id="cb3-199"><a href="#cb3-199"></a><span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, n):</span>
+<span id="cb3-200"><a href="#cb3-200"></a>    frontal[t] <span class="op">=</span> <span class="fl">0.65</span> <span class="op">*</span> frontal[t<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> e1[t]</span>
+<span id="cb3-201"><a href="#cb3-201"></a>    occipital[t] <span class="op">=</span> <span class="fl">0.45</span> <span class="op">*</span> occipital[t<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> <span class="fl">0.40</span> <span class="op">*</span> frontal[t<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> e2[t]</span>
+<span id="cb3-202"><a href="#cb3-202"></a></span>
+<span id="cb3-203"><a href="#cb3-203"></a>eeg_df <span class="op">=</span> pd.DataFrame({<span class="st">"Frontal"</span>: frontal, <span class="st">"Occipital"</span>: occipital})</span>
+<span id="cb3-204"><a href="#cb3-204"></a>var_fit <span class="op">=</span> VAR(eeg_df).fit(maxlags<span class="op">=</span><span class="dv">2</span>, ic<span class="op">=</span><span class="st">"aic"</span>)</span>
+<span id="cb3-205"><a href="#cb3-205"></a><span class="bu">print</span>(var_fit.summary())</span>
+<span id="cb3-206"><a href="#cb3-206"></a></span>
+<span id="cb3-207"><a href="#cb3-207"></a><span class="co"># Test Granger causality: Does Frontal Granger-cause Occipital?</span></span>
+<span id="cb3-208"><a href="#cb3-208"></a>gc_f_to_o <span class="op">=</span> var_fit.test_causality(<span class="st">"Occipital"</span>, [<span class="st">"Frontal"</span>], kind<span class="op">=</span><span class="st">"f"</span>)</span>
+<span id="cb3-209"><a href="#cb3-209"></a>gc_o_to_f <span class="op">=</span> var_fit.test_causality(<span class="st">"Frontal"</span>, [<span class="st">"Occipital"</span>], kind<span class="op">=</span><span class="st">"f"</span>)</span>
+<span id="cb3-210"><a href="#cb3-210"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Frontal -&gt; Occipital p-value: </span><span class="sc">{</span>gc_f_to_o<span class="sc">.</span>pvalue<span class="sc">:.4e}</span><span class="ss">"</span>)</span>
+<span id="cb3-211"><a href="#cb3-211"></a><span class="bu">print</span>(<span class="ss">f"Occipital -&gt; Frontal p-value: </span><span class="sc">{</span>gc_o_to_f<span class="sc">.</span>pvalue<span class="sc">:.4e}</span><span class="ss">"</span>)</span>
+<span id="cb3-212"><a href="#cb3-212"></a><span class="in">```</span></span>
+<span id="cb3-213"><a href="#cb3-213"></a></span>
+<span id="cb3-214"><a href="#cb3-214"></a><span class="fu">### Lab Track B: SARIMA Forecasting &amp; GARCH(1,1) Portfolio VaR</span></span>
+<span id="cb3-215"><a href="#cb3-215"></a></span>
+<span id="cb3-216"><a href="#cb3-216"></a><span class="in">```python</span></span>
+<span id="cb3-217"><a href="#cb3-217"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-218"><a href="#cb3-218"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-219"><a href="#cb3-219"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb3-220"><a href="#cb3-220"></a><span class="im">from</span> statsmodels.tsa.statespace.sarimax <span class="im">import</span> SARIMAX</span>
+<span id="cb3-221"><a href="#cb3-221"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize</span>
+<span id="cb3-222"><a href="#cb3-222"></a></span>
+<span id="cb3-223"><a href="#cb3-223"></a><span class="co"># Part 1: Box-Jenkins Airline SARIMA(0,1,1)x(0,1,1)_12</span></span>
+<span id="cb3-224"><a href="#cb3-224"></a>air <span class="op">=</span> sm.datasets.get_rdataset(<span class="st">"AirPassengers"</span>, package<span class="op">=</span><span class="st">"datasets"</span>).data[<span class="st">"value"</span>]</span>
+<span id="cb3-225"><a href="#cb3-225"></a>log_air <span class="op">=</span> np.log(pd.Series(air.values, index<span class="op">=</span>pd.date_range(<span class="st">"1949-01-01"</span>, periods<span class="op">=</span><span class="bu">len</span>(air), freq<span class="op">=</span><span class="st">"MS"</span>)))</span>
+<span id="cb3-226"><a href="#cb3-226"></a>sarima <span class="op">=</span> SARIMAX(log_air.iloc[:<span class="op">-</span><span class="dv">12</span>], order<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>), seasonal_order<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">12</span>)).fit(disp<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-227"><a href="#cb3-227"></a>pred <span class="op">=</span> np.exp(sarima.get_forecast(<span class="dv">12</span>).predicted_mean)</span>
+<span id="cb3-228"><a href="#cb3-228"></a>rmse <span class="op">=</span> np.sqrt(np.mean((np.exp(log_air.iloc[<span class="op">-</span><span class="dv">12</span>:]) <span class="op">-</span> pred)<span class="op">**</span><span class="dv">2</span>))</span>
+<span id="cb3-229"><a href="#cb3-229"></a><span class="bu">print</span>(<span class="ss">f"Airline 12-Month Out-of-Sample RMSE: </span><span class="sc">{</span>rmse<span class="sc">:.2f}</span><span class="ss"> thousand passengers"</span>)</span>
+<span id="cb3-230"><a href="#cb3-230"></a></span>
+<span id="cb3-231"><a href="#cb3-231"></a><span class="co"># Part 2: GARCH(1,1) MLE &amp; 99% VaR Backtest on Equity Returns</span></span>
+<span id="cb3-232"><a href="#cb3-232"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb3-233"><a href="#cb3-233"></a>T <span class="op">=</span> <span class="dv">1000</span></span>
+<span id="cb3-234"><a href="#cb3-234"></a>r, s2 <span class="op">=</span> np.zeros(T), np.zeros(T)</span>
+<span id="cb3-235"><a href="#cb3-235"></a>s2[<span class="dv">0</span>] <span class="op">=</span> <span class="fl">0.0001</span></span>
+<span id="cb3-236"><a href="#cb3-236"></a>eps <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, T)</span>
+<span id="cb3-237"><a href="#cb3-237"></a><span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, T):</span>
+<span id="cb3-238"><a href="#cb3-238"></a>    s2[t] <span class="op">=</span> <span class="fl">0.00001</span> <span class="op">+</span> <span class="fl">0.08</span> <span class="op">*</span> r[t<span class="op">-</span><span class="dv">1</span>]<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="fl">0.88</span> <span class="op">*</span> s2[t<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb3-239"><a href="#cb3-239"></a>    r[t] <span class="op">=</span> np.sqrt(s2[t]) <span class="op">*</span> eps[t]</span>
+<span id="cb3-240"><a href="#cb3-240"></a></span>
+<span id="cb3-241"><a href="#cb3-241"></a><span class="kw">def</span> neg_ll(params):</span>
+<span id="cb3-242"><a href="#cb3-242"></a>    w, a, b <span class="op">=</span> params</span>
+<span id="cb3-243"><a href="#cb3-243"></a>    <span class="cf">if</span> w <span class="op">&lt;=</span> <span class="dv">0</span> <span class="kw">or</span> a <span class="op">&lt;</span> <span class="dv">0</span> <span class="kw">or</span> b <span class="op">&lt;</span> <span class="dv">0</span> <span class="kw">or</span> a <span class="op">+</span> b <span class="op">&gt;=</span> <span class="dv">1</span>:</span>
+<span id="cb3-244"><a href="#cb3-244"></a>        <span class="cf">return</span> <span class="fl">1e10</span></span>
+<span id="cb3-245"><a href="#cb3-245"></a>    sig2 <span class="op">=</span> np.empty(T)</span>
+<span id="cb3-246"><a href="#cb3-246"></a>    sig2[<span class="dv">0</span>] <span class="op">=</span> np.var(r)</span>
+<span id="cb3-247"><a href="#cb3-247"></a>    <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, T):</span>
+<span id="cb3-248"><a href="#cb3-248"></a>        sig2[t] <span class="op">=</span> w <span class="op">+</span> a <span class="op">*</span> r[t<span class="op">-</span><span class="dv">1</span>]<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> b <span class="op">*</span> sig2[t<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb3-249"><a href="#cb3-249"></a>    <span class="cf">return</span> <span class="fl">0.5</span> <span class="op">*</span> np.<span class="bu">sum</span>(np.log(<span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> sig2) <span class="op">+</span> r<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> sig2)</span>
+<span id="cb3-250"><a href="#cb3-250"></a></span>
+<span id="cb3-251"><a href="#cb3-251"></a>res <span class="op">=</span> minimize(neg_ll, [<span class="fl">0.00002</span>, <span class="fl">0.1</span>, <span class="fl">0.8</span>], method<span class="op">=</span><span class="st">"Nelder-Mead"</span>)</span>
+<span id="cb3-252"><a href="#cb3-252"></a>w_hat, a_hat, b_hat <span class="op">=</span> res.x</span>
+<span id="cb3-253"><a href="#cb3-253"></a><span class="bu">print</span>(<span class="ss">f"GARCH(1,1) MLE -&gt; omega=</span><span class="sc">{</span>w_hat<span class="sc">:.6f}</span><span class="ss">, alpha=</span><span class="sc">{</span>a_hat<span class="sc">:.4f}</span><span class="ss">, beta=</span><span class="sc">{</span>b_hat<span class="sc">:.4f}</span><span class="ss">, persistence=</span><span class="sc">{</span>a_hat<span class="op">+</span>b_hat<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb3-254"><a href="#cb3-254"></a><span class="in">```</span></span>
+<span id="cb3-255"><a href="#cb3-255"></a></span>
+<span id="cb3-256"><a href="#cb3-256"></a>---</span>
+<span id="cb3-257"><a href="#cb3-257"></a></span>
+<span id="cb3-258"><a href="#cb3-258"></a><span class="fu">## Summary of Concepts</span></span>
+<span id="cb3-259"><a href="#cb3-259"></a></span>
+<span id="cb3-260"><a href="#cb3-260"></a><span class="ss">* </span>**ARMA($p,q$)**: Combines AR and MA polynomials; valid identification requires no common factors and all roots outside $|z| &gt; 1$.</span>
+<span id="cb3-261"><a href="#cb3-261"></a><span class="ss">* </span>**ARIMA &amp; SARIMA**: First and seasonal differencing ($\nabla^d \nabla_s^D$) eliminate unit roots and periodic trends without over-differencing.</span>
+<span id="cb3-262"><a href="#cb3-262"></a><span class="ss">* </span>**VAR($p$)**: Models multi-channel/multi-asset feedback; stability requires companion eigenvalues strictly inside the unit circle, enabling Granger causality and IRF analysis.</span>
+<span id="cb3-263"><a href="#cb3-263"></a><span class="ss">* </span>**ARCH / GARCH**: Models time-varying conditional variance $\sigma_t^2$, producing volatility clustering, fat tails ($\kappa &gt; 3$), and dynamic Value-at-Risk bounds.</span>
+<span id="cb3-264"><a href="#cb3-264"></a></span>
+<span id="cb3-265"><a href="#cb3-265"></a>::: {.callout-tip}</span>
+<span id="cb3-266"><a href="#cb3-266"></a><span class="fu">### Prescribed Textbook Cross-Walk</span></span>
+<span id="cb3-267"><a href="#cb3-267"></a><span class="pp">|</span> Concept <span class="pp">|</span> Cryer &amp; Chan (2008) <span class="pp">|</span> Shumway &amp; Stoffer (2011) <span class="pp">|</span> Box et al. (2016) <span class="pp">|</span> Nielsen (2019) <span class="pp">|</span></span>
+<span id="cb3-268"><a href="#cb3-268"></a><span class="pp">|:---|:---|:---|:---|:---|</span></span>
+<span id="cb3-269"><a href="#cb3-269"></a><span class="pp">|</span> ARMA &amp; ARIMA <span class="pp">|</span> Ch. 4.4, 5.2 <span class="pp">|</span> Ch. 3.1, 3.6 <span class="pp">|</span> Ch. 3.4, 4.1 <span class="pp">|</span> Ch. 6 <span class="pp">|</span></span>
+<span id="cb3-270"><a href="#cb3-270"></a><span class="pp">|</span> Seasonal ARIMA (SARIMA) <span class="pp">|</span> Ch. 10 <span class="pp">|</span> Ch. 3.9 <span class="pp">|</span> Ch. 9 <span class="pp">|</span> Ch. 6 <span class="pp">|</span></span>
+<span id="cb3-271"><a href="#cb3-271"></a><span class="pp">|</span> Vector Autoregression (VAR) <span class="pp">|</span> — <span class="pp">|</span> Ch. 5.6 <span class="pp">|</span> Ch. 14 <span class="pp">|</span> Ch. 7 <span class="pp">|</span></span>
+<span id="cb3-272"><a href="#cb3-272"></a><span class="pp">|</span> ARCH &amp; GARCH Models <span class="pp">|</span> Ch. 12 <span class="pp">|</span> Ch. 5.3 <span class="pp">|</span> — <span class="pp">|</span> Ch. 4, 11 <span class="pp">|</span></span>
+<span id="cb3-273"><a href="#cb3-273"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

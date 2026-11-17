@@ -1,0 +1,21 @@
+# Prescribed Textbooks and References {.unnumbered}
+
+This textbook and course manual strictly builds upon the theoretical treatises, statistical methodologies, and computational frameworks set forth by the prescribed curriculum textbooks and seminal literature:
+
+::: {#refs}
+:::
+
+## Course Text Mapping
+
+1. **Cryer & Chan (2008)**, *Time Series Analysis With Applications in R*, 2nd Edition [@cryer2008time]:
+   - Primary reference for foundational stochastic processes, stationarity, sample autocovariance, parameter estimation, model identification, and threshold autoregressive (TAR) nonlinear architectures.
+2. **Shumway & Stoffer (2011)**, *Time Series Analysis and Its Applications with R examples*, 3rd Edition [@shumway2011time]:
+   - Primary reference for state-space representations, exact Kalman filtering and RTS smoothing derivations, spectral analysis, and structural time series decomposition.
+3. **Box, Jenkins, Reinsel, & Ljung (2016)**, *Time Series Analysis: Forecasting and Control*, 5th Edition [@box2016time]:
+   - Classical gold-standard reference for the iterative 3-phase modeling philosophy (Identification, Estimation, Diagnostic Checking), difference operators, multiplicative seasonal ARIMA (SARIMA), and transfer function models.
+4. **Nielsen (2019)**, *Practical Time Series Analysis: Prediction with Statistics and Machine Learning*, 1st Edition [@nielsen2019practical]:
+   - Core industrial and applied engineering reference for temporal feature engineering, rolling-origin cross-validation, modern machine learning paradigms (Random Forests, Gradient Boosting), deep recurrent networks, and real-world telemetry handling.
+5. **Seminal Specialized Literature**:
+   - **Engle (1982)** [@engle1982autoregressive] and **Bollerslev (1986)** [@bollerslev1986generalized] for ARCH and GARCH conditional heteroscedastic modeling.
+   - **Kalman (1960)** [@kalman1960new] for minimum mean-square error state estimation.
+   - **Scheffer et al. (2009)** [@scheffer2009early] for mathematical bifurcations, critical slowing down, and early warning precursors of catastrophic transitions.

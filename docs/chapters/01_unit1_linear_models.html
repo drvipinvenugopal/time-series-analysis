@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.31">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; Unit 1: Linear Time Series, Stationarity, Ergodicity, and Classical Processes – Time Series Analysis: First Principles to Deep Applications</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/02_unit2_arima_var_garch.html" rel="next">
+<link href="../chapters/00_bootcamp_foundations.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-4a990d8dcb58f517c7c86712b8f2ac7c.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-46f4cc9626f044588a66931b604fc9c8.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-4a990d8dcb58f517c7c86712b8f2ac7c.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-4c7a00f65c4f7b083d618916be6661e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-2f778816bbcb37d180fb5a0deea0cd82.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-4c7a00f65c4f7b083d618916be6661e6.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/01_unit1_linear_models.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Unit 1: Linear Time Series, Stationarity, Ergodicity, and Classical Processes</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Time Series Analysis: First Principles to Deep Applications</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/amrita-aie/22AIE463-time-series-analysis" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Course Overview &amp; Syllabus Mapping</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/00_bootcamp_foundations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Chapter 0: Zero-Prerequisite Foundations Bootcamp</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01_unit1_linear_models.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Unit 1: Linear Time Series, Stationarity, Ergodicity, and Classical Processes</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02_unit2_arima_var_garch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Unit 2: ARMA, ARIMA, SARIMA, VAR, and Conditional Heteroscedastic Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03_unit3_nonlinear_statespace.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Unit 3: Nonlinear Dynamics, Formal Hypothesis Testing, and State-Space Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04_unit4_ml_dl_catastrophic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Unit 4: Machine Learning, Deep Learning, and Precursors for Catastrophic Transitions</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Prescribed Textbooks and References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-illusion-of-independence-and-the-birth-of-temporal-memory" id="toc-the-illusion-of-independence-and-the-birth-of-temporal-memory" class="nav-link active" data-scroll-target="#the-illusion-of-independence-and-the-birth-of-temporal-memory"><span class="header-section-number">2.1</span> The Illusion of Independence and the Birth of Temporal Memory</a></li>
+  <li><a href="#stochastic-processes-and-basic-statistical-moments" id="toc-stochastic-processes-and-basic-statistical-moments" class="nav-link" data-scroll-target="#stochastic-processes-and-basic-statistical-moments"><span class="header-section-number">2.2</span> Stochastic Processes and Basic Statistical Moments</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms" id="toc-key-definitions-important-terms" class="nav-link" data-scroll-target="#key-definitions-important-terms"><span class="header-section-number">2.2.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#first-principles-result-cauchy-schwarz-bound-on-rhos-t" id="toc-first-principles-result-cauchy-schwarz-bound-on-rhos-t" class="nav-link" data-scroll-target="#first-principles-result-cauchy-schwarz-bound-on-rhos-t"><span class="header-section-number">2.2.2</span> First-Principles Result: Cauchy-Schwarz Bound on <span class="math inline">\(\rho(s, t)\)</span></a></li>
+  <li><a href="#sample-problem-1.1-moments-of-a-random-walk" id="toc-sample-problem-1.1-moments-of-a-random-walk" class="nav-link" data-scroll-target="#sample-problem-1.1-moments-of-a-random-walk"><span class="header-section-number">2.2.3</span> Sample Problem 1.1 (Moments of a Random Walk)</a></li>
+  </ul></li>
+  <li><a href="#stationarity-strict-vs.-weak-time-invariance" id="toc-stationarity-strict-vs.-weak-time-invariance" class="nav-link" data-scroll-target="#stationarity-strict-vs.-weak-time-invariance"><span class="header-section-number">2.3</span> Stationarity: Strict vs.&nbsp;Weak (Time-Invariance)</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms-1" id="toc-key-definitions-important-terms-1" class="nav-link" data-scroll-target="#key-definitions-important-terms-1"><span class="header-section-number">2.3.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#first-principles-properties-of-gammah" id="toc-first-principles-properties-of-gammah" class="nav-link" data-scroll-target="#first-principles-properties-of-gammah"><span class="header-section-number">2.3.2</span> First-Principles Properties of <span class="math inline">\(\gamma(h)\)</span></a></li>
+  <li><a href="#sample-problem-1.2-testing-weak-stationarity" id="toc-sample-problem-1.2-testing-weak-stationarity" class="nav-link" data-scroll-target="#sample-problem-1.2-testing-weak-stationarity"><span class="header-section-number">2.3.3</span> Sample Problem 1.2 (Testing Weak Stationarity)</a></li>
+  </ul></li>
+  <li><a href="#ergodicity-bridging-ensemble-space-and-historical-time" id="toc-ergodicity-bridging-ensemble-space-and-historical-time" class="nav-link" data-scroll-target="#ergodicity-bridging-ensemble-space-and-historical-time"><span class="header-section-number">2.4</span> Ergodicity: Bridging Ensemble Space and Historical Time</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms-2" id="toc-key-definitions-important-terms-2" class="nav-link" data-scroll-target="#key-definitions-important-terms-2"><span class="header-section-number">2.4.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#first-principles-derivation-ergodicity-of-the-mean" id="toc-first-principles-derivation-ergodicity-of-the-mean" class="nav-link" data-scroll-target="#first-principles-derivation-ergodicity-of-the-mean"><span class="header-section-number">2.4.2</span> First-Principles Derivation: Ergodicity of the Mean</a></li>
+  <li><a href="#sample-problem-1.3-multi-period-variance-inflation" id="toc-sample-problem-1.3-multi-period-variance-inflation" class="nav-link" data-scroll-target="#sample-problem-1.3-multi-period-variance-inflation"><span class="header-section-number">2.4.3</span> Sample Problem 1.3 (Multi-Period Variance Inflation)</a></li>
+  </ul></li>
+  <li><a href="#sample-acf-bartletts-bounds-and-pacf" id="toc-sample-acf-bartletts-bounds-and-pacf" class="nav-link" data-scroll-target="#sample-acf-bartletts-bounds-and-pacf"><span class="header-section-number">2.5</span> Sample ACF, Bartlett’s Bounds, and PACF</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms-3" id="toc-key-definitions-important-terms-3" class="nav-link" data-scroll-target="#key-definitions-important-terms-3"><span class="header-section-number">2.5.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#first-principles-results-bartletts-bounds-yule-walker-system" id="toc-first-principles-results-bartletts-bounds-yule-walker-system" class="nav-link" data-scroll-target="#first-principles-results-bartletts-bounds-yule-walker-system"><span class="header-section-number">2.5.2</span> First-Principles Results: Bartlett’s Bounds &amp; Yule-Walker System</a></li>
+  <li><a href="#sample-problem-1.4-manual-sample-acf-bartlett-test" id="toc-sample-problem-1.4-manual-sample-acf-bartlett-test" class="nav-link" data-scroll-target="#sample-problem-1.4-manual-sample-acf-bartlett-test"><span class="header-section-number">2.5.3</span> Sample Problem 1.4 (Manual Sample ACF &amp; Bartlett Test)</a></li>
+  </ul></li>
+  <li><a href="#wold-decomposition-and-linear-processes" id="toc-wold-decomposition-and-linear-processes" class="nav-link" data-scroll-target="#wold-decomposition-and-linear-processes"><span class="header-section-number">2.6</span> Wold Decomposition and Linear Processes</a>
+  <ul class="collapse">
+  <li><a href="#key-definitions-important-terms-4" id="toc-key-definitions-important-terms-4" class="nav-link" data-scroll-target="#key-definitions-important-terms-4"><span class="header-section-number">2.6.1</span> Key Definitions &amp; Important Terms</a></li>
+  <li><a href="#theorem-1.4-wold-decomposition-theorem-1938" id="toc-theorem-1.4-wold-decomposition-theorem-1938" class="nav-link" data-scroll-target="#theorem-1.4-wold-decomposition-theorem-1938"><span class="header-section-number">2.6.2</span> Theorem 1.4: Wold Decomposition Theorem (1938)</a></li>
+  </ul></li>
+  <li><a href="#autoregressive-models-arp" id="toc-autoregressive-models-arp" class="nav-link" data-scroll-target="#autoregressive-models-arp"><span class="header-section-number">2.7</span> Autoregressive Models: AR(<span class="math inline">\(p\)</span>)</a>
+  <ul class="collapse">
+  <li><a href="#first-principles-derivation-moments-acf-and-pacf-of-ar1" id="toc-first-principles-derivation-moments-acf-and-pacf-of-ar1" class="nav-link" data-scroll-target="#first-principles-derivation-moments-acf-and-pacf-of-ar1"><span class="header-section-number">2.7.1</span> First-Principles Derivation: Moments, ACF, and PACF of AR(1)</a></li>
+  <li><a href="#theorem-1.5-causality-condition-for-arp" id="toc-theorem-1.5-causality-condition-for-arp" class="nav-link" data-scroll-target="#theorem-1.5-causality-condition-for-arp"><span class="header-section-number">2.7.2</span> Theorem 1.5: Causality Condition for AR(<span class="math inline">\(p\)</span>)</a></li>
+  <li><a href="#sample-problem-1.5-ar2-causality-yule-walker" id="toc-sample-problem-1.5-ar2-causality-yule-walker" class="nav-link" data-scroll-target="#sample-problem-1.5-ar2-causality-yule-walker"><span class="header-section-number">2.7.3</span> Sample Problem 1.5 (AR(2) Causality &amp; Yule-Walker)</a></li>
+  </ul></li>
+  <li><a href="#moving-average-models-maq" id="toc-moving-average-models-maq" class="nav-link" data-scroll-target="#moving-average-models-maq"><span class="header-section-number">2.8</span> Moving Average Models: MA(<span class="math inline">\(q\)</span>)</a>
+  <ul class="collapse">
+  <li><a href="#first-principles-derivation-moments-invertibility-of-ma1" id="toc-first-principles-derivation-moments-invertibility-of-ma1" class="nav-link" data-scroll-target="#first-principles-derivation-moments-invertibility-of-ma1"><span class="header-section-number">2.8.1</span> First-Principles Derivation: Moments &amp; Invertibility of MA(1)</a></li>
+  <li><a href="#sample-problem-1.6-ma1-identifiability" id="toc-sample-problem-1.6-ma1-identifiability" class="nav-link" data-scroll-target="#sample-problem-1.6-ma1-identifiability"><span class="header-section-number">2.8.2</span> Sample Problem 1.6 (MA(1) Identifiability)</a></li>
+  </ul></li>
+  <li><a href="#tier-graduated-problem-ladder-beginner-to-domain-mastery" id="toc-tier-graduated-problem-ladder-beginner-to-domain-mastery" class="nav-link" data-scroll-target="#tier-graduated-problem-ladder-beginner-to-domain-mastery"><span class="header-section-number">2.9</span> 3-Tier Graduated Problem Ladder (Beginner to Domain Mastery)</a>
+  <ul class="collapse">
+  <li><a href="#tier-1-by-hand-intuition" id="toc-tier-1-by-hand-intuition" class="nav-link" data-scroll-target="#tier-1-by-hand-intuition"><span class="header-section-number">2.9.1</span> Tier 1: By-Hand Intuition</a></li>
+  <li><a href="#tier-2-analytical-exam-style" id="toc-tier-2-analytical-exam-style" class="nav-link" data-scroll-target="#tier-2-analytical-exam-style"><span class="header-section-number">2.9.2</span> Tier 2: Analytical &amp; Exam-Style</a></li>
+  <li><a href="#tier-3-domain-case-studies-eeg-signals-financial-analytics" id="toc-tier-3-domain-case-studies-eeg-signals-financial-analytics" class="nav-link" data-scroll-target="#tier-3-domain-case-studies-eeg-signals-financial-analytics"><span class="header-section-number">2.9.3</span> Tier 3: Domain Case Studies (EEG Signals &amp; Financial Analytics)</a></li>
+  </ul></li>
+  <li><a href="#dual-track-laboratory-experimental-section" id="toc-dual-track-laboratory-experimental-section" class="nav-link" data-scroll-target="#dual-track-laboratory-experimental-section"><span class="header-section-number">2.10</span> Dual-Track Laboratory Experimental Section</a>
+  <ul class="collapse">
+  <li><a href="#lab-track-a-eeg-signal-spectral-arp-modeling" id="toc-lab-track-a-eeg-signal-spectral-arp-modeling" class="nav-link" data-scroll-target="#lab-track-a-eeg-signal-spectral-arp-modeling"><span class="header-section-number">2.10.1</span> Lab Track A: EEG Signal Spectral &amp; AR(<span class="math inline">\(p\)</span>) Modeling</a></li>
+  <li><a href="#lab-track-b-financial-return-stationarity-portfolio-risk-scaling" id="toc-lab-track-b-financial-return-stationarity-portfolio-risk-scaling" class="nav-link" data-scroll-target="#lab-track-b-financial-return-stationarity-portfolio-risk-scaling"><span class="header-section-number">2.10.2</span> Lab Track B: Financial Return Stationarity &amp; Portfolio Risk Scaling</a></li>
+  </ul></li>
+  <li><a href="#summary-of-concepts" id="toc-summary-of-concepts" class="nav-link" data-scroll-target="#summary-of-concepts"><span class="header-section-number">2.11</span> Summary of Concepts</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-unit1" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Unit 1: Linear Time Series, Stationarity, Ergodicity, and Classical Processes</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Unit 1 Curriculum Checklist
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Foundational Concepts</strong>: Stochastic processes, ensemble vs.&nbsp;realization, mean, ACVF, ACF.</li>
+<li><strong>Stationarity &amp; Ergodicity</strong>: Strict vs.&nbsp;Weak (wide-sense) stationarity, positive semi-definiteness, ergodicity of the mean.</li>
+<li><strong>Correlation Structures</strong>: Sample ACF, Bartlett’s asymptotic variance, Partial Autocorrelation (PACF), Yule-Walker systems, Durbin-Levinson algorithm.</li>
+<li><strong>Linear Processes</strong>: Wold decomposition theorem, causality, invertibility.</li>
+<li><strong>Classical Models</strong>: Autoregressive (AR(<span class="math inline">\(p\)</span>)) and Moving Average (MA(<span class="math inline">\(q\)</span>)) models, characteristic polynomials, unit circle stability.</li>
+<li><strong>Prescribed Text References</strong>: Cryer &amp; Chan (2008, Ch. 1–4) <span class="citation" data-cites="cryer2008time"><a href="../references.html#ref-cryer2008time" role="doc-biblioref">[1]</a></span>; Shumway &amp; Stoffer (2011, Ch. 1–2) <span class="citation" data-cites="shumway2011time"><a href="../references.html#ref-shumway2011time" role="doc-biblioref">[2]</a></span>; Box et al.&nbsp;(2016, Ch. 2–3) <span class="citation" data-cites="box2016time"><a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>; Nielsen (2019, Ch. 1–2) <span class="citation" data-cites="nielsen2019practical"><a href="../references.html#ref-nielsen2019practical" role="doc-biblioref">[4]</a></span>.</li>
+</ul>
+</div>
+</div>
+<section id="the-illusion-of-independence-and-the-birth-of-temporal-memory" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="the-illusion-of-independence-and-the-birth-of-temporal-memory"><span class="header-section-number">2.1</span> The Illusion of Independence and the Birth of Temporal Memory</h2>
+<p>In February 1926, George Udny Yule delivered a historic address before the Royal Statistical Society entitled <em>“Why do we sometimes get nonsense-correlations between Time-Series?”</em> Yule demonstrated that if you compute the ordinary Pearson correlation between two completely unrelated temporal sequences—such as the annual mortality rate in England and the proportion of Church of England marriages—you frequently obtain a correlation exceeding <span class="math inline">\(0.95\)</span>, with conventional <span class="math inline">\(t\)</span>-tests screaming significance at <span class="math inline">\(p &lt; 0.0001\)</span>.</p>
+<p>Why did classical statistics fail so catastrophically? Because time possesses <strong>inertia</strong>. Observations close together in time inherit the state of their predecessors. One year later, in 1927, the Soviet economist Eugen Slutsky published an equally startling revelation: if you take a sequence of pure, uncorrelated lottery draws (white noise) and apply consecutive moving averages, the resulting series exhibits smooth, undulating waves that mimic economic cycles—or cortical brainwaves—with uncanny fidelity. Slutsky proved that apparent rhythms arise naturally whenever random shocks are filtered through linear memory over time <span class="citation" data-cites="cryer2008time"><a href="../references.html#ref-cryer2008time" role="doc-biblioref">[1]</a></span>.</p>
+<p>Whether you are decoding <strong>EEG voltage fluctuations</strong> from a patient’s scalp or modeling <strong>daily equity returns</strong> for a quantitative portfolio, your first task is always the same: measure how fast the past fades, separate true signal dynamics from random noise, and verify whether the statistical rules governing the series stay constant over time <span class="citation" data-cites="box2016time nielsen2019practical"><a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a>, <a href="../references.html#ref-nielsen2019practical" role="doc-biblioref">[4]</a></span>.</p>
+</section>
+<section id="stochastic-processes-and-basic-statistical-moments" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="stochastic-processes-and-basic-statistical-moments"><span class="header-section-number">2.2</span> Stochastic Processes and Basic Statistical Moments</h2>
+<p>To formalize time-ordered data, we model an observed time series not as a list of fixed numbers, but as one realization drawn from an underlying <strong>stochastic process</strong> <span class="citation" data-cites="shumway2011time"><a href="../references.html#ref-shumway2011time" role="doc-biblioref">[2]</a></span>.</p>
+<section id="key-definitions-important-terms" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="key-definitions-important-terms"><span class="header-section-number">2.2.1</span> Key Definitions &amp; Important Terms</h3>
+<ul>
+<li><strong>Stochastic Process (<span class="math inline">\(\{X_t(\omega) : t \in \mathcal{T}\}\)</span>)</strong>: An indexed collection of random variables defined on a common probability space <span class="math inline">\((\Omega, \mathcal{F}, \mathbb{P})\)</span>. Here <span class="math inline">\(\mathcal{T} = \mathbb{Z}\)</span> denotes discrete time ticks.</li>
+<li><strong>Sample Path / Realization (<span class="math inline">\(\{x_1, x_2, \dots, x_N\}\)</span>)</strong>: A single observed trajectory corresponding to one outcome <span class="math inline">\(\omega_0 \in \Omega\)</span> (e.g., one 5-second EEG recording or one historical S&amp;P 500 path).</li>
+<li><strong>Mean Function (<span class="math inline">\(\mu_t\)</span>)</strong>: The expected value at time <span class="math inline">\(t\)</span>: <span class="math inline">\(\mu_t = \mathbb{E}[X_t]\)</span>.</li>
+<li><strong>Autocovariance Function (<span class="math inline">\(\gamma(s, t)\)</span>)</strong>: Measures the linear dependence between the process at time <span class="math inline">\(s\)</span> and time <span class="math inline">\(t\)</span>: <span class="math display">\[\gamma(s, t) = \mathrm{Cov}(X_s, X_t) = \mathbb{E}\big[(X_s - \mu_s)(X_t - \mu_t)\big] \tag{1.1}\]</span></li>
+<li><strong>Autocorrelation Function (<span class="math inline">\(\rho(s, t)\)</span>)</strong>: The scale-free correlation between <span class="math inline">\(X_s\)</span> and <span class="math inline">\(X_t\)</span>: <span class="math display">\[\rho(s, t) = \frac{\gamma(s, t)}{\sqrt{\gamma(s, s)\gamma(t, t)}} \in [-1, 1] \tag{1.2}\]</span></li>
+</ul>
+</section>
+<section id="first-principles-result-cauchy-schwarz-bound-on-rhos-t" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="first-principles-result-cauchy-schwarz-bound-on-rhos-t"><span class="header-section-number">2.2.2</span> First-Principles Result: Cauchy-Schwarz Bound on <span class="math inline">\(\rho(s, t)\)</span></h3>
+<p><strong>Theorem 1.1</strong>: For any two times <span class="math inline">\(s, t\)</span>, <span class="math inline">\(|\gamma(s, t)| \le \sqrt{\gamma(s, s)\gamma(t, t)}\)</span>, so <span class="math inline">\(|\rho(s, t)| \le 1\)</span>.</p>
+<p><strong>Derivation from First Principles</strong>: Let <span class="math inline">\(\tilde{X}_s = X_s - \mu_s\)</span> and <span class="math inline">\(\tilde{X}_t = X_t - \mu_t\)</span>. For any real scalar <span class="math inline">\(\lambda \in \mathbb{R}\)</span>, the squared random variable <span class="math inline">\((\tilde{X}_s + \lambda \tilde{X}_t)^2 \ge 0\)</span> has non-negative expectation: <span class="math display">\[g(\lambda) = \mathbb{E}\big[(\tilde{X}_s + \lambda \tilde{X}_t)^2\big] = \gamma(t, t)\lambda^2 + 2\gamma(s, t)\lambda + \gamma(s, s) \ge 0 \tag{1.3}\]</span> Because this quadratic in <span class="math inline">\(\lambda\)</span> is never negative, its discriminant cannot be positive: <span class="math display">\[4\gamma(s, t)^2 - 4\gamma(s, s)\gamma(t, t) \le 0 \implies \gamma(s, t)^2 \le \gamma(s, s)\gamma(t, t) \implies |\rho(s, t)| \le 1\]</span></p>
+</section>
+<section id="sample-problem-1.1-moments-of-a-random-walk" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="sample-problem-1.1-moments-of-a-random-walk"><span class="header-section-number">2.2.3</span> Sample Problem 1.1 (Moments of a Random Walk)</h3>
+<p><strong>Statement</strong>: Let <span class="math inline">\(X_t = \sum_{i=1}^t Z_i\)</span> where <span class="math inline">\(Z_i \sim WN(0, \sigma^2)\)</span> and <span class="math inline">\(t \ge 1\)</span>. Compute <span class="math inline">\(\mu_t\)</span>, <span class="math inline">\(\gamma(t, t)\)</span>, and <span class="math inline">\(\gamma(s, t)\)</span> for <span class="math inline">\(s \le t\)</span>.</p>
+<p><strong>Solution</strong>:</p>
+<ol type="1">
+<li><span class="math inline">\(\mu_t = \sum_{i=1}^t \mathbb{E}[Z_i] = 0\)</span>.</li>
+<li><span class="math inline">\(\gamma(t, t) = \mathrm{Var}(\sum_{i=1}^t Z_i) = \sum_{i=1}^t \mathrm{Var}(Z_i) = t\sigma^2\)</span> (variance grows linearly with time!).</li>
+<li>For <span class="math inline">\(s \le t\)</span>: <span class="math inline">\(\gamma(s, t) = \mathrm{Cov}(\sum_{i=1}^s Z_i, \sum_{j=1}^t Z_j) = \sum_{i=1}^s \mathrm{Var}(Z_i) = s\sigma^2 = \min(s, t)\sigma^2\)</span>.</li>
+</ol>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A stochastic process generalizes a single random variable to an infinite sequence of correlated variables. Notice in Problem 1.1 that a Random Walk’s variance <span class="math inline">\(t\sigma^2\)</span> grows with <span class="math inline">\(t\)</span>, which means its rules are not time-invariant.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="stationarity-strict-vs.-weak-time-invariance" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="stationarity-strict-vs.-weak-time-invariance"><span class="header-section-number">2.3</span> Stationarity: Strict vs.&nbsp;Weak (Time-Invariance)</h2>
+<p>If the mean <span class="math inline">\(\mu_t\)</span> and covariance <span class="math inline">\(\gamma(s, t)\)</span> shifted arbitrarily at every tick, a single historical series of length <span class="math inline">\(N\)</span> would never be enough to estimate them. <strong>Stationarity</strong> imposes time-invariance so historical patterns can generalize to the future <span class="citation" data-cites="box2016time"><a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>.</p>
+<section id="key-definitions-important-terms-1" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="key-definitions-important-terms-1"><span class="header-section-number">2.3.1</span> Key Definitions &amp; Important Terms</h3>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definition 1.1: Strict Stationarity
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A process <span class="math inline">\(\{X_t\}_{t \in \mathbb{Z}}\)</span> is <strong>strictly stationary</strong> if all joint finite-dimensional distributions are invariant under arbitrary calendar shifts <span class="math inline">\(h \in \mathbb{Z}\)</span>: <span class="math display">\[F_{t_1, \dots, t_k}(c_1, \dots, c_k) = F_{t_1+h, \dots, t_k+h}(c_1, \dots, c_k) \tag{1.4}\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definition 1.2: Weak (Second-Order) Stationarity
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A process <span class="math inline">\(\{X_t\}_{t \in \mathbb{Z}}\)</span> is <strong>weakly stationary</strong> (covariance stationary) if:</p>
+<ol type="1">
+<li><span class="math inline">\(\mathbb{E}[X_t^2] &lt; \infty\)</span> for all <span class="math inline">\(t \in \mathbb{Z}\)</span>,</li>
+<li><span class="math inline">\(\mathbb{E}[X_t] = \mu\)</span> (constant across all <span class="math inline">\(t\)</span>), and</li>
+<li><span class="math inline">\(\mathrm{Cov}(X_t, X_{t+h}) = \gamma(h)\)</span> depends <strong>only</strong> on the lag separation <span class="math inline">\(h\)</span>, not on <span class="math inline">\(t\)</span>.</li>
+</ol>
+</div>
+</div>
+<p>For weakly stationary processes, we write the ACF with a single lag argument <span class="math inline">\(h\)</span>: <span class="math display">\[\rho(h) = \frac{\gamma(h)}{\gamma(0)} \tag{1.5}\]</span></p>
+</section>
+<section id="first-principles-properties-of-gammah" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="first-principles-properties-of-gammah"><span class="header-section-number">2.3.2</span> First-Principles Properties of <span class="math inline">\(\gamma(h)\)</span></h3>
+<p><strong>Theorem 1.2</strong>: A weakly stationary ACVF <span class="math inline">\(\gamma(h)\)</span> satisfies:</p>
+<ol type="1">
+<li><span class="math inline">\(\gamma(0) = \mathrm{Var}(X_t) \ge 0\)</span>,</li>
+<li><span class="math inline">\(\gamma(h) = \gamma(-h)\)</span> (even symmetry), and</li>
+<li><strong>Positive Semi-Definiteness</strong>: For any <span class="math inline">\(n \ge 1\)</span> and constants <span class="math inline">\(a_1, \dots, a_n \in \mathbb{R}\)</span>, <span class="math inline">\(\sum_{i=1}^n \sum_{j=1}^n a_i a_j \gamma(t_i - t_j) \ge 0\)</span>.</li>
+</ol>
+<p><strong>Derivation from First Principles</strong>: Symmetry follows directly from <span class="math inline">\(\gamma(h) = \mathrm{Cov}(X_t, X_{t+h}) = \mathrm{Cov}(X_{t+h}, X_t) = \gamma(-h)\)</span> (setting <span class="math inline">\(s = t+h\)</span>). For positive semi-definiteness, define the linear combination <span class="math inline">\(W = \sum_{i=1}^n a_i X_{t_i}\)</span>. Since variance is non-negative and covariance is bilinear: <span class="math display">\[0 \le \mathrm{Var}(W) = \mathrm{Cov}\left(\sum_{i=1}^n a_i X_{t_i}, \sum_{j=1}^n a_j X_{t_j}\right) = \sum_{i=1}^n \sum_{j=1}^n a_i a_j \gamma(t_i - t_j) \tag{1.6}\]</span></p>
+</section>
+<section id="sample-problem-1.2-testing-weak-stationarity" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="sample-problem-1.2-testing-weak-stationarity"><span class="header-section-number">2.3.3</span> Sample Problem 1.2 (Testing Weak Stationarity)</h3>
+<p><strong>Statement</strong>: Let <span class="math inline">\(Z_t \sim WN(0, \sigma^2)\)</span>. Test whether <span class="math inline">\(Y_t = 0.3 t + Z_t\)</span> and <span class="math inline">\(W_t = (-1)^t Z_t\)</span> are weakly stationary.</p>
+<p><strong>Solution</strong>:</p>
+<ul>
+<li>For <span class="math inline">\(Y_t\)</span>: <span class="math inline">\(\mathbb{E}[Y_t] = 0.3 t\)</span> depends on <span class="math inline">\(t\)</span> <span class="math inline">\(\implies\)</span> <strong>Non-stationary</strong>.</li>
+<li>For <span class="math inline">\(W_t\)</span>: <span class="math inline">\(\mathbb{E}[W_t] = (-1)^t \cdot 0 = 0\)</span> (constant). Covariance: <span class="math inline">\(\mathrm{Cov}(W_t, W_{t+h}) = (-1)^{2t+h}\mathrm{Cov}(Z_t, Z_{t+h})\)</span>, which equals <span class="math inline">\(\sigma^2\)</span> if <span class="math inline">\(h=0\)</span> and <span class="math inline">\(0\)</span> if <span class="math inline">\(h \neq 0\)</span>. Since both moments are independent of <span class="math inline">\(t\)</span>, <span class="math inline">\(W_t\)</span> is <strong>weakly stationary</strong>.</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Weak stationarity requires three things: finite variance, constant mean, and lag-only autocovariance. For Gaussian processes, weak stationarity automatically implies strict stationarity <span class="citation" data-cites="shumway2011time"><a href="../references.html#ref-shumway2011time" role="doc-biblioref">[2]</a></span>.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="ergodicity-bridging-ensemble-space-and-historical-time" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="ergodicity-bridging-ensemble-space-and-historical-time"><span class="header-section-number">2.4</span> Ergodicity: Bridging Ensemble Space and Historical Time</h2>
+<p>In clinical trials, we average across 500 patients. In EEG or financial analysis, we observe <strong>one</strong> continuous historical trajectory <span class="math inline">\(\{x_1, \dots, x_N\}\)</span>. <strong>Ergodicity</strong> tells us when a <em>time average</em> <span class="math inline">\(\bar{X}_N = \frac{1}{N}\sum_{t=1}^N X_t\)</span> converges to the <em>ensemble expectation</em> <span class="math inline">\(\mu\)</span> <span class="citation" data-cites="cryer2008time"><a href="../references.html#ref-cryer2008time" role="doc-biblioref">[1]</a></span>.</p>
+<section id="key-definitions-important-terms-2" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="key-definitions-important-terms-2"><span class="header-section-number">2.4.1</span> Key Definitions &amp; Important Terms</h3>
+<ul>
+<li><strong>Sample Mean (<span class="math inline">\(\bar{X}_N\)</span>)</strong>: <span class="math inline">\(\bar{X}_N = \frac{1}{N}\sum_{t=1}^N X_t\)</span>.</li>
+<li><strong>Ergodic for the Mean</strong>: A weakly stationary process is ergodic for the mean if <span class="math inline">\(\lim_{N\to\infty} \mathbb{E}[(\bar{X}_N - \mu)^2] = 0\)</span> (mean-square convergence).</li>
+</ul>
+</section>
+<section id="first-principles-derivation-ergodicity-of-the-mean" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="first-principles-derivation-ergodicity-of-the-mean"><span class="header-section-number">2.4.2</span> First-Principles Derivation: Ergodicity of the Mean</h3>
+<p><strong>Theorem 1.3</strong>: A weakly stationary process <span class="math inline">\(\{X_t\}\)</span> with autocovariance <span class="math inline">\(\gamma(h)\)</span> is ergodic for the mean if and only if <span class="math inline">\(\lim_{N\to\infty} \frac{1}{N}\sum_{h=0}^{N-1}\gamma(h) = 0\)</span>. A sufficient condition is <span class="math inline">\(\sum_{h=0}^\infty |\gamma(h)| &lt; \infty\)</span>.</p>
+<p><strong>Derivation from First Principles</strong>: First, <span class="math inline">\(\mathbb{E}[\bar{X}_N] = \frac{1}{N}\sum_{t=1}^N \mu = \mu\)</span>, so <span class="math inline">\(\mathbb{E}[(\bar{X}_N - \mu)^2] = \mathrm{Var}(\bar{X}_N)\)</span>. Applying bilinearity of covariance: <span class="math display">\[\mathrm{Var}(\bar{X}_N) = \frac{1}{N^2} \sum_{s=1}^N \sum_{t=1}^N \mathrm{Cov}(X_s, X_t) = \frac{1}{N^2} \sum_{s=1}^N \sum_{t=1}^N \gamma(s - t) \tag{1.7}\]</span> Group pairs <span class="math inline">\((s, t)\)</span> by their lag <span class="math inline">\(h = s - t \in \{-(N-1), \dots, N-1\}\)</span>. For each fixed <span class="math inline">\(h\)</span>, there are exactly <span class="math inline">\(N - |h|\)</span> pairs satisfying <span class="math inline">\(s - t = h\)</span>. Using <span class="math inline">\(\gamma(h) = \gamma(-h)\)</span>: <span class="math display">\[\mathrm{Var}(\bar{X}_N) = \frac{1}{N} \sum_{h=-(N-1)}^{N-1} \left(1 - \frac{|h|}{N}\right)\gamma(h) = \frac{\gamma(0)}{N} + \frac{2}{N}\sum_{h=1}^{N-1}\left(1 - \frac{h}{N}\right)\gamma(h) \tag{1.8}\]</span> If <span class="math inline">\(\sum_{h=0}^\infty |\gamma(h)| &lt; \infty\)</span>, then <span class="math inline">\(|\mathrm{Var}(\bar{X}_N)| \le \frac{1}{N}\sum_{h=-\infty}^\infty |\gamma(h)| \to 0\)</span> as <span class="math inline">\(N \to \infty\)</span>.</p>
+</section>
+<section id="sample-problem-1.3-multi-period-variance-inflation" class="level3" data-number="2.4.3">
+<h3 data-number="2.4.3" class="anchored" data-anchor-id="sample-problem-1.3-multi-period-variance-inflation"><span class="header-section-number">2.4.3</span> Sample Problem 1.3 (Multi-Period Variance Inflation)</h3>
+<p><strong>Statement</strong>: Daily portfolio returns follow <span class="math inline">\(r_t\)</span> with <span class="math inline">\(\gamma(0) = 0.0001\)</span> and <span class="math inline">\(\gamma(1) = 0.000025\)</span> (<span class="math inline">\(\gamma(h)=0\)</span> for <span class="math inline">\(h \ge 2\)</span>). Compute <span class="math inline">\(\mathrm{Var}(\bar{r}_2)\)</span> using Eq. (1.8) and compare with the naive <span class="math inline">\(i.i.d.\)</span> formula <span class="math inline">\(\gamma(0)/2\)</span>.</p>
+<p><strong>Solution</strong>: By Eq. (1.8) with <span class="math inline">\(N = 2\)</span>: <span class="math display">\[\mathrm{Var}(\bar{r}_2) = \frac{\gamma(0)}{2} + \frac{2}{2}\left(1 - \frac{1}{2}\right)\gamma(1) = \frac{0.0001}{2} + 0.5(0.000025) = 0.00005 + 0.0000125 = 0.0000625\]</span> The naive <span class="math inline">\(i.i.d.\)</span> formula gives <span class="math inline">\(0.00005\)</span>, underestimating variance by <span class="math inline">\(25\%\)</span>!</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Ergodicity holds when memory decays fast enough (<span class="math inline">\(\sum |\gamma(h)| &lt; \infty\)</span>) so distant time blocks act nearly independently. Moreover, Equation (1.8) warns us that positive autocorrelation inflates the variance of averages and multi-day portfolio returns.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="sample-acf-bartletts-bounds-and-pacf" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="sample-acf-bartletts-bounds-and-pacf"><span class="header-section-number">2.5</span> Sample ACF, Bartlett’s Bounds, and PACF</h2>
+<p>In practice, we never observe <span class="math inline">\(\gamma(h)\)</span> directly; we estimate it from a finite sample <span class="math inline">\(\{x_1, \dots, x_N\}\)</span> <span class="citation" data-cites="box2016time shumway2011time"><a href="../references.html#ref-shumway2011time" role="doc-biblioref">[2]</a>, <a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>.</p>
+<section id="key-definitions-important-terms-3" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="key-definitions-important-terms-3"><span class="header-section-number">2.5.1</span> Key Definitions &amp; Important Terms</h3>
+<ul>
+<li><strong>Sample ACVF (<span class="math inline">\(\hat{\gamma}(h)\)</span>)</strong>: <span class="math inline">\(\hat{\gamma}(h) = \frac{1}{N}\sum_{t=1}^{N-h} (x_t - \bar{x})(x_{t+h} - \bar{x})\)</span>. (Dividing by <span class="math inline">\(N\)</span> ensures the sample covariance matrix remains positive semi-definite.)</li>
+<li><strong>Sample ACF (<span class="math inline">\(\hat{\rho}(h)\)</span>)</strong>: <span class="math inline">\(\hat{\rho}(h) = \frac{\hat{\gamma}(h)}{\hat{\gamma}(0)}\)</span>.</li>
+<li><strong>Partial Autocorrelation Function (PACF, <span class="math inline">\(\phi_{hh}\)</span>)</strong>: The <em>direct</em> correlation between <span class="math inline">\(X_t\)</span> and <span class="math inline">\(X_{t-h}\)</span> after linearly projecting out the intermediate variables <span class="math inline">\(\{X_{t-1}, \dots, X_{t-h+1}\}\)</span>: <span class="math display">\[\phi_{hh} = \mathrm{Corr}\Big(X_t - \mathcal{P}_{\mathcal{M}_1^{h-1}} X_t, \; X_{t-h} - \mathcal{P}_{\mathcal{M}_1^{h-1}} X_{t-h}\Big) \tag{1.9}\]</span></li>
+</ul>
+</section>
+<section id="first-principles-results-bartletts-bounds-yule-walker-system" class="level3" data-number="2.5.2">
+<h3 data-number="2.5.2" class="anchored" data-anchor-id="first-principles-results-bartletts-bounds-yule-walker-system"><span class="header-section-number">2.5.2</span> First-Principles Results: Bartlett’s Bounds &amp; Yule-Walker System</h3>
+<ol type="1">
+<li><strong>Bartlett’s White Noise Asymptotic Variance</strong>: For <span class="math inline">\(Z_t \sim WN(0, \sigma^2)\)</span> and large <span class="math inline">\(N\)</span>, <span class="math inline">\(\mathrm{Var}(\hat{\rho}(h)) \approx \frac{1}{N}\)</span> for all <span class="math inline">\(h \ge 1\)</span> <span class="citation" data-cites="shumway2011time"><a href="../references.html#ref-shumway2011time" role="doc-biblioref">[2]</a></span>. This gives the <strong>95% white noise band</strong>: <span class="math display">\[\pm \frac{1.96}{\sqrt{N}} \tag{1.10}\]</span></li>
+<li><strong>Yule-Walker Derivation</strong>: Regress <span class="math inline">\(X_t = \phi_{h1} X_{t-1} + \dots + \phi_{hh} X_{t-h} + \epsilon_t\)</span>, where <span class="math inline">\(\epsilon_t\)</span> is orthogonal to <span class="math inline">\(X_{t-1}, \dots, X_{t-h}\)</span>. Multiplying both sides by <span class="math inline">\(X_{t-k}\)</span> (<span class="math inline">\(k = 1, \dots, h\)</span>), taking expectations, and dividing by <span class="math inline">\(\gamma(0)\)</span> yields: <span class="math display">\[\rho(k) = \sum_{j=1}^h \phi_{hj} \rho(k - j), \quad k = 1, \dots, h \tag{1.11}\]</span> In matrix form, <span class="math inline">\(\mathbf{R}_h \boldsymbol{\phi}_h = \boldsymbol{\rho}_h\)</span>, whose final entry <span class="math inline">\(\phi_{hh}\)</span> is the PACF at lag <span class="math inline">\(h\)</span>.</li>
+<li><strong>Durbin-Levinson Recursion</strong>: Solves Eq. (1.11) in <span class="math inline">\(\mathcal{O}(h^2)\)</span> operations starting from <span class="math inline">\(\phi_{11} = \rho(1)\)</span>: <span class="math display">\[\phi_{hh} = \frac{\rho(h) - \sum_{j=1}^{h-1} \phi_{h-1,j}\rho(h-j)}{1 - \sum_{j=1}^{h-1} \phi_{h-1,j}\rho(j)}, \qquad \phi_{hj} = \phi_{h-1,j} - \phi_{hh}\phi_{h-1,h-j} \tag{1.12}\]</span></li>
+</ol>
+</section>
+<section id="sample-problem-1.4-manual-sample-acf-bartlett-test" class="level3" data-number="2.5.3">
+<h3 data-number="2.5.3" class="anchored" data-anchor-id="sample-problem-1.4-manual-sample-acf-bartlett-test"><span class="header-section-number">2.5.3</span> Sample Problem 1.4 (Manual Sample ACF &amp; Bartlett Test)</h3>
+<p><strong>Statement</strong>: For the 5-point demeaned series <span class="math inline">\(x = \{2, 1, -1, -2, 0\}\)</span>, compute <span class="math inline">\(\hat{\gamma}(0)\)</span>, <span class="math inline">\(\hat{\gamma}(1)\)</span>, and <span class="math inline">\(\hat{\rho}(1)\)</span> by hand.</p>
+<p><strong>Solution</strong>: <span class="math inline">\(\bar{x} = 0\)</span>. <span class="math inline">\(\hat{\gamma}(0) = \frac{1}{5}(4 + 1 + 1 + 4 + 0) = 2.0\)</span>. <span class="math inline">\(\hat{\gamma}(1) = \frac{1}{5}[(2)(1) + (1)(-1) + (-1)(-2) + (-2)(0)] = \frac{3}{5} = 0.6\)</span>. Hence <span class="math inline">\(\hat{\rho}(1) = \frac{0.6}{2.0} = 0.30\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The ACF measures <strong>total</strong> correlation (direct + indirect), whereas the PACF isolates <strong>direct</strong> lag-<span class="math inline">\(h\)</span> dependence. Bartlett’s <span class="math inline">\(\pm 1.96/\sqrt{N}\)</span> bands tell us whether sample spikes are statistically distinguishable from pure white noise.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="wold-decomposition-and-linear-processes" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="wold-decomposition-and-linear-processes"><span class="header-section-number">2.6</span> Wold Decomposition and Linear Processes</h2>
+<section id="key-definitions-important-terms-4" class="level3" data-number="2.6.1">
+<h3 data-number="2.6.1" class="anchored" data-anchor-id="key-definitions-important-terms-4"><span class="header-section-number">2.6.1</span> Key Definitions &amp; Important Terms</h3>
+<ul>
+<li><strong>General Linear Process</strong>: <span class="math inline">\(X_t = \mu + \sum_{j=0}^\infty \psi_j Z_{t-j}\)</span> with <span class="math inline">\(\sum_{j=0}^\infty \psi_j^2 &lt; \infty\)</span>.</li>
+<li><strong>Purely Indeterministic vs.&nbsp;Deterministic</strong>: A process is purely indeterministic if its distant past carries zero predictive power (<span class="math inline">\(\lim_{m\to\infty}\mathrm{Var}(\mathbb{E}[X_t|\mathcal{M}_{-\infty}^{t-m}]) = 0\)</span>).</li>
+</ul>
+</section>
+<section id="theorem-1.4-wold-decomposition-theorem-1938" class="level3" data-number="2.6.2">
+<h3 data-number="2.6.2" class="anchored" data-anchor-id="theorem-1.4-wold-decomposition-theorem-1938"><span class="header-section-number">2.6.2</span> Theorem 1.4: Wold Decomposition Theorem (1938)</h3>
+<p>Any zero-mean weakly stationary process <span class="math inline">\(\{X_t\}\)</span> admits a unique orthogonal decomposition <span class="citation" data-cites="box2016time cryer2008time"><a href="../references.html#ref-cryer2008time" role="doc-biblioref">[1]</a>, <a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>: <span class="math display">\[X_t = \sum_{j=0}^\infty \psi_j Z_{t-j} + V_t, \quad \psi_0 = 1, \quad \sum_{j=0}^\infty \psi_j^2 &lt; \infty \tag{1.13}\]</span> where <span class="math inline">\(Z_t = X_t - \mathcal{P}_{\mathcal{M}_{-\infty}^{t-1}} X_t \sim WN(0, \sigma^2)\)</span> is the one-step innovation, <span class="math inline">\(V_t\)</span> is deterministic (<span class="math inline">\(\mathcal{P}_{\mathcal{M}_{-\infty}^{t-1}} V_t = V_t\)</span>), and <span class="math inline">\(\mathrm{Cov}(Z_s, V_t) = 0\)</span> for all <span class="math inline">\(s, t\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Wold’s theorem guarantees that every regular stationary time series—from EEG rhythms to stationary asset returns—can be represented as a linear filter of white noise shocks.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="autoregressive-models-arp" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="autoregressive-models-arp"><span class="header-section-number">2.7</span> Autoregressive Models: AR(<span class="math inline">\(p\)</span>)</h2>
+<p>An <strong>AR(<span class="math inline">\(p\)</span>)</strong> process models <span class="math inline">\(X_t\)</span> as a linear combination of its past <span class="math inline">\(p\)</span> values plus a fresh shock <span class="math inline">\(Z_t \sim WN(0, \sigma^2)\)</span> <span class="citation" data-cites="box2016time"><a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>: <span class="math display">\[X_t = \phi_1 X_{t-1} + \dots + \phi_p X_{t-p} + Z_t \iff \Phi(B) X_t = Z_t \tag{1.14}\]</span> where <span class="math inline">\(\Phi(B) = 1 - \phi_1 B - \dots - \phi_p B^p\)</span> is the <strong>autoregressive characteristic polynomial</strong>.</p>
+<section id="first-principles-derivation-moments-acf-and-pacf-of-ar1" class="level3" data-number="2.7.1">
+<h3 data-number="2.7.1" class="anchored" data-anchor-id="first-principles-derivation-moments-acf-and-pacf-of-ar1"><span class="header-section-number">2.7.1</span> First-Principles Derivation: Moments, ACF, and PACF of AR(1)</h3>
+<p>Consider <span class="math inline">\(X_t = \phi X_{t-1} + Z_t\)</span> with <span class="math inline">\(|\phi| &lt; 1\)</span>. From Chapter 0 (Eq. 0.7), <span class="math inline">\(X_t = \sum_{j=0}^\infty \phi^j Z_{t-j}\)</span>. 1. <strong>Mean</strong>: <span class="math inline">\(\mathbb{E}[X_t] = \sum_{j=0}^\infty \phi^j \mathbb{E}[Z_{t-j}] = 0\)</span>. 2. <strong>Variance</strong>: Since <span class="math inline">\(Z_{t-j}\)</span> are uncorrelated, <span class="math display">\[\gamma(0) = \mathrm{Var}\left(\sum_{j=0}^\infty \phi^j Z_{t-j}\right) = \sum_{j=0}^\infty \phi^{2j}\sigma^2 = \frac{\sigma^2}{1 - \phi^2} \tag{1.15}\]</span> 3. <strong>ACF</strong>: Multiply <span class="math inline">\(X_t = \phi X_{t-1} + Z_t\)</span> by <span class="math inline">\(X_{t-h}\)</span> (<span class="math inline">\(h \ge 1\)</span>) and take expectations. Since <span class="math inline">\(Z_t\)</span> is uncorrelated with <span class="math inline">\(X_{t-h}\)</span>: <span class="math display">\[\gamma(h) = \phi\gamma(h-1) \implies \gamma(h) = \phi^h \gamma(0) \implies \rho(h) = \phi^h \tag{1.16}\]</span> 4. <strong>PACF</strong>: By Eq. (1.11), <span class="math inline">\(\phi_{11} = \rho(1) = \phi\)</span>. For <span class="math inline">\(h = 2\)</span>, <span class="math inline">\(\phi_{22} = \frac{\rho(2) - \rho(1)^2}{1 - \rho(1)^2} = \frac{\phi^2 - \phi^2}{1 - \phi^2} = 0\)</span>. By induction, <span class="math inline">\(\phi_{hh} = 0\)</span> for all <span class="math inline">\(h \ge 2\)</span>.</p>
+</section>
+<section id="theorem-1.5-causality-condition-for-arp" class="level3" data-number="2.7.2">
+<h3 data-number="2.7.2" class="anchored" data-anchor-id="theorem-1.5-causality-condition-for-arp"><span class="header-section-number">2.7.2</span> Theorem 1.5: Causality Condition for AR(<span class="math inline">\(p\)</span>)</h3>
+<p>An AR(<span class="math inline">\(p\)</span>) process <span class="math inline">\(\Phi(B)X_t = Z_t\)</span> is <strong>causal</strong> (<span class="math inline">\(X_t = \sum_{j=0}^\infty \psi_j Z_{t-j}\)</span> with <span class="math inline">\(\sum |\psi_j| &lt; \infty\)</span>) if and only if all roots of <span class="math inline">\(\Phi(z) = 0\)</span> lie strictly <strong>outside the unit circle</strong> (<span class="math inline">\(|z| &gt; 1\)</span>) <span class="citation" data-cites="cryer2008time box2016time"><a href="../references.html#ref-cryer2008time" role="doc-biblioref">[1]</a>, <a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>.</p>
+</section>
+<section id="sample-problem-1.5-ar2-causality-yule-walker" class="level3" data-number="2.7.3">
+<h3 data-number="2.7.3" class="anchored" data-anchor-id="sample-problem-1.5-ar2-causality-yule-walker"><span class="header-section-number">2.7.3</span> Sample Problem 1.5 (AR(2) Causality &amp; Yule-Walker)</h3>
+<p><strong>Statement</strong>: For <span class="math inline">\(X_t = 0.7 X_{t-1} - 0.1 X_{t-2} + Z_t\)</span> (<span class="math inline">\(\sigma^2 = 1.44\)</span>), verify causality and find <span class="math inline">\(\rho(1), \rho(2), \gamma(0)\)</span>.</p>
+<p><strong>Solution</strong>: <span class="math inline">\(\Phi(z) = 1 - 0.7z + 0.1z^2 = (1 - 0.5z)(1 - 0.2z) = 0 \implies z_1 = 2, z_2 = 5\)</span> (both <span class="math inline">\(|z_i| &gt; 1\)</span>, <strong>causal</strong>). Yule-Walker: <span class="math inline">\(\rho(1) = 0.7 - 0.1\rho(1) \implies \rho(1) = 0.7/1.1 \approx 0.6364\)</span>; <span class="math inline">\(\rho(2) = 0.7(0.6364) - 0.1 \approx 0.3455\)</span>. Variance: <span class="math inline">\(\gamma(0)[1 - 0.7\rho(1) + 0.1\rho(2)] = 1.44 \implies \gamma(0) \approx 2.4448\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An <strong>AR(<span class="math inline">\(p\)</span>)</strong> process has infinite shock memory: its <strong>ACF tails off</strong> (exponentially or as a damped sine wave), while its <strong>PACF cuts off sharply after lag <span class="math inline">\(p\)</span></strong>.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="moving-average-models-maq" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="moving-average-models-maq"><span class="header-section-number">2.8</span> Moving Average Models: MA(<span class="math inline">\(q\)</span>)</h2>
+<p>An <strong>MA(<span class="math inline">\(q\)</span>)</strong> process expresses <span class="math inline">\(X_t\)</span> as a <em>finite</em> linear combination of current and past white noise shocks <span class="citation" data-cites="box2016time"><a href="../references.html#ref-box2016time" role="doc-biblioref">[3]</a></span>: <span class="math display">\[X_t = Z_t + \theta_1 Z_{t-1} + \dots + \theta_q Z_{t-q} = \Theta(B) Z_t \tag{1.17}\]</span></p>
+<section id="first-principles-derivation-moments-invertibility-of-ma1" class="level3" data-number="2.8.1">
+<h3 data-number="2.8.1" class="anchored" data-anchor-id="first-principles-derivation-moments-invertibility-of-ma1"><span class="header-section-number">2.8.1</span> First-Principles Derivation: Moments &amp; Invertibility of MA(1)</h3>
+<p>Consider <span class="math inline">\(X_t = Z_t + \theta Z_{t-1}\)</span> with <span class="math inline">\(Z_t \sim WN(0, \sigma^2)\)</span>. 1. <strong>Mean &amp; Variance</strong>: <span class="math inline">\(\mathbb{E}[X_t] = 0\)</span>, and <span class="math inline">\(\gamma(0) = \mathrm{Var}(Z_t) + \theta^2\mathrm{Var}(Z_{t-1}) = \sigma^2(1 + \theta^2)\)</span>. 2. <strong>Autocovariance &amp; ACF</strong>: <span class="math display">\[\gamma(1) = \mathbb{E}[(Z_t + \theta Z_{t-1})(Z_{t-1} + \theta Z_{t-2})] = \theta \sigma^2, \qquad \gamma(h) = 0 \quad (|h| \ge 2) \tag{1.18}\]</span> <span class="math display">\[\rho(1) = \frac{\theta}{1 + \theta^2} \in [-0.5, 0.5], \qquad \rho(h) = 0 \quad (|h| \ge 2) \tag{1.19}\]</span> 3. <strong>Invertibility</strong>: Notice that <span class="math inline">\(\theta\)</span> and <span class="math inline">\(1/\theta\)</span> yield the exact same <span class="math inline">\(\rho(1)\)</span>. To uniquely recover shocks <span class="math inline">\(Z_t\)</span> from observed data via <span class="math inline">\(Z_t = (1 + \theta B)^{-1} X_t = \sum_{j=0}^\infty (-\theta)^j X_{t-j}\)</span> with decaying weights, we require <span class="math inline">\(|\theta| &lt; 1\)</span>. In general, an MA(<span class="math inline">\(q\)</span>) model is <strong>invertible</strong> if and only if all roots of <span class="math inline">\(\Theta(z) = 0\)</span> satisfy <span class="math inline">\(|z| &gt; 1\)</span> <span class="citation" data-cites="shumway2011time"><a href="../references.html#ref-shumway2011time" role="doc-biblioref">[2]</a></span>.</p>
+</section>
+<section id="sample-problem-1.6-ma1-identifiability" class="level3" data-number="2.8.2">
+<h3 data-number="2.8.2" class="anchored" data-anchor-id="sample-problem-1.6-ma1-identifiability"><span class="header-section-number">2.8.2</span> Sample Problem 1.6 (MA(1) Identifiability)</h3>
+<p><strong>Statement</strong>: Compare Model A (<span class="math inline">\(X_t = Z_t + 2.5 Z_{t-1}\)</span>, <span class="math inline">\(\sigma_Z^2 = 0.16\)</span>) and Model B (<span class="math inline">\(\tilde{X}_t = E_t + 0.4 E_{t-1}\)</span>, <span class="math inline">\(\sigma_E^2 = 1.00\)</span>).</p>
+<p><strong>Solution</strong>: Both yield <span class="math inline">\(\gamma(0) = 1.16\)</span>, <span class="math inline">\(\gamma(1) = 0.40\)</span>, and <span class="math inline">\(\gamma(h) = 0\)</span> (<span class="math inline">\(|h|\ge 2\)</span>). However, Model A has root <span class="math inline">\(z = -0.4\)</span> (<span class="math inline">\(|z| &lt; 1\)</span>, <strong>non-invertible</strong>), while Model B has root <span class="math inline">\(z = -2.5\)</span> (<span class="math inline">\(|z| &gt; 1\)</span>, <strong>invertible</strong>). Only Model B is valid for forecasting.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Takeaway:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An <strong>MA(<span class="math inline">\(q\)</span>)</strong> process has finite shock memory: its <strong>ACF cuts off sharply after lag <span class="math inline">\(q\)</span></strong>, while its <strong>PACF tails off</strong>. Always select the <strong>invertible</strong> representation (<span class="math inline">\(|z| &gt; 1\)</span>).</p>
+</div>
+</div>
+</section>
+</section>
+<section id="tier-graduated-problem-ladder-beginner-to-domain-mastery" class="level2" data-number="2.9">
+<h2 data-number="2.9" class="anchored" data-anchor-id="tier-graduated-problem-ladder-beginner-to-domain-mastery"><span class="header-section-number">2.9</span> 3-Tier Graduated Problem Ladder (Beginner to Domain Mastery)</h2>
+<section id="tier-1-by-hand-intuition" class="level3" data-number="2.9.1">
+<h3 data-number="2.9.1" class="anchored" data-anchor-id="tier-1-by-hand-intuition"><span class="header-section-number">2.9.1</span> Tier 1: By-Hand Intuition</h3>
+<ul>
+<li><strong>Problem 1.7 (Practice)</strong>: Compute <span class="math inline">\(\bar{x}\)</span>, <span class="math inline">\(\hat{\gamma}(0)\)</span>, <span class="math inline">\(\hat{\gamma}(1)\)</span>, and <span class="math inline">\(\hat{\rho}(1)\)</span> by hand for <span class="math inline">\(x = \{4, 2, 0, -2, -4\}\)</span>. <em>(Answer: <span class="math inline">\(\bar{x}=0\)</span>, <span class="math inline">\(\hat{\gamma}(0)=8.0\)</span>, <span class="math inline">\(\hat{\gamma}(1)=4.0\)</span>, <span class="math inline">\(\hat{\rho}(1)=0.50\)</span>.)</em></li>
+<li><strong>Problem 1.8 (Practice)</strong>: For <span class="math inline">\(X_t = Z_t - 0.6 Z_{t-1}\)</span> with <span class="math inline">\(Z_t \sim WN(0, 2.5)\)</span>, compute <span class="math inline">\(\gamma(0)\)</span>, <span class="math inline">\(\gamma(1)\)</span>, <span class="math inline">\(\rho(1)\)</span>, <span class="math inline">\(\rho(2)\)</span>, and verify invertibility. <em>(Answer: <span class="math inline">\(\gamma(0)=3.4\)</span>, <span class="math inline">\(\gamma(1)=-1.5\)</span>, <span class="math inline">\(\rho(1)\approx -0.441\)</span>, <span class="math inline">\(\rho(2)=0\)</span>; invertible since <span class="math inline">\(|z|=1.67 &gt; 1\)</span>.)</em></li>
+</ul>
+</section>
+<section id="tier-2-analytical-exam-style" class="level3" data-number="2.9.2">
+<h3 data-number="2.9.2" class="anchored" data-anchor-id="tier-2-analytical-exam-style"><span class="header-section-number">2.9.2</span> Tier 2: Analytical &amp; Exam-Style</h3>
+<ul>
+<li><strong>Problem 1.9 (Worked — Signal-Plus-Noise Durbin-Levinson)</strong>: An EEG electrode records <span class="math inline">\(X_t = S_t + V_t\)</span>, where <span class="math inline">\(S_t = 0.8 S_{t-1} + W_t\)</span> (<span class="math inline">\(\sigma_W^2 = 0.36\)</span>) and independent sensor noise <span class="math inline">\(V_t \sim WN(0, 0.64)\)</span>. Compute <span class="math inline">\(\rho_X(1), \rho_X(2)\)</span>, and <span class="math inline">\(\phi_{22}\)</span>. <em>Solution</em>: <span class="math inline">\(\gamma_S(0) = \frac{0.36}{1 - 0.64} = 1.00\)</span>, so <span class="math inline">\(\gamma_X(0) = 1.00 + 0.64 = 1.64\)</span>, while <span class="math inline">\(\gamma_X(h) = \gamma_S(h) = 0.8^h\)</span> for <span class="math inline">\(h \ge 1\)</span>. Thus <span class="math inline">\(\rho_X(1) = \frac{0.80}{1.64} \approx 0.4878\)</span> and <span class="math inline">\(\rho_X(2) = \frac{0.64}{1.64} \approx 0.3902\)</span>. By Eq. (1.12): <span class="math display">\[\phi_{22} = \frac{0.3902 - (0.4878)^2}{1 - (0.4878)^2} = \frac{0.1522}{0.7620} \approx 0.1997 \neq 0\]</span> Adding measurement noise turns a pure AR(1) into an ARMA(1,1) whose PACF no longer cuts off at lag 1.</li>
+</ul>
+</section>
+<section id="tier-3-domain-case-studies-eeg-signals-financial-analytics" class="level3" data-number="2.9.3">
+<h3 data-number="2.9.3" class="anchored" data-anchor-id="tier-3-domain-case-studies-eeg-signals-financial-analytics"><span class="header-section-number">2.9.3</span> Tier 3: Domain Case Studies (EEG Signals &amp; Financial Analytics)</h3>
+<section id="problem-1.10-eeg-alpha-wave-resonance-via-ar2-complex-roots-biomedical-worked" class="level4" data-number="2.9.3.1">
+<h4 data-number="2.9.3.1" class="anchored" data-anchor-id="problem-1.10-eeg-alpha-wave-resonance-via-ar2-complex-roots-biomedical-worked"><span class="header-section-number">2.9.3.1</span> Problem 1.10: EEG Alpha-Wave Resonance via AR(2) Complex Roots (Biomedical — Worked)</h4>
+<p><strong>Statement</strong>: A resting-state EEG segment sampled at <span class="math inline">\(f_s = 100\text{ Hz}\)</span> follows <span class="math inline">\(X_t = 1.458 X_{t-1} - 0.810 X_{t-2} + Z_t\)</span>. Verify stationarity and compute the dominant frequency in Hz.</p>
+<p><strong>Solution</strong>:</p>
+<ol type="1">
+<li>Characteristic polynomial: <span class="math inline">\(\Phi(z) = 1 - 1.458z + 0.810z^2 = 0\)</span>. Here <span class="math inline">\(\phi_1 = 1.458, \phi_2 = -0.810\)</span>.</li>
+<li>Root modulus (Section 0.5): <span class="math inline">\(|z| = 1/\sqrt{-\phi_2} = 1/\sqrt{0.810} = 1/0.9 \approx 1.111 &gt; 1\)</span> (<strong>stationary</strong>).</li>
+<li>Frequency (Eq. 0.8–0.9): <span class="math inline">\(\cos\theta = \frac{1.458}{2\sqrt{0.810}} = 0.810 \implies \theta \approx 0.6266\text{ rad}\)</span>, so <span class="math inline">\(f = \frac{100 \times 0.6266}{2\pi} \approx 9.97\text{ Hz}\)</span> (classic <strong><span class="math inline">\(10\text{ Hz}\)</span> alpha rhythm</strong>!).</li>
+</ol>
+</section>
+<section id="problem-1.11-testing-weak-form-market-efficiency-with-bartlett-bounds-finance-worked" class="level4" data-number="2.9.3.2">
+<h4 data-number="2.9.3.2" class="anchored" data-anchor-id="problem-1.11-testing-weak-form-market-efficiency-with-bartlett-bounds-finance-worked"><span class="header-section-number">2.9.3.2</span> Problem 1.11: Testing Weak-Form Market Efficiency with Bartlett Bounds (Finance — Worked)</h4>
+<p><strong>Statement</strong>: An analyst observes sample ACF values <span class="math inline">\(\hat{\rho}(1) = 0.095\)</span>, <span class="math inline">\(\hat{\rho}(2) = -0.040\)</span>, <span class="math inline">\(\hat{\rho}(3) = 0.025\)</span> from <span class="math inline">\(N = 625\)</span> daily log returns. Test against white noise at the 5% level.</p>
+<p><strong>Solution</strong>: Bartlett’s 95% bound (Eq. 1.10) is <span class="math inline">\(\pm \frac{1.96}{\sqrt{625}} = \pm 0.0784\)</span>. Because <span class="math inline">\(|\hat{\rho}(1)| = 0.095 &gt; 0.0784\)</span>, lag-1 autocorrelation is statistically significant, rejecting pure white noise at lag 1.</p>
+</section>
+<section id="problem-1.12-portfolio-variance-inflation-practice" class="level4" data-number="2.9.3.3">
+<h4 data-number="2.9.3.3" class="anchored" data-anchor-id="problem-1.12-portfolio-variance-inflation-practice"><span class="header-section-number">2.9.3.3</span> Problem 1.12: Portfolio Variance Inflation (Practice)</h4>
+<p><strong>Statement</strong>: Daily fund returns follow <span class="math inline">\(r_t = 0.25 r_{t-1} + Z_t\)</span> with <span class="math inline">\(\gamma(0) = 0.0001\)</span>. Compute <span class="math inline">\(\mathrm{Var}(r_1 + r_2)\)</span> and compare with <span class="math inline">\(2\gamma(0)\)</span>. <em>(Answer: <span class="math inline">\(0.00025\)</span> vs.&nbsp;naive <span class="math inline">\(0.00020\)</span> — 25% higher.)</em></p>
+</section>
+</section>
+</section>
+<section id="dual-track-laboratory-experimental-section" class="level2" data-number="2.10">
+<h2 data-number="2.10" class="anchored" data-anchor-id="dual-track-laboratory-experimental-section"><span class="header-section-number">2.10</span> Dual-Track Laboratory Experimental Section</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Dual-Track Lab Objectives (CO1 Focus)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Track A (Biomedical / EEG Signal Analysis)</strong>: Check epoch stationarity, plot sample ACF/PACF, fit AR(<span class="math inline">\(p\)</span>), and extract the dominant neural oscillation frequency from characteristic roots.</li>
+<li><strong>Track B (Financial &amp; Portfolio Analytics)</strong>: Transform asset levels into log returns, test predictability via Bartlett’s 95% bounds, compute autocorrelation-adjusted portfolio variance, and benchmark AR(1) against a random-walk mean.</li>
+</ul>
+</div>
+</div>
+<section id="lab-track-a-eeg-signal-spectral-arp-modeling" class="level3" data-number="2.10.1">
+<h3 data-number="2.10.1" class="anchored" data-anchor-id="lab-track-a-eeg-signal-spectral-arp-modeling"><span class="header-section-number">2.10.1</span> Lab Track A: EEG Signal Spectral &amp; AR(<span class="math inline">\(p\)</span>) Modeling</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="im">from</span> statsmodels.tsa.ar_model <span class="im">import</span> AutoReg</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a>fs <span class="op">=</span> <span class="dv">100</span>  <span class="co"># 100 Hz sampling rate</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>t <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="fl">5.0</span>, <span class="dv">1</span><span class="op">/</span>fs)</span>
+<span id="cb1-9"><a href="#cb1-9"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="co"># Resting-state eyes-closed EEG (10 Hz alpha + 22 Hz beta + colored noise)</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a>alpha_wave <span class="op">=</span> <span class="fl">15.0</span> <span class="op">*</span> np.sin(<span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> <span class="fl">10.0</span> <span class="op">*</span> t <span class="op">+</span> <span class="fl">0.3</span>)</span>
+<span id="cb1-13"><a href="#cb1-13"></a>beta_wave  <span class="op">=</span>  <span class="fl">4.0</span> <span class="op">*</span> np.sin(<span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> <span class="fl">22.0</span> <span class="op">*</span> t)</span>
+<span id="cb1-14"><a href="#cb1-14"></a>bg_noise <span class="op">=</span> np.zeros(<span class="bu">len</span>(t))</span>
+<span id="cb1-15"><a href="#cb1-15"></a>eps <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="fl">3.5</span>, <span class="bu">len</span>(t))</span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(t)):</span>
+<span id="cb1-17"><a href="#cb1-17"></a>    bg_noise[i] <span class="op">=</span> <span class="fl">0.7</span> <span class="op">*</span> bg_noise[i<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> eps[i]</span>
+<span id="cb1-18"><a href="#cb1-18"></a></span>
+<span id="cb1-19"><a href="#cb1-19"></a>eeg_series <span class="op">=</span> pd.Series(alpha_wave <span class="op">+</span> beta_wave <span class="op">+</span> bg_noise, index<span class="op">=</span>pd.Index(t, name<span class="op">=</span><span class="st">"Time (s)"</span>))</span>
+<span id="cb1-20"><a href="#cb1-20"></a></span>
+<span id="cb1-21"><a href="#cb1-21"></a>mid <span class="op">=</span> <span class="bu">len</span>(eeg_series) <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb1-22"><a href="#cb1-22"></a><span class="bu">print</span>(<span class="st">"--- Track A: EEG Epoch Stationarity Check ---"</span>)</span>
+<span id="cb1-23"><a href="#cb1-23"></a><span class="bu">print</span>(<span class="ss">f"First Half  -&gt; Mean: </span><span class="sc">{</span>eeg_series<span class="sc">.</span>iloc[:mid]<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss"> uV, Std: </span><span class="sc">{</span>eeg_series<span class="sc">.</span>iloc[:mid]<span class="sc">.</span>std()<span class="sc">:.2f}</span><span class="ss"> uV"</span>)</span>
+<span id="cb1-24"><a href="#cb1-24"></a><span class="bu">print</span>(<span class="ss">f"Second Half -&gt; Mean: </span><span class="sc">{</span>eeg_series<span class="sc">.</span>iloc[mid:]<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss"> uV, Std: </span><span class="sc">{</span>eeg_series<span class="sc">.</span>iloc[mid:]<span class="sc">.</span>std()<span class="sc">:.2f}</span><span class="ss"> uV"</span>)</span>
+<span id="cb1-25"><a href="#cb1-25"></a></span>
+<span id="cb1-26"><a href="#cb1-26"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">3</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="dv">9</span>))</span>
+<span id="cb1-27"><a href="#cb1-27"></a>axes[<span class="dv">0</span>].plot(eeg_series.index, eeg_series.values, color<span class="op">=</span><span class="st">"#0f766e"</span>, lw<span class="op">=</span><span class="fl">1.1</span>)</span>
+<span id="cb1-28"><a href="#cb1-28"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Resting-State EEG Trace (100 Hz Sampling)"</span>)</span>
+<span id="cb1-29"><a href="#cb1-29"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"Amplitude (uV)"</span>)</span>
+<span id="cb1-30"><a href="#cb1-30"></a>axes[<span class="dv">0</span>].grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb1-31"><a href="#cb1-31"></a></span>
+<span id="cb1-32"><a href="#cb1-32"></a>sm.graphics.tsa.plot_acf(eeg_series, lags<span class="op">=</span><span class="dv">40</span>, ax<span class="op">=</span>axes[<span class="dv">1</span>], title<span class="op">=</span><span class="st">"EEG Sample ACF"</span>)</span>
+<span id="cb1-33"><a href="#cb1-33"></a>sm.graphics.tsa.plot_pacf(eeg_series, lags<span class="op">=</span><span class="dv">40</span>, ax<span class="op">=</span>axes[<span class="dv">2</span>], method<span class="op">=</span><span class="st">"yule_walker"</span>, title<span class="op">=</span><span class="st">"EEG Sample PACF"</span>)</span>
+<span id="cb1-34"><a href="#cb1-34"></a>plt.tight_layout()</span>
+<span id="cb1-35"><a href="#cb1-35"></a>plt.show()</span>
+<span id="cb1-36"><a href="#cb1-36"></a></span>
+<span id="cb1-37"><a href="#cb1-37"></a>ar2_eeg <span class="op">=</span> AutoReg(eeg_series.values, lags<span class="op">=</span><span class="dv">2</span>, old_names<span class="op">=</span><span class="va">False</span>).fit()</span>
+<span id="cb1-38"><a href="#cb1-38"></a>phi1, phi2 <span class="op">=</span> ar2_eeg.params[<span class="dv">1</span>], ar2_eeg.params[<span class="dv">2</span>]</span>
+<span id="cb1-39"><a href="#cb1-39"></a>roots <span class="op">=</span> np.roots([<span class="op">-</span>phi2, <span class="op">-</span>phi1, <span class="fl">1.0</span>])</span>
+<span id="cb1-40"><a href="#cb1-40"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">AR(2): phi1=</span><span class="sc">{</span>phi1<span class="sc">:.4f}</span><span class="ss">, phi2=</span><span class="sc">{</span>phi2<span class="sc">:.4f}</span><span class="ss"> | Root Moduli: </span><span class="sc">{</span>np<span class="sc">.</span><span class="bu">abs</span>(roots)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb1-41"><a href="#cb1-41"></a><span class="cf">if</span> np.iscomplexobj(roots):</span>
+<span id="cb1-42"><a href="#cb1-42"></a>    dom_freq <span class="op">=</span> fs <span class="op">*</span> np.<span class="bu">abs</span>(np.angle(roots[<span class="dv">0</span>])) <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> np.pi)</span>
+<span id="cb1-43"><a href="#cb1-43"></a>    <span class="bu">print</span>(<span class="ss">f"Extracted Dominant EEG Frequency: </span><span class="sc">{</span>dom_freq<span class="sc">:.2f}</span><span class="ss"> Hz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="lab-track-b-financial-return-stationarity-portfolio-risk-scaling" class="level3" data-number="2.10.2">
+<h3 data-number="2.10.2" class="anchored" data-anchor-id="lab-track-b-financial-return-stationarity-portfolio-risk-scaling"><span class="header-section-number">2.10.2</span> Lab Track B: Financial Return Stationarity &amp; Portfolio Risk Scaling</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="im">from</span> statsmodels.tsa.ar_model <span class="im">import</span> AutoReg</span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="im">from</span> statsmodels.tsa.stattools <span class="im">import</span> acf</span>
+<span id="cb2-7"><a href="#cb2-7"></a></span>
+<span id="cb2-8"><a href="#cb2-8"></a>macro <span class="op">=</span> sm.datasets.macrodata.load_pandas().data</span>
+<span id="cb2-9"><a href="#cb2-9"></a>price_level <span class="op">=</span> pd.Series(macro[<span class="st">"realgdp"</span>].values,</span>
+<span id="cb2-10"><a href="#cb2-10"></a>                        index<span class="op">=</span>pd.period_range(<span class="st">"1959Q1"</span>, periods<span class="op">=</span><span class="bu">len</span>(macro), freq<span class="op">=</span><span class="st">"Q"</span>).to_timestamp())</span>
+<span id="cb2-11"><a href="#cb2-11"></a>log_returns <span class="op">=</span> np.log(price_level <span class="op">/</span> price_level.shift(<span class="dv">1</span>)).dropna()</span>
+<span id="cb2-12"><a href="#cb2-12"></a></span>
+<span id="cb2-13"><a href="#cb2-13"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">7</span>))</span>
+<span id="cb2-14"><a href="#cb2-14"></a>axes[<span class="dv">0</span>, <span class="dv">0</span>].plot(price_level, color<span class="op">=</span><span class="st">"#1e3a8a"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15"></a>axes[<span class="dv">0</span>, <span class="dv">0</span>].set_title(<span class="st">"Raw Index Level (Non-Stationary)"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16"></a>axes[<span class="dv">0</span>, <span class="dv">1</span>].plot(log_returns, color<span class="op">=</span><span class="st">"#c2410c"</span>)</span>
+<span id="cb2-17"><a href="#cb2-17"></a>axes[<span class="dv">0</span>, <span class="dv">1</span>].axhline(log_returns.mean(), color<span class="op">=</span><span class="st">"black"</span>, ls<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb2-18"><a href="#cb2-18"></a>axes[<span class="dv">0</span>, <span class="dv">1</span>].set_title(<span class="st">"Log Returns (Approximately Stationary)"</span>)</span>
+<span id="cb2-19"><a href="#cb2-19"></a>sm.graphics.tsa.plot_acf(price_level, lags<span class="op">=</span><span class="dv">20</span>, ax<span class="op">=</span>axes[<span class="dv">1</span>, <span class="dv">0</span>], title<span class="op">=</span><span class="st">"ACF of Raw Level"</span>)</span>
+<span id="cb2-20"><a href="#cb2-20"></a>sm.graphics.tsa.plot_acf(log_returns, lags<span class="op">=</span><span class="dv">20</span>, ax<span class="op">=</span>axes[<span class="dv">1</span>, <span class="dv">1</span>], title<span class="op">=</span><span class="st">"ACF of Log Returns (Bartlett Bounds)"</span>)</span>
+<span id="cb2-21"><a href="#cb2-21"></a>plt.tight_layout()</span>
+<span id="cb2-22"><a href="#cb2-22"></a>plt.show()</span>
+<span id="cb2-23"><a href="#cb2-23"></a></span>
+<span id="cb2-24"><a href="#cb2-24"></a>acf_vals <span class="op">=</span> acf(log_returns, nlags<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb2-25"><a href="#cb2-25"></a>K <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb2-26"><a href="#cb2-26"></a>naive_var <span class="op">=</span> K <span class="op">*</span> log_returns.var()</span>
+<span id="cb2-27"><a href="#cb2-27"></a>corr_factor <span class="op">=</span> <span class="dv">1</span> <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> <span class="bu">sum</span>((<span class="dv">1</span> <span class="op">-</span> h <span class="op">/</span> K) <span class="op">*</span> acf_vals[h] <span class="cf">for</span> h <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, K))</span>
+<span id="cb2-28"><a href="#cb2-28"></a><span class="bu">print</span>(<span class="ss">f"Lag-1 ACF: </span><span class="sc">{</span>acf_vals[<span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss"> | Portfolio Variance Inflation Factor (K=</span><span class="sc">{</span>K<span class="sc">}</span><span class="ss">): </span><span class="sc">{</span>corr_factor<span class="sc">:.3f}</span><span class="ss">x"</span>)</span>
+<span id="cb2-29"><a href="#cb2-29"></a></span>
+<span id="cb2-30"><a href="#cb2-30"></a>split <span class="op">=</span> <span class="bu">int</span>(<span class="bu">len</span>(log_returns) <span class="op">*</span> <span class="fl">0.8</span>)</span>
+<span id="cb2-31"><a href="#cb2-31"></a>train_r, test_r <span class="op">=</span> log_returns.iloc[:split], log_returns.iloc[split:]</span>
+<span id="cb2-32"><a href="#cb2-32"></a>ar1_fin <span class="op">=</span> AutoReg(train_r.values, lags<span class="op">=</span><span class="dv">1</span>, old_names<span class="op">=</span><span class="va">False</span>).fit()</span>
+<span id="cb2-33"><a href="#cb2-33"></a>pred_ar1 <span class="op">=</span> ar1_fin.predict(start<span class="op">=</span><span class="bu">len</span>(train_r), end<span class="op">=</span><span class="bu">len</span>(log_returns) <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb2-34"><a href="#cb2-34"></a>pred_naive <span class="op">=</span> np.repeat(train_r.mean(), <span class="bu">len</span>(test_r))</span>
+<span id="cb2-35"><a href="#cb2-35"></a><span class="bu">print</span>(<span class="ss">f"Out-of-Sample RMSE -&gt; AR(1): </span><span class="sc">{</span>np<span class="sc">.</span>sqrt(np.mean((test_r.values <span class="op">-</span> pred_ar1)<span class="op">**</span><span class="dv">2</span>))<span class="sc">:.5f}</span><span class="ss"> | Mean Baseline: </span><span class="sc">{</span>np<span class="sc">.</span>sqrt(np.mean((test_r.values <span class="op">-</span> pred_naive)<span class="op">**</span><span class="dv">2</span>))<span class="sc">:.5f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="summary-of-concepts" class="level2" data-number="2.11">
+<h2 data-number="2.11" class="anchored" data-anchor-id="summary-of-concepts"><span class="header-section-number">2.11</span> Summary of Concepts</h2>
+<ul>
+<li><strong>Stationarity</strong>: Weak stationarity requires finite variance, constant mean, and lag-only autocovariance <span class="math inline">\(\gamma(h)\)</span>. It ensures historical patterns generalize across time.</li>
+<li><strong>Ergodicity</strong>: Guarantees that time averages (<span class="math inline">\(\bar{X}_N\)</span>) converge to ensemble expectations (<span class="math inline">\(\mu\)</span>) when <span class="math inline">\(\sum |\gamma(h)| &lt; \infty\)</span>, and exposes how positive autocorrelation inflates multi-period portfolio risk.</li>
+<li><strong>ACF vs.&nbsp;PACF</strong>: ACF measures total linear dependence and cuts off after lag <span class="math inline">\(q\)</span> for MA(<span class="math inline">\(q\)</span>); PACF removes intermediate lags via Yule-Walker/Durbin-Levinson and cuts off after lag <span class="math inline">\(p\)</span> for AR(<span class="math inline">\(p\)</span>).</li>
+<li><strong>Wold Decomposition</strong>: Every regular stationary process is an infinite linear filter of white noise shocks.</li>
+<li><strong>Causality &amp; Invertibility</strong>: Both require all roots of <span class="math inline">\(\Phi(z)=0\)</span> (for AR) and <span class="math inline">\(\Theta(z)=0\)</span> (for MA) to lie strictly outside the unit circle (<span class="math inline">\(|z| &gt; 1\)</span>).</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Prescribed Textbook Cross-Walk (Unit 1)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Concept</th>
+<th style="text-align: left;">Cryer &amp; Chan (2008)</th>
+<th style="text-align: left;">Shumway &amp; Stoffer (2011)</th>
+<th style="text-align: left;">Box et al.&nbsp;(2016)</th>
+<th style="text-align: left;">Nielsen (2019)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Stationarity, ACVF, ACF</td>
+<td style="text-align: left;">Ch. 2.1–2.3</td>
+<td style="text-align: left;">Ch. 1.3–1.4</td>
+<td style="text-align: left;">Ch. 2.1</td>
+<td style="text-align: left;">Ch. 2, Ch. 3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ergodicity &amp; Sample ACF Bounds</td>
+<td style="text-align: left;">Ch. 6.1</td>
+<td style="text-align: left;">Ch. 1.5</td>
+<td style="text-align: left;">Ch. 2.1.6</td>
+<td style="text-align: left;">Ch. 3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PACF &amp; Durbin-Levinson</td>
+<td style="text-align: left;">Ch. 6.2</td>
+<td style="text-align: left;">Ch. 3.2–3.3</td>
+<td style="text-align: left;">Ch. 3.2</td>
+<td style="text-align: left;">Ch. 3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Wold Decomposition, AR(<span class="math inline">\(p\)</span>), MA(<span class="math inline">\(q\)</span>)</td>
+<td style="text-align: left;">Ch. 4.1–4.3</td>
+<td style="text-align: left;">Ch. 3.1–3.2</td>
+<td style="text-align: left;">Ch. 3.1–3.3</td>
+<td style="text-align: left;">Ch. 6</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<!-- -->
+
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-cryer2008time" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">J. D. Cryer and K.-S. Chan, <em>Time series analysis: With applications in r</em>, 2nd ed. New York, NY: Springer, 2008. doi: <a href="https://doi.org/10.1007/978-0-387-75959-3">10.1007/978-0-387-75959-3</a>.</div>
+</div>
+<div id="ref-shumway2011time" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">R. H. Shumway and D. S. Stoffer, <em>Time series analysis and its applications: With r examples</em>, 3rd ed. New York, NY: Springer, 2011. doi: <a href="https://doi.org/10.1007/978-1-4419-7865-3">10.1007/978-1-4419-7865-3</a>.</div>
+</div>
+<div id="ref-box2016time" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">G. E. P. Box, G. M. Jenkins, G. C. Reinsel, and G. M. Ljung, <em>Time series analysis: Forecasting and control</em>, 5th ed. Hoboken, NJ: John Wiley &amp; Sons, 2016.</div>
+</div>
+<div id="ref-nielsen2019practical" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[4] </div><div class="csl-right-inline">A. Nielsen, <em>Practical time series analysis: Prediction with statistics and machine learning</em>, 1st ed. Sebastopol, CA: O’Reilly Media, 2019.</div>
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/amrita\.edu\/course\/22aie463-time-series-analysis");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../chapters/00_bootcamp_foundations.html" class="pagination-link" aria-label="Chapter 0: Zero-Prerequisite Foundations Bootcamp">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Chapter 0: Zero-Prerequisite Foundations Bootcamp</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/02_unit2_arima_var_garch.html" class="pagination-link" aria-label="Unit 2: ARMA, ARIMA, SARIMA, VAR, and Conditional Heteroscedastic Models">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Unit 2: ARMA, ARIMA, SARIMA, VAR, and Conditional Heteroscedastic Models</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu"># Unit 1: Linear Time Series, Stationarity, Ergodicity, and Classical Processes {#sec-unit1}</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="fu">### Unit 1 Curriculum Checklist</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="ss">- </span>**Foundational Concepts**: Stochastic processes, ensemble vs. realization, mean, ACVF, ACF.</span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="ss">- </span>**Stationarity &amp; Ergodicity**: Strict vs. Weak (wide-sense) stationarity, positive semi-definiteness, ergodicity of the mean.</span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="ss">- </span>**Correlation Structures**: Sample ACF, Bartlett's asymptotic variance, Partial Autocorrelation (PACF), Yule-Walker systems, Durbin-Levinson algorithm.</span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="ss">- </span>**Linear Processes**: Wold decomposition theorem, causality, invertibility.</span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="ss">- </span>**Classical Models**: Autoregressive (AR($p$)) and Moving Average (MA($q$)) models, characteristic polynomials, unit circle stability.</span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="ss">- </span>**Prescribed Text References**: Cryer &amp; Chan (2008, Ch. 1–4) <span class="co">[</span><span class="ot">@cryer2008time</span><span class="co">]</span>; Shumway &amp; Stoffer (2011, Ch. 1–2) <span class="co">[</span><span class="ot">@shumway2011time</span><span class="co">]</span>; Box et al. (2016, Ch. 2–3) <span class="co">[</span><span class="ot">@box2016time</span><span class="co">]</span>; Nielsen (2019, Ch. 1–2) <span class="co">[</span><span class="ot">@nielsen2019practical</span><span class="co">]</span>.</span>
+<span id="cb3-11"><a href="#cb3-11"></a>:::</span>
+<span id="cb3-12"><a href="#cb3-12"></a></span>
+<span id="cb3-13"><a href="#cb3-13"></a></span>
+<span id="cb3-14"><a href="#cb3-14"></a></span>
+<span id="cb3-15"><a href="#cb3-15"></a><span class="fu">## The Illusion of Independence and the Birth of Temporal Memory</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a></span>
+<span id="cb3-17"><a href="#cb3-17"></a>In February 1926, George Udny Yule delivered a historic address before the Royal Statistical Society entitled *"Why do we sometimes get nonsense-correlations between Time-Series?"* Yule demonstrated that if you compute the ordinary Pearson correlation between two completely unrelated temporal sequences—such as the annual mortality rate in England and the proportion of Church of England marriages—you frequently obtain a correlation exceeding $0.95$, with conventional $t$-tests screaming significance at $p &lt; 0.0001$.</span>
+<span id="cb3-18"><a href="#cb3-18"></a></span>
+<span id="cb3-19"><a href="#cb3-19"></a>Why did classical statistics fail so catastrophically? Because time possesses **inertia**. Observations close together in time inherit the state of their predecessors. One year later, in 1927, the Soviet economist Eugen Slutsky published an equally startling revelation: if you take a sequence of pure, uncorrelated lottery draws (white noise) and apply consecutive moving averages, the resulting series exhibits smooth, undulating waves that mimic economic cycles—or cortical brainwaves—with uncanny fidelity. Slutsky proved that apparent rhythms arise naturally whenever random shocks are filtered through linear memory over time <span class="co">[</span><span class="ot">@cryer2008time</span><span class="co">]</span>.</span>
+<span id="cb3-20"><a href="#cb3-20"></a></span>
+<span id="cb3-21"><a href="#cb3-21"></a>Whether you are decoding **EEG voltage fluctuations** from a patient's scalp or modeling **daily equity returns** for a quantitative portfolio, your first task is always the same: measure how fast the past fades, separate true signal dynamics from random noise, and verify whether the statistical rules governing the series stay constant over time <span class="co">[</span><span class="ot">@box2016time; @nielsen2019practical</span><span class="co">]</span>.</span>
+<span id="cb3-22"><a href="#cb3-22"></a></span>
+<span id="cb3-23"><a href="#cb3-23"></a></span>
+<span id="cb3-24"><a href="#cb3-24"></a></span>
+<span id="cb3-25"><a href="#cb3-25"></a><span class="fu">## Stochastic Processes and Basic Statistical Moments</span></span>
+<span id="cb3-26"><a href="#cb3-26"></a></span>
+<span id="cb3-27"><a href="#cb3-27"></a>To formalize time-ordered data, we model an observed time series not as a list of fixed numbers, but as one realization drawn from an underlying **stochastic process** <span class="co">[</span><span class="ot">@shumway2011time</span><span class="co">]</span>.</span>
+<span id="cb3-28"><a href="#cb3-28"></a></span>
+<span id="cb3-29"><a href="#cb3-29"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-30"><a href="#cb3-30"></a></span>
+<span id="cb3-31"><a href="#cb3-31"></a><span class="ss">* </span>**Stochastic Process ($\{X_t(\omega) : t \in \mathcal{T}\}$)**: An indexed collection of random variables defined on a common probability space $(\Omega, \mathcal{F}, \mathbb{P})$. Here $\mathcal{T} = \mathbb{Z}$ denotes discrete time ticks.</span>
+<span id="cb3-32"><a href="#cb3-32"></a><span class="ss">* </span>**Sample Path / Realization ($\{x_1, x_2, \dots, x_N\}$)**: A single observed trajectory corresponding to one outcome $\omega_0 \in \Omega$ (e.g., one 5-second EEG recording or one historical S&amp;P 500 path).</span>
+<span id="cb3-33"><a href="#cb3-33"></a><span class="ss">* </span>**Mean Function ($\mu_t$)**: The expected value at time $t$: $\mu_t = \mathbb{E}<span class="co">[</span><span class="ot">X_t</span><span class="co">]</span>$.</span>
+<span id="cb3-34"><a href="#cb3-34"></a><span class="ss">* </span>**Autocovariance Function ($\gamma(s, t)$)**: Measures the linear dependence between the process at time $s$ and time $t$:</span>
+<span id="cb3-35"><a href="#cb3-35"></a>  $$\gamma(s, t) = \mathrm{Cov}(X_s, X_t) = \mathbb{E}\big<span class="co">[</span><span class="ot">(X_s - \mu_s)(X_t - \mu_t)\big</span><span class="co">]</span> \tag{1.1}$$</span>
+<span id="cb3-36"><a href="#cb3-36"></a><span class="ss">* </span>**Autocorrelation Function ($\rho(s, t)$)**: The scale-free correlation between $X_s$ and $X_t$:</span>
+<span id="cb3-37"><a href="#cb3-37"></a>  $$\rho(s, t) = \frac{\gamma(s, t)}{\sqrt{\gamma(s, s)\gamma(t, t)}} \in <span class="co">[</span><span class="ot">-1, 1</span><span class="co">]</span> \tag{1.2}$$</span>
+<span id="cb3-38"><a href="#cb3-38"></a></span>
+<span id="cb3-39"><a href="#cb3-39"></a><span class="fu">### First-Principles Result: Cauchy-Schwarz Bound on $\rho(s, t)$</span></span>
+<span id="cb3-40"><a href="#cb3-40"></a></span>
+<span id="cb3-41"><a href="#cb3-41"></a>**Theorem 1.1**: For any two times $s, t$, $|\gamma(s, t)| \le \sqrt{\gamma(s, s)\gamma(t, t)}$, so $|\rho(s, t)| \le 1$.</span>
+<span id="cb3-42"><a href="#cb3-42"></a></span>
+<span id="cb3-43"><a href="#cb3-43"></a>**Derivation from First Principles**:</span>
+<span id="cb3-44"><a href="#cb3-44"></a>Let $\tilde{X}_s = X_s - \mu_s$ and $\tilde{X}_t = X_t - \mu_t$. For any real scalar $\lambda \in \mathbb{R}$, the squared random variable $(\tilde{X}_s + \lambda \tilde{X}_t)^2 \ge 0$ has non-negative expectation:</span>
+<span id="cb3-45"><a href="#cb3-45"></a>$$g(\lambda) = \mathbb{E}\big<span class="co">[</span><span class="ot">(\tilde{X}_s + \lambda \tilde{X}_t)^2\big</span><span class="co">]</span> = \gamma(t, t)\lambda^2 + 2\gamma(s, t)\lambda + \gamma(s, s) \ge 0 \tag{1.3}$$</span>
+<span id="cb3-46"><a href="#cb3-46"></a>Because this quadratic in $\lambda$ is never negative, its discriminant cannot be positive:</span>
+<span id="cb3-47"><a href="#cb3-47"></a>$$4\gamma(s, t)^2 - 4\gamma(s, s)\gamma(t, t) \le 0 \implies \gamma(s, t)^2 \le \gamma(s, s)\gamma(t, t) \implies |\rho(s, t)| \le 1$$</span>
+<span id="cb3-48"><a href="#cb3-48"></a></span>
+<span id="cb3-49"><a href="#cb3-49"></a><span class="fu">### Sample Problem 1.1 (Moments of a Random Walk)</span></span>
+<span id="cb3-50"><a href="#cb3-50"></a>**Statement**: Let $X_t = \sum_{i=1}^t Z_i$ where $Z_i \sim WN(0, \sigma^2)$ and $t \ge 1$. Compute $\mu_t$, $\gamma(t, t)$, and $\gamma(s, t)$ for $s \le t$.</span>
+<span id="cb3-51"><a href="#cb3-51"></a></span>
+<span id="cb3-52"><a href="#cb3-52"></a>**Solution**:</span>
+<span id="cb3-53"><a href="#cb3-53"></a></span>
+<span id="cb3-54"><a href="#cb3-54"></a><span class="ss">1. </span>$\mu_t = \sum_{i=1}^t \mathbb{E}<span class="co">[</span><span class="ot">Z_i</span><span class="co">]</span> = 0$.</span>
+<span id="cb3-55"><a href="#cb3-55"></a><span class="ss">2. </span>$\gamma(t, t) = \mathrm{Var}(\sum_{i=1}^t Z_i) = \sum_{i=1}^t \mathrm{Var}(Z_i) = t\sigma^2$ (variance grows linearly with time!).</span>
+<span id="cb3-56"><a href="#cb3-56"></a><span class="ss">3. </span>For $s \le t$: $\gamma(s, t) = \mathrm{Cov}(\sum_{i=1}^s Z_i, \sum_{j=1}^t Z_j) = \sum_{i=1}^s \mathrm{Var}(Z_i) = s\sigma^2 = \min(s, t)\sigma^2$.</span>
+<span id="cb3-57"><a href="#cb3-57"></a></span>
+<span id="cb3-58"><a href="#cb3-58"></a>::: {.callout-tip}</span>
+<span id="cb3-59"><a href="#cb3-59"></a><span class="fu">#### Key Takeaway:</span></span>
+<span id="cb3-60"><a href="#cb3-60"></a>A stochastic process generalizes a single random variable to an infinite sequence of correlated variables. Notice in Problem 1.1 that a Random Walk's variance $t\sigma^2$ grows with $t$, which means its rules are not time-invariant.</span>
+<span id="cb3-61"><a href="#cb3-61"></a>:::</span>
+<span id="cb3-62"><a href="#cb3-62"></a></span>
+<span id="cb3-63"><a href="#cb3-63"></a></span>
+<span id="cb3-64"><a href="#cb3-64"></a></span>
+<span id="cb3-65"><a href="#cb3-65"></a><span class="fu">## Stationarity: Strict vs. Weak (Time-Invariance)</span></span>
+<span id="cb3-66"><a href="#cb3-66"></a></span>
+<span id="cb3-67"><a href="#cb3-67"></a>If the mean $\mu_t$ and covariance $\gamma(s, t)$ shifted arbitrarily at every tick, a single historical series of length $N$ would never be enough to estimate them. **Stationarity** imposes time-invariance so historical patterns can generalize to the future <span class="co">[</span><span class="ot">@box2016time</span><span class="co">]</span>.</span>
+<span id="cb3-68"><a href="#cb3-68"></a></span>
+<span id="cb3-69"><a href="#cb3-69"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-70"><a href="#cb3-70"></a></span>
+<span id="cb3-71"><a href="#cb3-71"></a>::: {.callout-note icon="false"}</span>
+<span id="cb3-72"><a href="#cb3-72"></a><span class="fu">#### Definition 1.1: Strict Stationarity</span></span>
+<span id="cb3-73"><a href="#cb3-73"></a>A process $<span class="sc">\{</span>X_t<span class="sc">\}</span>_{t \in \mathbb{Z}}$ is **strictly stationary** if all joint finite-dimensional distributions are invariant under arbitrary calendar shifts $h \in \mathbb{Z}$:</span>
+<span id="cb3-74"><a href="#cb3-74"></a>$$F_{t_1, \dots, t_k}(c_1, \dots, c_k) = F_{t_1+h, \dots, t_k+h}(c_1, \dots, c_k) \tag{1.4}$$</span>
+<span id="cb3-75"><a href="#cb3-75"></a>:::</span>
+<span id="cb3-76"><a href="#cb3-76"></a></span>
+<span id="cb3-77"><a href="#cb3-77"></a>::: {.callout-note icon="false"}</span>
+<span id="cb3-78"><a href="#cb3-78"></a><span class="fu">#### Definition 1.2: Weak (Second-Order) Stationarity</span></span>
+<span id="cb3-79"><a href="#cb3-79"></a>A process $<span class="sc">\{</span>X_t<span class="sc">\}</span>_{t \in \mathbb{Z}}$ is **weakly stationary** (covariance stationary) if:</span>
+<span id="cb3-80"><a href="#cb3-80"></a></span>
+<span id="cb3-81"><a href="#cb3-81"></a><span class="ss">1. </span>$\mathbb{E}<span class="co">[</span><span class="ot">X_t^2</span><span class="co">]</span> &lt; \infty$ for all $t \in \mathbb{Z}$,</span>
+<span id="cb3-82"><a href="#cb3-82"></a><span class="ss">2. </span>$\mathbb{E}<span class="co">[</span><span class="ot">X_t</span><span class="co">]</span> = \mu$ (constant across all $t$), and</span>
+<span id="cb3-83"><a href="#cb3-83"></a><span class="ss">3. </span>$\mathrm{Cov}(X_t, X_{t+h}) = \gamma(h)$ depends **only** on the lag separation $h$, not on $t$.</span>
+<span id="cb3-84"><a href="#cb3-84"></a>:::</span>
+<span id="cb3-85"><a href="#cb3-85"></a></span>
+<span id="cb3-86"><a href="#cb3-86"></a>For weakly stationary processes, we write the ACF with a single lag argument $h$:</span>
+<span id="cb3-87"><a href="#cb3-87"></a>$$\rho(h) = \frac{\gamma(h)}{\gamma(0)} \tag{1.5}$$</span>
+<span id="cb3-88"><a href="#cb3-88"></a></span>
+<span id="cb3-89"><a href="#cb3-89"></a><span class="fu">### First-Principles Properties of $\gamma(h)$</span></span>
+<span id="cb3-90"><a href="#cb3-90"></a></span>
+<span id="cb3-91"><a href="#cb3-91"></a>**Theorem 1.2**: A weakly stationary ACVF $\gamma(h)$ satisfies:</span>
+<span id="cb3-92"><a href="#cb3-92"></a></span>
+<span id="cb3-93"><a href="#cb3-93"></a><span class="ss">1. </span>$\gamma(0) = \mathrm{Var}(X_t) \ge 0$,</span>
+<span id="cb3-94"><a href="#cb3-94"></a><span class="ss">2. </span>$\gamma(h) = \gamma(-h)$ (even symmetry), and</span>
+<span id="cb3-95"><a href="#cb3-95"></a><span class="ss">3. </span>**Positive Semi-Definiteness**: For any $n \ge 1$ and constants $a_1, \dots, a_n \in \mathbb{R}$, $\sum_{i=1}^n \sum_{j=1}^n a_i a_j \gamma(t_i - t_j) \ge 0$.</span>
+<span id="cb3-96"><a href="#cb3-96"></a></span>
+<span id="cb3-97"><a href="#cb3-97"></a>**Derivation from First Principles**:</span>
+<span id="cb3-98"><a href="#cb3-98"></a>Symmetry follows directly from $\gamma(h) = \mathrm{Cov}(X_t, X_{t+h}) = \mathrm{Cov}(X_{t+h}, X_t) = \gamma(-h)$ (setting $s = t+h$). For positive semi-definiteness, define the linear combination $W = \sum_{i=1}^n a_i X_{t_i}$. Since variance is non-negative and covariance is bilinear:</span>
+<span id="cb3-99"><a href="#cb3-99"></a>$$0 \le \mathrm{Var}(W) = \mathrm{Cov}\left(\sum_{i=1}^n a_i X_{t_i}, \sum_{j=1}^n a_j X_{t_j}\right) = \sum_{i=1}^n \sum_{j=1}^n a_i a_j \gamma(t_i - t_j) \tag{1.6}$$</span>
+<span id="cb3-100"><a href="#cb3-100"></a></span>
+<span id="cb3-101"><a href="#cb3-101"></a><span class="fu">### Sample Problem 1.2 (Testing Weak Stationarity)</span></span>
+<span id="cb3-102"><a href="#cb3-102"></a>**Statement**: Let $Z_t \sim WN(0, \sigma^2)$. Test whether $Y_t = 0.3 t + Z_t$ and $W_t = (-1)^t Z_t$ are weakly stationary.</span>
+<span id="cb3-103"><a href="#cb3-103"></a></span>
+<span id="cb3-104"><a href="#cb3-104"></a>**Solution**:</span>
+<span id="cb3-105"><a href="#cb3-105"></a></span>
+<span id="cb3-106"><a href="#cb3-106"></a><span class="ss">- </span>For $Y_t$: $\mathbb{E}<span class="co">[</span><span class="ot">Y_t</span><span class="co">]</span> = 0.3 t$ depends on $t$ $\implies$ **Non-stationary**.</span>
+<span id="cb3-107"><a href="#cb3-107"></a><span class="ss">- </span>For $W_t$: $\mathbb{E}[W_t] = (-1)^t \cdot 0 = 0$ (constant). Covariance: $\mathrm{Cov}(W_t, W_{t+h}) = (-1)^{2t+h}\mathrm{Cov}(Z_t, Z_{t+h})$, which equals $\sigma^2$ if $h=0$ and $0$ if $h \neq 0$. Since both moments are independent of $t$, $W_t$ is **weakly stationary**.</span>
+<span id="cb3-108"><a href="#cb3-108"></a></span>
+<span id="cb3-109"><a href="#cb3-109"></a>::: {.callout-tip}</span>
+<span id="cb3-110"><a href="#cb3-110"></a><span class="fu">#### Key Takeaway:</span></span>
+<span id="cb3-111"><a href="#cb3-111"></a>Weak stationarity requires three things: finite variance, constant mean, and lag-only autocovariance. For Gaussian processes, weak stationarity automatically implies strict stationarity <span class="co">[</span><span class="ot">@shumway2011time</span><span class="co">]</span>.</span>
+<span id="cb3-112"><a href="#cb3-112"></a>:::</span>
+<span id="cb3-113"><a href="#cb3-113"></a></span>
+<span id="cb3-114"><a href="#cb3-114"></a></span>
+<span id="cb3-115"><a href="#cb3-115"></a><span class="fu">## Ergodicity: Bridging Ensemble Space and Historical Time</span></span>
+<span id="cb3-116"><a href="#cb3-116"></a></span>
+<span id="cb3-117"><a href="#cb3-117"></a>In clinical trials, we average across 500 patients. In EEG or financial analysis, we observe **one** continuous historical trajectory $\{x_1, \dots, x_N\}$. **Ergodicity** tells us when a *time average* $\bar{X}_N = \frac{1}{N}\sum_{t=1}^N X_t$ converges to the *ensemble expectation* $\mu$ <span class="co">[</span><span class="ot">@cryer2008time</span><span class="co">]</span>.</span>
+<span id="cb3-118"><a href="#cb3-118"></a></span>
+<span id="cb3-119"><a href="#cb3-119"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-120"><a href="#cb3-120"></a></span>
+<span id="cb3-121"><a href="#cb3-121"></a><span class="ss">* </span>**Sample Mean ($\bar{X}_N$)**: $\bar{X}_N = \frac{1}{N}\sum_{t=1}^N X_t$.</span>
+<span id="cb3-122"><a href="#cb3-122"></a><span class="ss">* </span>**Ergodic for the Mean**: A weakly stationary process is ergodic for the mean if $\lim_{N\to\infty} \mathbb{E}<span class="co">[</span><span class="ot">(\bar{X}_N - \mu)^2</span><span class="co">]</span> = 0$ (mean-square convergence).</span>
+<span id="cb3-123"><a href="#cb3-123"></a></span>
+<span id="cb3-124"><a href="#cb3-124"></a><span class="fu">### First-Principles Derivation: Ergodicity of the Mean</span></span>
+<span id="cb3-125"><a href="#cb3-125"></a></span>
+<span id="cb3-126"><a href="#cb3-126"></a>**Theorem 1.3**: A weakly stationary process $<span class="sc">\{</span>X_t<span class="sc">\}</span>$ with autocovariance $\gamma(h)$ is ergodic for the mean if and only if $\lim_{N\to\infty} \frac{1}{N}\sum_{h=0}^{N-1}\gamma(h) = 0$. A sufficient condition is $\sum_{h=0}^\infty |\gamma(h)| &lt; \infty$.</span>
+<span id="cb3-127"><a href="#cb3-127"></a></span>
+<span id="cb3-128"><a href="#cb3-128"></a>**Derivation from First Principles**:</span>
+<span id="cb3-129"><a href="#cb3-129"></a>First, $\mathbb{E}<span class="co">[</span><span class="ot">\bar{X}_N</span><span class="co">]</span> = \frac{1}{N}\sum_{t=1}^N \mu = \mu$, so $\mathbb{E}<span class="co">[</span><span class="ot">(\bar{X}_N - \mu)^2</span><span class="co">]</span> = \mathrm{Var}(\bar{X}_N)$. Applying bilinearity of covariance:</span>
+<span id="cb3-130"><a href="#cb3-130"></a>$$\mathrm{Var}(\bar{X}_N) = \frac{1}{N^2} \sum_{s=1}^N \sum_{t=1}^N \mathrm{Cov}(X_s, X_t) = \frac{1}{N^2} \sum_{s=1}^N \sum_{t=1}^N \gamma(s - t) \tag{1.7}$$</span>
+<span id="cb3-131"><a href="#cb3-131"></a>Group pairs $(s, t)$ by their lag $h = s - t \in <span class="sc">\{</span>-(N-1), \dots, N-1<span class="sc">\}</span>$. For each fixed $h$, there are exactly $N - |h|$ pairs satisfying $s - t = h$. Using $\gamma(h) = \gamma(-h)$:</span>
+<span id="cb3-132"><a href="#cb3-132"></a>$$\mathrm{Var}(\bar{X}_N) = \frac{1}{N} \sum_{h=-(N-1)}^{N-1} \left(1 - \frac{|h|}{N}\right)\gamma(h) = \frac{\gamma(0)}{N} + \frac{2}{N}\sum_{h=1}^{N-1}\left(1 - \frac{h}{N}\right)\gamma(h) \tag{1.8}$$</span>
+<span id="cb3-133"><a href="#cb3-133"></a>If $\sum_{h=0}^\infty |\gamma(h)| &lt; \infty$, then $|\mathrm{Var}(\bar{X}_N)| \le \frac{1}{N}\sum_{h=-\infty}^\infty |\gamma(h)| \to 0$ as $N \to \infty$.</span>
+<span id="cb3-134"><a href="#cb3-134"></a></span>
+<span id="cb3-135"><a href="#cb3-135"></a><span class="fu">### Sample Problem 1.3 (Multi-Period Variance Inflation)</span></span>
+<span id="cb3-136"><a href="#cb3-136"></a>**Statement**: Daily portfolio returns follow $r_t$ with $\gamma(0) = 0.0001$ and $\gamma(1) = 0.000025$ ($\gamma(h)=0$ for $h \ge 2$). Compute $\mathrm{Var}(\bar{r}_2)$ using Eq. (1.8) and compare with the naive $i.i.d.$ formula $\gamma(0)/2$.</span>
+<span id="cb3-137"><a href="#cb3-137"></a></span>
+<span id="cb3-138"><a href="#cb3-138"></a>**Solution**:</span>
+<span id="cb3-139"><a href="#cb3-139"></a>By Eq. (1.8) with $N = 2$:</span>
+<span id="cb3-140"><a href="#cb3-140"></a>$$\mathrm{Var}(\bar{r}_2) = \frac{\gamma(0)}{2} + \frac{2}{2}\left(1 - \frac{1}{2}\right)\gamma(1) = \frac{0.0001}{2} + 0.5(0.000025) = 0.00005 + 0.0000125 = 0.0000625$$</span>
+<span id="cb3-141"><a href="#cb3-141"></a>The naive $i.i.d.$ formula gives $0.00005$, underestimating variance by $25\%$!</span>
+<span id="cb3-142"><a href="#cb3-142"></a></span>
+<span id="cb3-143"><a href="#cb3-143"></a>::: {.callout-tip}</span>
+<span id="cb3-144"><a href="#cb3-144"></a><span class="fu">#### Key Takeaway:</span></span>
+<span id="cb3-145"><a href="#cb3-145"></a>Ergodicity holds when memory decays fast enough ($\sum |\gamma(h)| &lt; \infty$) so distant time blocks act nearly independently. Moreover, Equation (1.8) warns us that positive autocorrelation inflates the variance of averages and multi-day portfolio returns.</span>
+<span id="cb3-146"><a href="#cb3-146"></a>:::</span>
+<span id="cb3-147"><a href="#cb3-147"></a></span>
+<span id="cb3-148"><a href="#cb3-148"></a></span>
+<span id="cb3-149"><a href="#cb3-149"></a><span class="fu">## Sample ACF, Bartlett's Bounds, and PACF</span></span>
+<span id="cb3-150"><a href="#cb3-150"></a></span>
+<span id="cb3-151"><a href="#cb3-151"></a>In practice, we never observe $\gamma(h)$ directly; we estimate it from a finite sample $<span class="sc">\{</span>x_1, \dots, x_N<span class="sc">\}</span>$ <span class="co">[</span><span class="ot">@box2016time; @shumway2011time</span><span class="co">]</span>.</span>
+<span id="cb3-152"><a href="#cb3-152"></a></span>
+<span id="cb3-153"><a href="#cb3-153"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-154"><a href="#cb3-154"></a></span>
+<span id="cb3-155"><a href="#cb3-155"></a><span class="ss">* </span>**Sample ACVF ($\hat{\gamma}(h)$)**: $\hat{\gamma}(h) = \frac{1}{N}\sum_{t=1}^{N-h} (x_t - \bar{x})(x_{t+h} - \bar{x})$. (Dividing by $N$ ensures the sample covariance matrix remains positive semi-definite.)</span>
+<span id="cb3-156"><a href="#cb3-156"></a><span class="ss">* </span>**Sample ACF ($\hat{\rho}(h)$)**: $\hat{\rho}(h) = \frac{\hat{\gamma}(h)}{\hat{\gamma}(0)}$.</span>
+<span id="cb3-157"><a href="#cb3-157"></a><span class="ss">* </span>**Partial Autocorrelation Function (PACF, $\phi_{hh}$)**: The *direct* correlation between $X_t$ and $X_{t-h}$ after linearly projecting out the intermediate variables $\{X_{t-1}, \dots, X_{t-h+1}<span class="sc">\}</span>$:</span>
+<span id="cb3-158"><a href="#cb3-158"></a>  $$\phi_{hh} = \mathrm{Corr}\Big(X_t - \mathcal{P}_{\mathcal{M}_1^{h-1}} X_t, \; X_{t-h} - \mathcal{P}_{\mathcal{M}_1^{h-1}} X_{t-h}\Big) \tag{1.9}$$</span>
+<span id="cb3-159"><a href="#cb3-159"></a></span>
+<span id="cb3-160"><a href="#cb3-160"></a><span class="fu">### First-Principles Results: Bartlett's Bounds &amp; Yule-Walker System</span></span>
+<span id="cb3-161"><a href="#cb3-161"></a></span>
+<span id="cb3-162"><a href="#cb3-162"></a><span class="ss">1. </span>**Bartlett's White Noise Asymptotic Variance**: For $Z_t \sim WN(0, \sigma^2)$ and large $N$, $\mathrm{Var}(\hat{\rho}(h)) \approx \frac{1}{N}$ for all $h \ge 1$ [@shumway2011time]. This gives the **95% white noise band**:</span>
+<span id="cb3-163"><a href="#cb3-163"></a>   $$\pm \frac{1.96}{\sqrt{N}} \tag{1.10}$$</span>
+<span id="cb3-164"><a href="#cb3-164"></a><span class="ss">2. </span>**Yule-Walker Derivation**: Regress $X_t = \phi_{h1} X_{t-1} + \dots + \phi_{hh} X_{t-h} + \epsilon_t$, where $\epsilon_t$ is orthogonal to $X_{t-1}, \dots, X_{t-h}$. Multiplying both sides by $X_{t-k}$ ($k = 1, \dots, h$), taking expectations, and dividing by $\gamma(0)$ yields:</span>
+<span id="cb3-165"><a href="#cb3-165"></a>   $$\rho(k) = \sum_{j=1}^h \phi_{hj} \rho(k - j), \quad k = 1, \dots, h \tag{1.11}$$</span>
+<span id="cb3-166"><a href="#cb3-166"></a>   In matrix form, $\mathbf{R}_h \boldsymbol{\phi}_h = \boldsymbol{\rho}_h$, whose final entry $\phi_{hh}$ is the PACF at lag $h$.</span>
+<span id="cb3-167"><a href="#cb3-167"></a><span class="ss">3. </span>**Durbin-Levinson Recursion**: Solves Eq. (1.11) in $\mathcal{O}(h^2)$ operations starting from $\phi_{11} = \rho(1)$:</span>
+<span id="cb3-168"><a href="#cb3-168"></a>   $$\phi_{hh} = \frac{\rho(h) - \sum_{j=1}^{h-1} \phi_{h-1,j}\rho(h-j)}{1 - \sum_{j=1}^{h-1} \phi_{h-1,j}\rho(j)}, \qquad \phi_{hj} = \phi_{h-1,j} - \phi_{hh}\phi_{h-1,h-j} \tag{1.12}$$</span>
+<span id="cb3-169"><a href="#cb3-169"></a></span>
+<span id="cb3-170"><a href="#cb3-170"></a><span class="fu">### Sample Problem 1.4 (Manual Sample ACF &amp; Bartlett Test)</span></span>
+<span id="cb3-171"><a href="#cb3-171"></a>**Statement**: For the 5-point demeaned series $x = <span class="sc">\{</span>2, 1, -1, -2, 0<span class="sc">\}</span>$, compute $\hat{\gamma}(0)$, $\hat{\gamma}(1)$, and $\hat{\rho}(1)$ by hand.</span>
+<span id="cb3-172"><a href="#cb3-172"></a></span>
+<span id="cb3-173"><a href="#cb3-173"></a>**Solution**:</span>
+<span id="cb3-174"><a href="#cb3-174"></a>$\bar{x} = 0$. $\hat{\gamma}(0) = \frac{1}{5}(4 + 1 + 1 + 4 + 0) = 2.0$. $\hat{\gamma}(1) = \frac{1}{5}<span class="co">[</span><span class="ot">(2)(1) + (1)(-1) + (-1)(-2) + (-2)(0)</span><span class="co">]</span> = \frac{3}{5} = 0.6$. Hence $\hat{\rho}(1) = \frac{0.6}{2.0} = 0.30$.</span>
+<span id="cb3-175"><a href="#cb3-175"></a></span>
+<span id="cb3-176"><a href="#cb3-176"></a>::: {.callout-tip}</span>
+<span id="cb3-177"><a href="#cb3-177"></a><span class="fu">#### Key Takeaway:</span></span>
+<span id="cb3-178"><a href="#cb3-178"></a>The ACF measures **total** correlation (direct + indirect), whereas the PACF isolates **direct** lag-$h$ dependence. Bartlett's $\pm 1.96/\sqrt{N}$ bands tell us whether sample spikes are statistically distinguishable from pure white noise.</span>
+<span id="cb3-179"><a href="#cb3-179"></a>:::</span>
+<span id="cb3-180"><a href="#cb3-180"></a></span>
+<span id="cb3-181"><a href="#cb3-181"></a></span>
+<span id="cb3-182"><a href="#cb3-182"></a></span>
+<span id="cb3-183"><a href="#cb3-183"></a><span class="fu">## Wold Decomposition and Linear Processes</span></span>
+<span id="cb3-184"><a href="#cb3-184"></a></span>
+<span id="cb3-185"><a href="#cb3-185"></a><span class="fu">### Key Definitions &amp; Important Terms</span></span>
+<span id="cb3-186"><a href="#cb3-186"></a></span>
+<span id="cb3-187"><a href="#cb3-187"></a><span class="ss">* </span>**General Linear Process**: $X_t = \mu + \sum_{j=0}^\infty \psi_j Z_{t-j}$ with $\sum_{j=0}^\infty \psi_j^2 &lt; \infty$.</span>
+<span id="cb3-188"><a href="#cb3-188"></a><span class="ss">* </span>**Purely Indeterministic vs. Deterministic**: A process is purely indeterministic if its distant past carries zero predictive power ($\lim_{m\to\infty}\mathrm{Var}(\mathbb{E}[X_t|\mathcal{M}_{-\infty}^{t-m}]) = 0$).</span>
+<span id="cb3-189"><a href="#cb3-189"></a></span>
+<span id="cb3-190"><a href="#cb3-190"></a><span class="fu">### Theorem 1.4: Wold Decomposition Theorem (1938)</span></span>
+<span id="cb3-191"><a href="#cb3-191"></a>Any zero-mean weakly stationary process $<span class="sc">\{</span>X_t<span class="sc">\}</span>$ admits a unique orthogonal decomposition <span class="co">[</span><span class="ot">@box2016time; @cryer2008time</span><span class="co">]</span>:</span>
+<span id="cb3-192"><a href="#cb3-192"></a>$$X_t = \sum_{j=0}^\infty \psi_j Z_{t-j} + V_t, \quad \psi_0 = 1, \quad \sum_{j=0}^\infty \psi_j^2 &lt; \infty \tag{1.13}$$</span>
+<span id="cb3-193"><a href="#cb3-193"></a>where $Z_t = X_t - \mathcal{P}_{\mathcal{M}_{-\infty}^{t-1}} X_t \sim WN(0, \sigma^2)$ is the one-step innovation, $V_t$ is deterministic ($\mathcal{P}_{\mathcal{M}_{-\infty}^{t-1}} V_t = V_t$), and $\mathrm{Cov}(Z_s, V_t) = 0$ for all $s, t$.</span>
+<span id="cb3-194"><a href="#cb3-194"></a></span>
+<span id="cb3-195"><a href="#cb3-195"></a>::: {.callout-tip}</span>
+<span id="cb3-196"><a href="#cb3-196"></a><span class="fu">#### Key Takeaway:</span></span>
+<span id="cb3-197"><a href="#cb3-197"></a>Wold's theorem guarantees that every regular stationary time series—from EEG rhythms to stationary asset returns—can be represented as a linear filter of white noise shocks.</span>
+<span id="cb3-198"><a href="#cb3-198"></a>:::</span>
+<span id="cb3-199"><a href="#cb3-199"></a></span>
+<span id="cb3-200"><a href="#cb3-200"></a></span>
+<span id="cb3-201"><a href="#cb3-201"></a><span class="fu">## Autoregressive Models: AR($p$)</span></span>
+<span id="cb3-202"><a href="#cb3-202"></a></span>
+<span id="cb3-203"><a href="#cb3-203"></a>An **AR($p$)** process models $X_t$ as a linear combination of its past $p$ values plus a fresh shock $Z_t \sim WN(0, \sigma^2)$ <span class="co">[</span><span class="ot">@box2016time</span><span class="co">]</span>:</span>
+<span id="cb3-204"><a href="#cb3-204"></a>$$X_t = \phi_1 X_{t-1} + \dots + \phi_p X_{t-p} + Z_t \iff \Phi(B) X_t = Z_t \tag{1.14}$$</span>
+<span id="cb3-205"><a href="#cb3-205"></a>where $\Phi(B) = 1 - \phi_1 B - \dots - \phi_p B^p$ is the **autoregressive characteristic polynomial**.</span>
+<span id="cb3-206"><a href="#cb3-206"></a></span>
+<span id="cb3-207"><a href="#cb3-207"></a><span class="fu">### First-Principles Derivation: Moments, ACF, and PACF of AR(1)</span></span>
+<span id="cb3-208"><a href="#cb3-208"></a></span>
+<span id="cb3-209"><a href="#cb3-209"></a>Consider $X_t = \phi X_{t-1} + Z_t$ with $|\phi| &lt; 1$. From Chapter 0 (Eq. 0.7), $X_t = \sum_{j=0}^\infty \phi^j Z_{t-j}$.</span>
+<span id="cb3-210"><a href="#cb3-210"></a><span class="ss">1. </span>**Mean**: $\mathbb{E}<span class="co">[</span><span class="ot">X_t</span><span class="co">]</span> = \sum_{j=0}^\infty \phi^j \mathbb{E}[Z_{t-j}] = 0$.</span>
+<span id="cb3-211"><a href="#cb3-211"></a><span class="ss">2. </span>**Variance**: Since $Z_{t-j}$ are uncorrelated,</span>
+<span id="cb3-212"><a href="#cb3-212"></a>   $$\gamma(0) = \mathrm{Var}\left(\sum_{j=0}^\infty \phi^j Z_{t-j}\right) = \sum_{j=0}^\infty \phi^{2j}\sigma^2 = \frac{\sigma^2}{1 - \phi^2} \tag{1.15}$$</span>
+<span id="cb3-213"><a href="#cb3-213"></a><span class="ss">3. </span>**ACF**: Multiply $X_t = \phi X_{t-1} + Z_t$ by $X_{t-h}$ ($h \ge 1$) and take expectations. Since $Z_t$ is uncorrelated with $X_{t-h}$:</span>
+<span id="cb3-214"><a href="#cb3-214"></a>   $$\gamma(h) = \phi\gamma(h-1) \implies \gamma(h) = \phi^h \gamma(0) \implies \rho(h) = \phi^h \tag{1.16}$$</span>
+<span id="cb3-215"><a href="#cb3-215"></a><span class="ss">4. </span>**PACF**: By Eq. (1.11), $\phi_{11} = \rho(1) = \phi$. For $h = 2$, $\phi_{22} = \frac{\rho(2) - \rho(1)^2}{1 - \rho(1)^2} = \frac{\phi^2 - \phi^2}{1 - \phi^2} = 0$. By induction, $\phi_{hh} = 0$ for all $h \ge 2$.</span>
+<span id="cb3-216"><a href="#cb3-216"></a></span>
+<span id="cb3-217"><a href="#cb3-217"></a><span class="fu">### Theorem 1.5: Causality Condition for AR($p$)</span></span>
+<span id="cb3-218"><a href="#cb3-218"></a>An AR($p$) process $\Phi(B)X_t = Z_t$ is **causal** ($X_t = \sum_{j=0}^\infty \psi_j Z_{t-j}$ with $\sum |\psi_j| &lt; \infty$) if and only if all roots of $\Phi(z) = 0$ lie strictly **outside the unit circle** ($|z| &gt; 1$) <span class="co">[</span><span class="ot">@cryer2008time; @box2016time</span><span class="co">]</span>.</span>
+<span id="cb3-219"><a href="#cb3-219"></a></span>
+<span id="cb3-220"><a href="#cb3-220"></a><span class="fu">### Sample Problem 1.5 (AR(2) Causality &amp; Yule-Walker)</span></span>
+<span id="cb3-221"><a href="#cb3-221"></a>**Statement**: For $X_t = 0.7 X_{t-1} - 0.1 X_{t-2} + Z_t$ ($\sigma^2 = 1.44$), verify causality and find $\rho(1), \rho(2), \gamma(0)$.</span>
+<span id="cb3-222"><a href="#cb3-222"></a></span>
+<span id="cb3-223"><a href="#cb3-223"></a>**Solution**:</span>
+<span id="cb3-224"><a href="#cb3-224"></a>$\Phi(z) = 1 - 0.7z + 0.1z^2 = (1 - 0.5z)(1 - 0.2z) = 0 \implies z_1 = 2, z_2 = 5$ (both $|z_i| &gt; 1$, **causal**).</span>
+<span id="cb3-225"><a href="#cb3-225"></a>Yule-Walker: $\rho(1) = 0.7 - 0.1\rho(1) \implies \rho(1) = 0.7/1.1 \approx 0.6364$; $\rho(2) = 0.7(0.6364) - 0.1 \approx 0.3455$.</span>
+<span id="cb3-226"><a href="#cb3-226"></a>Variance: $\gamma(0)<span class="co">[</span><span class="ot">1 - 0.7\rho(1) + 0.1\rho(2)</span><span class="co">]</span> = 1.44 \implies \gamma(0) \approx 2.4448$.</span>
+<span id="cb3-227"><a href="#cb3-227"></a></span>
+<span id="cb3-228"><a href="#cb3-228"></a>::: {.callout-tip}</span>
+<span id="cb3-229"><a href="#cb3-229"></a><span class="fu">#### Key Takeaway:</span></span>
+<span id="cb3-230"><a href="#cb3-230"></a>An **AR($p$)** process has infinite shock memory: its **ACF tails off** (exponentially or as a damped sine wave), while its **PACF cuts off sharply after lag $p$**.</span>
+<span id="cb3-231"><a href="#cb3-231"></a>:::</span>
+<span id="cb3-232"><a href="#cb3-232"></a></span>
+<span id="cb3-233"><a href="#cb3-233"></a></span>
+<span id="cb3-234"><a href="#cb3-234"></a><span class="fu">## Moving Average Models: MA($q$)</span></span>
+<span id="cb3-235"><a href="#cb3-235"></a></span>
+<span id="cb3-236"><a href="#cb3-236"></a>An **MA($q$)** process expresses $X_t$ as a *finite* linear combination of current and past white noise shocks <span class="co">[</span><span class="ot">@box2016time</span><span class="co">]</span>:</span>
+<span id="cb3-237"><a href="#cb3-237"></a>$$X_t = Z_t + \theta_1 Z_{t-1} + \dots + \theta_q Z_{t-q} = \Theta(B) Z_t \tag{1.17}$$</span>
+<span id="cb3-238"><a href="#cb3-238"></a></span>
+<span id="cb3-239"><a href="#cb3-239"></a><span class="fu">### First-Principles Derivation: Moments &amp; Invertibility of MA(1)</span></span>
+<span id="cb3-240"><a href="#cb3-240"></a></span>
+<span id="cb3-241"><a href="#cb3-241"></a>Consider $X_t = Z_t + \theta Z_{t-1}$ with $Z_t \sim WN(0, \sigma^2)$.</span>
+<span id="cb3-242"><a href="#cb3-242"></a><span class="ss">1. </span>**Mean &amp; Variance**: $\mathbb{E}<span class="co">[</span><span class="ot">X_t</span><span class="co">]</span> = 0$, and $\gamma(0) = \mathrm{Var}(Z_t) + \theta^2\mathrm{Var}(Z_{t-1}) = \sigma^2(1 + \theta^2)$.</span>
+<span id="cb3-243"><a href="#cb3-243"></a><span class="ss">2. </span>**Autocovariance &amp; ACF**:</span>
+<span id="cb3-244"><a href="#cb3-244"></a>   $$\gamma(1) = \mathbb{E}<span class="co">[</span><span class="ot">(Z_t + \theta Z_{t-1})(Z_{t-1} + \theta Z_{t-2})</span><span class="co">]</span> = \theta \sigma^2, \qquad \gamma(h) = 0 \quad (|h| \ge 2) \tag{1.18}$$</span>
+<span id="cb3-245"><a href="#cb3-245"></a>   $$\rho(1) = \frac{\theta}{1 + \theta^2} \in <span class="co">[</span><span class="ot">-0.5, 0.5</span><span class="co">]</span>, \qquad \rho(h) = 0 \quad (|h| \ge 2) \tag{1.19}$$</span>
+<span id="cb3-246"><a href="#cb3-246"></a><span class="ss">3. </span>**Invertibility**: Notice that $\theta$ and $1/\theta$ yield the exact same $\rho(1)$. To uniquely recover shocks $Z_t$ from observed data via $Z_t = (1 + \theta B)^{-1} X_t = \sum_{j=0}^\infty (-\theta)^j X_{t-j}$ with decaying weights, we require $|\theta| &lt; 1$. In general, an MA($q$) model is **invertible** if and only if all roots of $\Theta(z) = 0$ satisfy $|z| &gt; 1$ <span class="co">[</span><span class="ot">@shumway2011time</span><span class="co">]</span>.</span>
+<span id="cb3-247"><a href="#cb3-247"></a></span>
+<span id="cb3-248"><a href="#cb3-248"></a><span class="fu">### Sample Problem 1.6 (MA(1) Identifiability)</span></span>
+<span id="cb3-249"><a href="#cb3-249"></a>**Statement**: Compare Model A ($X_t = Z_t + 2.5 Z_{t-1}$, $\sigma_Z^2 = 0.16$) and Model B ($\tilde{X}_t = E_t + 0.4 E_{t-1}$, $\sigma_E^2 = 1.00$).</span>
+<span id="cb3-250"><a href="#cb3-250"></a></span>
+<span id="cb3-251"><a href="#cb3-251"></a>**Solution**:</span>
+<span id="cb3-252"><a href="#cb3-252"></a>Both yield $\gamma(0) = 1.16$, $\gamma(1) = 0.40$, and $\gamma(h) = 0$ ($|h|\ge 2$). However, Model A has root $z = -0.4$ ($|z| &lt; 1$, **non-invertible**), while Model B has root $z = -2.5$ ($|z| &gt; 1$, **invertible**). Only Model B is valid for forecasting.</span>
+<span id="cb3-253"><a href="#cb3-253"></a></span>
+<span id="cb3-254"><a href="#cb3-254"></a>::: {.callout-tip}</span>
+<span id="cb3-255"><a href="#cb3-255"></a><span class="fu">#### Key Takeaway:</span></span>
+<span id="cb3-256"><a href="#cb3-256"></a>An **MA($q$)** process has finite shock memory: its **ACF cuts off sharply after lag $q$**, while its **PACF tails off**. Always select the **invertible** representation ($|z| &gt; 1$).</span>
+<span id="cb3-257"><a href="#cb3-257"></a>:::</span>
+<span id="cb3-258"><a href="#cb3-258"></a></span>
+<span id="cb3-259"><a href="#cb3-259"></a></span>
+<span id="cb3-260"><a href="#cb3-260"></a><span class="fu">## 3-Tier Graduated Problem Ladder (Beginner to Domain Mastery)</span></span>
+<span id="cb3-261"><a href="#cb3-261"></a></span>
+<span id="cb3-262"><a href="#cb3-262"></a><span class="fu">### Tier 1: By-Hand Intuition</span></span>
+<span id="cb3-263"><a href="#cb3-263"></a><span class="ss">* </span>**Problem 1.7 (Practice)**: Compute $\bar{x}$, $\hat{\gamma}(0)$, $\hat{\gamma}(1)$, and $\hat{\rho}(1)$ by hand for $x = <span class="sc">\{</span>4, 2, 0, -2, -4<span class="sc">\}</span>$. *(Answer: $\bar{x}=0$, $\hat{\gamma}(0)=8.0$, $\hat{\gamma}(1)=4.0$, $\hat{\rho}(1)=0.50$.)*</span>
+<span id="cb3-264"><a href="#cb3-264"></a><span class="ss">* </span>**Problem 1.8 (Practice)**: For $X_t = Z_t - 0.6 Z_{t-1}$ with $Z_t \sim WN(0, 2.5)$, compute $\gamma(0)$, $\gamma(1)$, $\rho(1)$, $\rho(2)$, and verify invertibility. *(Answer: $\gamma(0)=3.4$, $\gamma(1)=-1.5$, $\rho(1)\approx -0.441$, $\rho(2)=0$; invertible since $|z|=1.67 &gt; 1$.)*</span>
+<span id="cb3-265"><a href="#cb3-265"></a></span>
+<span id="cb3-266"><a href="#cb3-266"></a><span class="fu">### Tier 2: Analytical &amp; Exam-Style</span></span>
+<span id="cb3-267"><a href="#cb3-267"></a><span class="ss">* </span>**Problem 1.9 (Worked — Signal-Plus-Noise Durbin-Levinson)**: An EEG electrode records $X_t = S_t + V_t$, where $S_t = 0.8 S_{t-1} + W_t$ ($\sigma_W^2 = 0.36$) and independent sensor noise $V_t \sim WN(0, 0.64)$. Compute $\rho_X(1), \rho_X(2)$, and $\phi_{22}$.</span>
+<span id="cb3-268"><a href="#cb3-268"></a>  *Solution*: $\gamma_S(0) = \frac{0.36}{1 - 0.64} = 1.00$, so $\gamma_X(0) = 1.00 + 0.64 = 1.64$, while $\gamma_X(h) = \gamma_S(h) = 0.8^h$ for $h \ge 1$. Thus $\rho_X(1) = \frac{0.80}{1.64} \approx 0.4878$ and $\rho_X(2) = \frac{0.64}{1.64} \approx 0.3902$. By Eq. (1.12):</span>
+<span id="cb3-269"><a href="#cb3-269"></a>  $$\phi_{22} = \frac{0.3902 - (0.4878)^2}{1 - (0.4878)^2} = \frac{0.1522}{0.7620} \approx 0.1997 \neq 0$$</span>
+<span id="cb3-270"><a href="#cb3-270"></a>  Adding measurement noise turns a pure AR(1) into an ARMA(1,1) whose PACF no longer cuts off at lag 1.</span>
+<span id="cb3-271"><a href="#cb3-271"></a></span>
+<span id="cb3-272"><a href="#cb3-272"></a><span class="fu">### Tier 3: Domain Case Studies (EEG Signals &amp; Financial Analytics)</span></span>
+<span id="cb3-273"><a href="#cb3-273"></a></span>
+<span id="cb3-274"><a href="#cb3-274"></a><span class="fu">#### Problem 1.10: EEG Alpha-Wave Resonance via AR(2) Complex Roots (Biomedical — Worked)</span></span>
+<span id="cb3-275"><a href="#cb3-275"></a>**Statement**: A resting-state EEG segment sampled at $f_s = 100\text{ Hz}$ follows $X_t = 1.458 X_{t-1} - 0.810 X_{t-2} + Z_t$. Verify stationarity and compute the dominant frequency in Hz.</span>
+<span id="cb3-276"><a href="#cb3-276"></a></span>
+<span id="cb3-277"><a href="#cb3-277"></a>**Solution**:</span>
+<span id="cb3-278"><a href="#cb3-278"></a></span>
+<span id="cb3-279"><a href="#cb3-279"></a><span class="ss">1. </span>Characteristic polynomial: $\Phi(z) = 1 - 1.458z + 0.810z^2 = 0$. Here $\phi_1 = 1.458, \phi_2 = -0.810$.</span>
+<span id="cb3-280"><a href="#cb3-280"></a><span class="ss">2. </span>Root modulus (Section 0.5): $|z| = 1/\sqrt{-\phi_2} = 1/\sqrt{0.810} = 1/0.9 \approx 1.111 &gt; 1$ (**stationary**).</span>
+<span id="cb3-281"><a href="#cb3-281"></a><span class="ss">3. </span>Frequency (Eq. 0.8–0.9): $\cos\theta = \frac{1.458}{2\sqrt{0.810}} = 0.810 \implies \theta \approx 0.6266\text{ rad}$, so $f = \frac{100 \times 0.6266}{2\pi} \approx 9.97\text{ Hz}$ (classic **$10\text{ Hz}$ alpha rhythm**!).</span>
+<span id="cb3-282"><a href="#cb3-282"></a></span>
+<span id="cb3-283"><a href="#cb3-283"></a><span class="fu">#### Problem 1.11: Testing Weak-Form Market Efficiency with Bartlett Bounds (Finance — Worked)</span></span>
+<span id="cb3-284"><a href="#cb3-284"></a>**Statement**: An analyst observes sample ACF values $\hat{\rho}(1) = 0.095$, $\hat{\rho}(2) = -0.040$, $\hat{\rho}(3) = 0.025$ from $N = 625$ daily log returns. Test against white noise at the 5% level.</span>
+<span id="cb3-285"><a href="#cb3-285"></a></span>
+<span id="cb3-286"><a href="#cb3-286"></a>**Solution**:</span>
+<span id="cb3-287"><a href="#cb3-287"></a>Bartlett's 95% bound (Eq. 1.10) is $\pm \frac{1.96}{\sqrt{625}} = \pm 0.0784$. Because $|\hat{\rho}(1)| = 0.095 &gt; 0.0784$, lag-1 autocorrelation is statistically significant, rejecting pure white noise at lag 1.</span>
+<span id="cb3-288"><a href="#cb3-288"></a></span>
+<span id="cb3-289"><a href="#cb3-289"></a><span class="fu">#### Problem 1.12: Portfolio Variance Inflation (Practice)</span></span>
+<span id="cb3-290"><a href="#cb3-290"></a>**Statement**: Daily fund returns follow $r_t = 0.25 r_{t-1} + Z_t$ with $\gamma(0) = 0.0001$. Compute $\mathrm{Var}(r_1 + r_2)$ and compare with $2\gamma(0)$. *(Answer: $0.00025$ vs. naive $0.00020$ — 25% higher.)*</span>
+<span id="cb3-291"><a href="#cb3-291"></a></span>
+<span id="cb3-292"><a href="#cb3-292"></a></span>
+<span id="cb3-293"><a href="#cb3-293"></a><span class="fu">## Dual-Track Laboratory Experimental Section</span></span>
+<span id="cb3-294"><a href="#cb3-294"></a></span>
+<span id="cb3-295"><a href="#cb3-295"></a>::: {.callout-note}</span>
+<span id="cb3-296"><a href="#cb3-296"></a><span class="fu">### Dual-Track Lab Objectives (CO1 Focus)</span></span>
+<span id="cb3-297"><a href="#cb3-297"></a><span class="ss">- </span>**Track A (Biomedical / EEG Signal Analysis)**: Check epoch stationarity, plot sample ACF/PACF, fit AR($p$), and extract the dominant neural oscillation frequency from characteristic roots.</span>
+<span id="cb3-298"><a href="#cb3-298"></a><span class="ss">- </span>**Track B (Financial &amp; Portfolio Analytics)**: Transform asset levels into log returns, test predictability via Bartlett's 95% bounds, compute autocorrelation-adjusted portfolio variance, and benchmark AR(1) against a random-walk mean.</span>
+<span id="cb3-299"><a href="#cb3-299"></a>:::</span>
+<span id="cb3-300"><a href="#cb3-300"></a></span>
+<span id="cb3-301"><a href="#cb3-301"></a><span class="fu">### Lab Track A: EEG Signal Spectral &amp; AR($p$) Modeling</span></span>
+<span id="cb3-302"><a href="#cb3-302"></a></span>
+<span id="cb3-303"><a href="#cb3-303"></a><span class="in">```python</span></span>
+<span id="cb3-304"><a href="#cb3-304"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-305"><a href="#cb3-305"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-306"><a href="#cb3-306"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-307"><a href="#cb3-307"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb3-308"><a href="#cb3-308"></a><span class="im">from</span> statsmodels.tsa.ar_model <span class="im">import</span> AutoReg</span>
+<span id="cb3-309"><a href="#cb3-309"></a></span>
+<span id="cb3-310"><a href="#cb3-310"></a>fs <span class="op">=</span> <span class="dv">100</span>  <span class="co"># 100 Hz sampling rate</span></span>
+<span id="cb3-311"><a href="#cb3-311"></a>t <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="fl">5.0</span>, <span class="dv">1</span><span class="op">/</span>fs)</span>
+<span id="cb3-312"><a href="#cb3-312"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb3-313"><a href="#cb3-313"></a></span>
+<span id="cb3-314"><a href="#cb3-314"></a><span class="co"># Resting-state eyes-closed EEG (10 Hz alpha + 22 Hz beta + colored noise)</span></span>
+<span id="cb3-315"><a href="#cb3-315"></a>alpha_wave <span class="op">=</span> <span class="fl">15.0</span> <span class="op">*</span> np.sin(<span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> <span class="fl">10.0</span> <span class="op">*</span> t <span class="op">+</span> <span class="fl">0.3</span>)</span>
+<span id="cb3-316"><a href="#cb3-316"></a>beta_wave  <span class="op">=</span>  <span class="fl">4.0</span> <span class="op">*</span> np.sin(<span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> <span class="fl">22.0</span> <span class="op">*</span> t)</span>
+<span id="cb3-317"><a href="#cb3-317"></a>bg_noise <span class="op">=</span> np.zeros(<span class="bu">len</span>(t))</span>
+<span id="cb3-318"><a href="#cb3-318"></a>eps <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="fl">3.5</span>, <span class="bu">len</span>(t))</span>
+<span id="cb3-319"><a href="#cb3-319"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(t)):</span>
+<span id="cb3-320"><a href="#cb3-320"></a>    bg_noise[i] <span class="op">=</span> <span class="fl">0.7</span> <span class="op">*</span> bg_noise[i<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> eps[i]</span>
+<span id="cb3-321"><a href="#cb3-321"></a></span>
+<span id="cb3-322"><a href="#cb3-322"></a>eeg_series <span class="op">=</span> pd.Series(alpha_wave <span class="op">+</span> beta_wave <span class="op">+</span> bg_noise, index<span class="op">=</span>pd.Index(t, name<span class="op">=</span><span class="st">"Time (s)"</span>))</span>
+<span id="cb3-323"><a href="#cb3-323"></a></span>
+<span id="cb3-324"><a href="#cb3-324"></a>mid <span class="op">=</span> <span class="bu">len</span>(eeg_series) <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb3-325"><a href="#cb3-325"></a><span class="bu">print</span>(<span class="st">"--- Track A: EEG Epoch Stationarity Check ---"</span>)</span>
+<span id="cb3-326"><a href="#cb3-326"></a><span class="bu">print</span>(<span class="ss">f"First Half  -&gt; Mean: </span><span class="sc">{</span>eeg_series<span class="sc">.</span>iloc[:mid]<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss"> uV, Std: </span><span class="sc">{</span>eeg_series<span class="sc">.</span>iloc[:mid]<span class="sc">.</span>std()<span class="sc">:.2f}</span><span class="ss"> uV"</span>)</span>
+<span id="cb3-327"><a href="#cb3-327"></a><span class="bu">print</span>(<span class="ss">f"Second Half -&gt; Mean: </span><span class="sc">{</span>eeg_series<span class="sc">.</span>iloc[mid:]<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss"> uV, Std: </span><span class="sc">{</span>eeg_series<span class="sc">.</span>iloc[mid:]<span class="sc">.</span>std()<span class="sc">:.2f}</span><span class="ss"> uV"</span>)</span>
+<span id="cb3-328"><a href="#cb3-328"></a></span>
+<span id="cb3-329"><a href="#cb3-329"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">3</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="dv">9</span>))</span>
+<span id="cb3-330"><a href="#cb3-330"></a>axes[<span class="dv">0</span>].plot(eeg_series.index, eeg_series.values, color<span class="op">=</span><span class="st">"#0f766e"</span>, lw<span class="op">=</span><span class="fl">1.1</span>)</span>
+<span id="cb3-331"><a href="#cb3-331"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Resting-State EEG Trace (100 Hz Sampling)"</span>)</span>
+<span id="cb3-332"><a href="#cb3-332"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"Amplitude (uV)"</span>)</span>
+<span id="cb3-333"><a href="#cb3-333"></a>axes[<span class="dv">0</span>].grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb3-334"><a href="#cb3-334"></a></span>
+<span id="cb3-335"><a href="#cb3-335"></a>sm.graphics.tsa.plot_acf(eeg_series, lags<span class="op">=</span><span class="dv">40</span>, ax<span class="op">=</span>axes[<span class="dv">1</span>], title<span class="op">=</span><span class="st">"EEG Sample ACF"</span>)</span>
+<span id="cb3-336"><a href="#cb3-336"></a>sm.graphics.tsa.plot_pacf(eeg_series, lags<span class="op">=</span><span class="dv">40</span>, ax<span class="op">=</span>axes[<span class="dv">2</span>], method<span class="op">=</span><span class="st">"yule_walker"</span>, title<span class="op">=</span><span class="st">"EEG Sample PACF"</span>)</span>
+<span id="cb3-337"><a href="#cb3-337"></a>plt.tight_layout()</span>
+<span id="cb3-338"><a href="#cb3-338"></a>plt.show()</span>
+<span id="cb3-339"><a href="#cb3-339"></a></span>
+<span id="cb3-340"><a href="#cb3-340"></a>ar2_eeg <span class="op">=</span> AutoReg(eeg_series.values, lags<span class="op">=</span><span class="dv">2</span>, old_names<span class="op">=</span><span class="va">False</span>).fit()</span>
+<span id="cb3-341"><a href="#cb3-341"></a>phi1, phi2 <span class="op">=</span> ar2_eeg.params[<span class="dv">1</span>], ar2_eeg.params[<span class="dv">2</span>]</span>
+<span id="cb3-342"><a href="#cb3-342"></a>roots <span class="op">=</span> np.roots([<span class="op">-</span>phi2, <span class="op">-</span>phi1, <span class="fl">1.0</span>])</span>
+<span id="cb3-343"><a href="#cb3-343"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">AR(2): phi1=</span><span class="sc">{</span>phi1<span class="sc">:.4f}</span><span class="ss">, phi2=</span><span class="sc">{</span>phi2<span class="sc">:.4f}</span><span class="ss"> | Root Moduli: </span><span class="sc">{</span>np<span class="sc">.</span><span class="bu">abs</span>(roots)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-344"><a href="#cb3-344"></a><span class="cf">if</span> np.iscomplexobj(roots):</span>
+<span id="cb3-345"><a href="#cb3-345"></a>    dom_freq <span class="op">=</span> fs <span class="op">*</span> np.<span class="bu">abs</span>(np.angle(roots[<span class="dv">0</span>])) <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> np.pi)</span>
+<span id="cb3-346"><a href="#cb3-346"></a>    <span class="bu">print</span>(<span class="ss">f"Extracted Dominant EEG Frequency: </span><span class="sc">{</span>dom_freq<span class="sc">:.2f}</span><span class="ss"> Hz"</span>)</span>
+<span id="cb3-347"><a href="#cb3-347"></a><span class="in">```</span></span>
+<span id="cb3-348"><a href="#cb3-348"></a></span>
+<span id="cb3-349"><a href="#cb3-349"></a><span class="fu">### Lab Track B: Financial Return Stationarity &amp; Portfolio Risk Scaling</span></span>
+<span id="cb3-350"><a href="#cb3-350"></a></span>
+<span id="cb3-351"><a href="#cb3-351"></a><span class="in">```python</span></span>
+<span id="cb3-352"><a href="#cb3-352"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-353"><a href="#cb3-353"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-354"><a href="#cb3-354"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-355"><a href="#cb3-355"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb3-356"><a href="#cb3-356"></a><span class="im">from</span> statsmodels.tsa.ar_model <span class="im">import</span> AutoReg</span>
+<span id="cb3-357"><a href="#cb3-357"></a><span class="im">from</span> statsmodels.tsa.stattools <span class="im">import</span> acf</span>
+<span id="cb3-358"><a href="#cb3-358"></a></span>
+<span id="cb3-359"><a href="#cb3-359"></a>macro <span class="op">=</span> sm.datasets.macrodata.load_pandas().data</span>
+<span id="cb3-360"><a href="#cb3-360"></a>price_level <span class="op">=</span> pd.Series(macro[<span class="st">"realgdp"</span>].values,</span>
+<span id="cb3-361"><a href="#cb3-361"></a>                        index<span class="op">=</span>pd.period_range(<span class="st">"1959Q1"</span>, periods<span class="op">=</span><span class="bu">len</span>(macro), freq<span class="op">=</span><span class="st">"Q"</span>).to_timestamp())</span>
+<span id="cb3-362"><a href="#cb3-362"></a>log_returns <span class="op">=</span> np.log(price_level <span class="op">/</span> price_level.shift(<span class="dv">1</span>)).dropna()</span>
+<span id="cb3-363"><a href="#cb3-363"></a></span>
+<span id="cb3-364"><a href="#cb3-364"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">7</span>))</span>
+<span id="cb3-365"><a href="#cb3-365"></a>axes[<span class="dv">0</span>, <span class="dv">0</span>].plot(price_level, color<span class="op">=</span><span class="st">"#1e3a8a"</span>)</span>
+<span id="cb3-366"><a href="#cb3-366"></a>axes[<span class="dv">0</span>, <span class="dv">0</span>].set_title(<span class="st">"Raw Index Level (Non-Stationary)"</span>)</span>
+<span id="cb3-367"><a href="#cb3-367"></a>axes[<span class="dv">0</span>, <span class="dv">1</span>].plot(log_returns, color<span class="op">=</span><span class="st">"#c2410c"</span>)</span>
+<span id="cb3-368"><a href="#cb3-368"></a>axes[<span class="dv">0</span>, <span class="dv">1</span>].axhline(log_returns.mean(), color<span class="op">=</span><span class="st">"black"</span>, ls<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb3-369"><a href="#cb3-369"></a>axes[<span class="dv">0</span>, <span class="dv">1</span>].set_title(<span class="st">"Log Returns (Approximately Stationary)"</span>)</span>
+<span id="cb3-370"><a href="#cb3-370"></a>sm.graphics.tsa.plot_acf(price_level, lags<span class="op">=</span><span class="dv">20</span>, ax<span class="op">=</span>axes[<span class="dv">1</span>, <span class="dv">0</span>], title<span class="op">=</span><span class="st">"ACF of Raw Level"</span>)</span>
+<span id="cb3-371"><a href="#cb3-371"></a>sm.graphics.tsa.plot_acf(log_returns, lags<span class="op">=</span><span class="dv">20</span>, ax<span class="op">=</span>axes[<span class="dv">1</span>, <span class="dv">1</span>], title<span class="op">=</span><span class="st">"ACF of Log Returns (Bartlett Bounds)"</span>)</span>
+<span id="cb3-372"><a href="#cb3-372"></a>plt.tight_layout()</span>
+<span id="cb3-373"><a href="#cb3-373"></a>plt.show()</span>
+<span id="cb3-374"><a href="#cb3-374"></a></span>
+<span id="cb3-375"><a href="#cb3-375"></a>acf_vals <span class="op">=</span> acf(log_returns, nlags<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb3-376"><a href="#cb3-376"></a>K <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb3-377"><a href="#cb3-377"></a>naive_var <span class="op">=</span> K <span class="op">*</span> log_returns.var()</span>
+<span id="cb3-378"><a href="#cb3-378"></a>corr_factor <span class="op">=</span> <span class="dv">1</span> <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> <span class="bu">sum</span>((<span class="dv">1</span> <span class="op">-</span> h <span class="op">/</span> K) <span class="op">*</span> acf_vals[h] <span class="cf">for</span> h <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, K))</span>
+<span id="cb3-379"><a href="#cb3-379"></a><span class="bu">print</span>(<span class="ss">f"Lag-1 ACF: </span><span class="sc">{</span>acf_vals[<span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss"> | Portfolio Variance Inflation Factor (K=</span><span class="sc">{</span>K<span class="sc">}</span><span class="ss">): </span><span class="sc">{</span>corr_factor<span class="sc">:.3f}</span><span class="ss">x"</span>)</span>
+<span id="cb3-380"><a href="#cb3-380"></a></span>
+<span id="cb3-381"><a href="#cb3-381"></a>split <span class="op">=</span> <span class="bu">int</span>(<span class="bu">len</span>(log_returns) <span class="op">*</span> <span class="fl">0.8</span>)</span>
+<span id="cb3-382"><a href="#cb3-382"></a>train_r, test_r <span class="op">=</span> log_returns.iloc[:split], log_returns.iloc[split:]</span>
+<span id="cb3-383"><a href="#cb3-383"></a>ar1_fin <span class="op">=</span> AutoReg(train_r.values, lags<span class="op">=</span><span class="dv">1</span>, old_names<span class="op">=</span><span class="va">False</span>).fit()</span>
+<span id="cb3-384"><a href="#cb3-384"></a>pred_ar1 <span class="op">=</span> ar1_fin.predict(start<span class="op">=</span><span class="bu">len</span>(train_r), end<span class="op">=</span><span class="bu">len</span>(log_returns) <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb3-385"><a href="#cb3-385"></a>pred_naive <span class="op">=</span> np.repeat(train_r.mean(), <span class="bu">len</span>(test_r))</span>
+<span id="cb3-386"><a href="#cb3-386"></a><span class="bu">print</span>(<span class="ss">f"Out-of-Sample RMSE -&gt; AR(1): </span><span class="sc">{</span>np<span class="sc">.</span>sqrt(np.mean((test_r.values <span class="op">-</span> pred_ar1)<span class="op">**</span><span class="dv">2</span>))<span class="sc">:.5f}</span><span class="ss"> | Mean Baseline: </span><span class="sc">{</span>np<span class="sc">.</span>sqrt(np.mean((test_r.values <span class="op">-</span> pred_naive)<span class="op">**</span><span class="dv">2</span>))<span class="sc">:.5f}</span><span class="ss">"</span>)</span>
+<span id="cb3-387"><a href="#cb3-387"></a><span class="in">```</span></span>
+<span id="cb3-388"><a href="#cb3-388"></a></span>
+<span id="cb3-389"><a href="#cb3-389"></a></span>
+<span id="cb3-390"><a href="#cb3-390"></a><span class="fu">## Summary of Concepts</span></span>
+<span id="cb3-391"><a href="#cb3-391"></a></span>
+<span id="cb3-392"><a href="#cb3-392"></a><span class="ss">* </span>**Stationarity**: Weak stationarity requires finite variance, constant mean, and lag-only autocovariance $\gamma(h)$. It ensures historical patterns generalize across time.</span>
+<span id="cb3-393"><a href="#cb3-393"></a><span class="ss">* </span>**Ergodicity**: Guarantees that time averages ($\bar{X}_N$) converge to ensemble expectations ($\mu$) when $\sum |\gamma(h)| &lt; \infty$, and exposes how positive autocorrelation inflates multi-period portfolio risk.</span>
+<span id="cb3-394"><a href="#cb3-394"></a><span class="ss">* </span>**ACF vs. PACF**: ACF measures total linear dependence and cuts off after lag $q$ for MA($q$); PACF removes intermediate lags via Yule-Walker/Durbin-Levinson and cuts off after lag $p$ for AR($p$).</span>
+<span id="cb3-395"><a href="#cb3-395"></a><span class="ss">* </span>**Wold Decomposition**: Every regular stationary process is an infinite linear filter of white noise shocks.</span>
+<span id="cb3-396"><a href="#cb3-396"></a><span class="ss">* </span>**Causality &amp; Invertibility**: Both require all roots of $\Phi(z)=0$ (for AR) and $\Theta(z)=0$ (for MA) to lie strictly outside the unit circle ($|z| &gt; 1$).</span>
+<span id="cb3-397"><a href="#cb3-397"></a></span>
+<span id="cb3-398"><a href="#cb3-398"></a>::: {.callout-tip}</span>
+<span id="cb3-399"><a href="#cb3-399"></a><span class="fu">### Prescribed Textbook Cross-Walk (Unit 1)</span></span>
+<span id="cb3-400"><a href="#cb3-400"></a><span class="pp">|</span> Concept <span class="pp">|</span> Cryer &amp; Chan (2008) <span class="pp">|</span> Shumway &amp; Stoffer (2011) <span class="pp">|</span> Box et al. (2016) <span class="pp">|</span> Nielsen (2019) <span class="pp">|</span></span>
+<span id="cb3-401"><a href="#cb3-401"></a><span class="pp">|:---|:---|:---|:---|:---|</span></span>
+<span id="cb3-402"><a href="#cb3-402"></a><span class="pp">|</span> Stationarity, ACVF, ACF <span class="pp">|</span> Ch. 2.1–2.3 <span class="pp">|</span> Ch. 1.3–1.4 <span class="pp">|</span> Ch. 2.1 <span class="pp">|</span> Ch. 2, Ch. 3 <span class="pp">|</span></span>
+<span id="cb3-403"><a href="#cb3-403"></a><span class="pp">|</span> Ergodicity &amp; Sample ACF Bounds <span class="pp">|</span> Ch. 6.1 <span class="pp">|</span> Ch. 1.5 <span class="pp">|</span> Ch. 2.1.6 <span class="pp">|</span> Ch. 3 <span class="pp">|</span></span>
+<span id="cb3-404"><a href="#cb3-404"></a><span class="pp">|</span> PACF &amp; Durbin-Levinson <span class="pp">|</span> Ch. 6.2 <span class="pp">|</span> Ch. 3.2–3.3 <span class="pp">|</span> Ch. 3.2 <span class="pp">|</span> Ch. 3 <span class="pp">|</span></span>
+<span id="cb3-405"><a href="#cb3-405"></a><span class="pp">|</span> Wold Decomposition, AR($p$), MA($q$) <span class="pp">|</span> Ch. 4.1–4.3 <span class="pp">|</span> Ch. 3.1–3.2 <span class="pp">|</span> Ch. 3.1–3.3 <span class="pp">|</span> Ch. 6 <span class="pp">|</span></span>
+<span id="cb3-406"><a href="#cb3-406"></a>:::</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

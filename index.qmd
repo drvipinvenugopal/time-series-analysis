@@ -1,0 +1,106 @@
+# Course Overview & Syllabus Mapping {.unnumbered}
+
+Welcome to **22AIE463: Time Series Analysis**, an advanced core course in the Artificial Intelligence and Computer Science Engineering curriculum at Amrita Vishwa Vidyapeetham. 
+
+Time series analysis occupies a distinct, foundational position at the intersection of mathematical statistics, dynamical systems theory, signal processing, and machine learning. In conventional statistical learning, observations are almost universally assumed to be independent and identically distributed ($i.i.d.$). In the physical universe, however, time flows monotonically in a single direction; the past casts an enduring shadow upon the present, and the present constrains the future. When observations are temporally correlated, standard estimators collapse, standard errors evaporate into spurious precision, and regression lines mistake persistence for causality.
+
+This coursebook is formulated from first principles, weaving rigorous mathematical derivations into an intuitive narrative strictly anchored in the prescribed curriculum textbooks [@cryer2008time; @shumway2011time; @box2016time; @nielsen2019practical]. Every chapter advances systematically from theoretical foundations to graduated analytical problems, culminating in comprehensive laboratory experiments utilizing real-world open datasets.
+
+---
+
+## Course Information
+
+- **Course Code**: 22AIE463
+- **Course Title**: Time Series Analysis
+- **Structure (L-T-P-C)**: 2-0-3- 3 (2 Lecture hours, 0 Tutorial hours, 3 Practical/Lab hours per week; 3 Credits)
+- **Target Audience**: B.Tech Artificial Intelligence and Data Science / Computer Science Engineering
+
+### Course Objectives
+
+- Cover fundamental mathematical tools and statistical techniques required to analyze, filter, and model temporally dependent stochastic processes.
+- Establish unified theoretical foundations for both **linear** (AR, MA, ARMA, ARIMA, SARIMA, VAR) and **nonlinear** time series analysis (TAR, STAR, State-Space, ARCH/GARCH).
+- Develop advanced predictive analytics capabilities utilizing **Machine Learning** (tree ensembles, sliding window feature engineering) and **Deep Learning** (LSTM, GRU, TCN, Attention/Transformers).
+- Investigate mathematical early warning indicators and **precursors for catastrophic transitions** (bifurcations and tipping points) in complex dynamical systems.
+
+### Course Outcomes (COs)
+
+Upon successful completion of this course, students will be able to:
+
+- **CO1**: Formulate, analyze, estimate, and evaluate linear time series models from first mathematical principles.
+- **CO2**: Mathematically characterize, detect, and model nonlinear dynamics and conditional heteroscedastic phenomena.
+- **CO3**: Rigorously analyze stationary and non-stationary stochastic processes using formal hypothesis testing frameworks.
+- **CO4**: Design, implement, and benchmark modern Machine Learning and Deep Learning architectures for temporal predictive analytics and tipping-point detection.
+
+### CO-PO & PSO Mapping
+
+| CO | PO1 | PO2 | PO3 | PO4 | PO5 | PO6 | PO7 | PO8 | PO9 | PO10 | PO11 | PO12 | PSO1 | PSO2 | PSO3 |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **CO1** | 2 | 3 | 2 | 2 | 3 | - | - | - | 1 | 2 | - | 2 | 2 | 1 | - |
+| **CO2** | 2 | 3 | 2 | 2 | 3 | - | - | - | 1 | 2 | - | 2 | 2 | 1 | - |
+| **CO3** | 2 | 3 | 3 | 2 | 3 | - | - | - | 1 | 2 | - | 2 | 2 | 1 | - |
+| **CO4** | 2 | 3 | 3 | 2 | 3 | - | - | - | 1 | 2 | - | 2 | 2 | 1 | 3 |
+
+*Legend*: 3 = Strong Contribution, 2 = Moderate Contribution, 1 = Slight Contribution.
+
+### Evaluation Pattern
+
+| Assessment Component | Nature | Weightage (%) | Minimum Requirement |
+|:---|:---:|:---:|:---|
+| **Assignments** | Internal | 30% | Minimum 2 Comprehensive Practical Assignments |
+| **Quizzes** | Internal | 20% | Minimum 2 Conceptual & Analytical Quizzes |
+| **Mid-Term Examination** | Internal | 20% | Formal 2-hour Written & Problem-Solving Exam |
+| **Term Project / End Semester Exam** | External | 30% | Research-Grade Project & Rigorous Theory Exam |
+| **Total** | | **100%** | |
+
+---
+
+## Prescribed Textbooks & Reference Literature
+
+This volume directly synthesizes and cites the four foundational textbooks prescribed in the curriculum:
+
+1. **Cryer & Chan (2008)**: Jonathan D. Cryer and Kung-Sik Chan, *Time Series Analysis With Applications in R*, 2nd Edition, Springer [@cryer2008time].
+2. **Shumway & Stoffer (2011)**: Robert H. Shumway and David S. Stoffer, *Time Series Analysis and Its Applications with R examples*, 3rd Edition, Springer [@shumway2011time].
+3. **Box, Jenkins, Reinsel, & Ljung (2016)**: George E. P. Box, Gwilym M. Jenkins, Gregory C. Reinsel, and Greta M. Ljung, *Time Series Analysis: Forecasting and Control*, 5th Edition, John Wiley & Sons [@box2016time].
+4. **Nielsen (2019)**: Aileen Nielsen, *Practical Time Series Analysis: Prediction with Statistics and Machine Learning*, 1st Edition, O'Reilly Media [@nielsen2019practical].
+
+---
+
+## Pedagogical Structure of Each Chapter
+
+To ensure maximum conceptual mastery and professional technical readiness, every module is structured into four pedagogical pillars:
+
+```
+┌────────────────────────────────────────────────────────┐
+│  1. Historical First Principles, Historical genesis,   │
+│      physical intuition, proofs.                       │
+├────────────────────────────────────────────────────────┤
+│  2. Mathematical Formulation & Theoretical Derivations │
+│     Probability spaces, operators, stability theorems. │
+├────────────────────────────────────────────────────────┤
+│  3. Simple to Application-Level Analytical Problems    │
+│     Tier 1: Foundational, Tier 2: Parametric,          │
+│     Tier 3: Real-World Engineering Scenarios.          │
+├────────────────────────────────────────────────────────┤
+│  4. Laboratory Experimental Section (Open Datasets)    │
+│     Production-grade, runnable Python workflows, EDA,  │
+│     estimation, diagnostics, forecasting & tasks.      │
+└────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Mathematical Notational Conventions
+
+Throughout this text, we maintain rigorous notational consistency:
+
+- $(\Omega, \mathcal{F}, \mathbb{P})$ denotes the underlying probability space.
+- $\{X_t\}_{t \in \mathbb{Z}}$ or $\{Y_t\}_{t \in \mathbb{Z}}$ denotes a discrete-time stochastic process.
+- $\mathbb{E}[X]$ denotes the mathematical expectation of random variable $X$.
+- $\gamma(s, t) = \mathrm{Cov}(X_s, X_t) = \mathbb{E}[(X_s - \mu_s)(X_t - \mu_t)]$ denotes the autocovariance function. For weakly stationary processes, $\gamma(h) = \mathrm{Cov}(X_t, X_{t+h})$.
+- $\rho(h) = \frac{\gamma(h)}{\gamma(0)}$ denotes the autocorrelation function (ACF) at lag $h$.
+- $\alpha(h)$ or $\phi_{hh}$ denotes the partial autocorrelation function (PACF) at lag $h$.
+- $B$ (or $L$) denotes the backward shift (lag) operator, such that $B^k X_t = X_{t-k}$.
+- $\nabla = (1 - B)$ denotes the first-difference operator: $\nabla X_t = X_t - X_{t-1}$.
+- $\{W_t\}$ or $\{Z_t\}$ or $\{\epsilon_t\}$ denotes a white noise innovation sequence with mean zero and variance $\sigma^2$, denoted $WN(0, \sigma^2)$ or $i.i.d. \, \mathcal{N}(0, \sigma^2)$.
+- $\Phi(B) = 1 - \phi_1 B - \dots - \phi_p B^p$ denotes the autoregressive characteristic polynomial.
+- $\Theta(B) = 1 + \theta_1 B + \dots + \theta_q B^q$ denotes the moving average characteristic polynomial.
