@@ -10,6 +10,7 @@ book:
       affiliation: "School of AI"
   date: last-modified
   date-format: long
+  downloads: [pdf]
   site-url: "https://drvipinvenugopal.github.io/time-series-analysis"
   repo-url: "https://github.com/drvipinvenugopal/time-series-analysis"
   chapters:

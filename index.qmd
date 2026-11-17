@@ -2,6 +2,10 @@
 
 Welcome to **22AIE463: Time Series Analysis**, an advanced core course in the Artificial Intelligence and Computer Science Engineering curriculum at Amrita Vishwa Vidyapeetham. 
 
+::: {.content-visible when-format="html"}
+[<i class="bi bi-file-earmark-pdf"></i> Download the full course book (PDF)](Time-Series-Analysis--First-Principles-to-Deep-Applications.pdf){.btn .btn-primary download=""}
+:::
+
 Time series analysis occupies a distinct, foundational position at the intersection of mathematical statistics, dynamical systems theory, signal processing, and machine learning. In conventional statistical learning, observations are almost universally assumed to be independent and identically distributed ($i.i.d.$). In the physical universe, however, time flows monotonically in a single direction; the past casts an enduring shadow upon the present, and the present constrains the future. When observations are temporally correlated, standard estimators collapse, standard errors evaporate into spurious precision, and regression lines mistake persistence for causality.
 
 This coursebook is formulated from first principles, weaving rigorous mathematical derivations into an intuitive narrative strictly anchored in the prescribed curriculum textbooks [@cryer2008time; @shumway2011time; @box2016time; @nielsen2019practical]. Every chapter advances systematically from theoretical foundations to graduated analytical problems, culminating in comprehensive laboratory experiments utilizing real-world open datasets.
