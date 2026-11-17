@@ -1,1 +1,1 @@
-Sitemap: https://amrita.edu/course/22aie463-time-series-analysis/sitemap.xml
+Sitemap: https://drvipinvenugopal.github.io/time-series-analysis/sitemap.xml

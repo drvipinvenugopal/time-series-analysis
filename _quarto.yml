@@ -8,9 +8,10 @@ book:
   author:
     - name: "Amrita Vishwa Vidyapeetham"
       affiliation: "School of AI"
-  date: "2026"
-  site-url: "https://amrita.edu/course/22aie463-time-series-analysis"
-  repo-url: "https://github.com/amrita-aie/22AIE463-time-series-analysis"
+  date: last-modified
+  date-format: long
+  site-url: "https://drvipinvenugopal.github.io/time-series-analysis"
+  repo-url: "https://github.com/drvipinvenugopal/time-series-analysis"
   chapters:
     - index.qmd
     - chapters/00_bootcamp_foundations.qmd
